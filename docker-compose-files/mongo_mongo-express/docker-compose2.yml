@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  mongo:
+    image: bitnami/mongodb:4.4-debian-10
+    hostname: "mongo"
+    ports:
+      - 27018:27017
+    environment:
+      - MONGODB_USERNAME=ssuser
+      - MONGODB_PASSWORD=123456789
+      - MONGODB_DATABASE=ss-new-app
+      - MONGODB_ADVERTISED_HOSTNAME=mongo
+      - MONGODB_ROOT_PASSWORD=nieiorn4alib
+
+  mongocompass:
+    image: mongo-express:0.54.0
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+    environment:
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=123456
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN="false"
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_AUTH_USERNAME=ssuser
+      - ME_CONFIG_MONGODB_AUTH_PASSWORD=123456789
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=ss-new-app
