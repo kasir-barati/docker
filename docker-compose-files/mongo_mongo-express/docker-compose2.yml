@@ -7,13 +7,13 @@ services:
     ports:
       - 27018:27017
     environment:
-      - MONGODB_USERNAME=ssuser
+      - MONGODB_USERNAME=user
       - MONGODB_PASSWORD=123456789
-      - MONGODB_DATABASE=ss-new-app
+      - MONGODB_DATABASE=testdb
       - MONGODB_ADVERTISED_HOSTNAME=mongo
-      - MONGODB_ROOT_PASSWORD=nieiorn4alib
+      - MONGODB_ROOT_PASSWORD=rootpassword
 
-  mongocompass:
+  mongoexpress:
     image: mongo-express:0.54.0
     ports:
       - 8081:8081
@@ -25,6 +25,6 @@ services:
       - ME_CONFIG_MONGODB_ENABLE_ADMIN="false"
       - ME_CONFIG_MONGODB_PORT=27017
       - ME_CONFIG_MONGODB_SERVER=mongo
-      - ME_CONFIG_MONGODB_AUTH_USERNAME=ssuser
+      - ME_CONFIG_MONGODB_AUTH_USERNAME=user
       - ME_CONFIG_MONGODB_AUTH_PASSWORD=123456789
-      - ME_CONFIG_MONGODB_AUTH_DATABASE=ss-new-app
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=testdb
