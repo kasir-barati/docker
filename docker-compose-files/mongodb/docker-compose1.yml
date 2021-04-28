@@ -3,14 +3,16 @@ version: "3.7"
 services:
   mongo:
     image: bitnami/mongodb:4.4-debian-10
+    container_name: test_mongo
+    hostname: mongo
     ports:
       - 27018:27017
     hostname: "mongo"
     environment:
-      - MONGODB_USERNAME=ssuser
-      - MONGODB_PASSWORD=nieiorn4
-      - MONGODB_DATABASE=ss-new-app
+      - MONGODB_USERNAME=user
+      - MONGODB_PASSWORD=123456789
+      - MONGODB_DATABASE=testdb
       # - MONGODB_ADVERTISED_HOSTNAME=mongo
       # - MONGODB_REPLICA_SET_MODE=primary
       # - MONGODB_REPLICA_SET_KEY=nieiorn4secretkey
-      - MONGODB_ROOT_PASSWORD=nieiorn4alib
+      - MONGODB_ROOT_PASSWORD=1234567890
