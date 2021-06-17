@@ -1,28 +1,75 @@
 version: "3.7"
+
 services:
   elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}"
+    image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    build:
+      context: ./elasticsearch
+      args:
+        EFK_VERSION: $EFK_VERSION
     environment:
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-      - "discovery.type=single-node"
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+      discovery.type: single-node
+      ELASTIC_PASSWORD: changeme
+    hostname: elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch_data
+        target: /usr/share/elasticsearch/data
+    networks:
+      - efk
 
   kibana:
-    image: "docker.elastic.co/kibana/kibana:${ELK_VERSION}"
+    image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    build:
+      context: ./kibana
+      args:
+        EFK_VERSION: $EFK_VERSION
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    hostname: kibana
+    volumes:
+      - type: bind
+        source: ./kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
     ports:
       - "5601:5601"
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
 
   filebeat:
-    image: "docker.elastic.co/beats/filebeat:${ELK_VERSION}"
+    image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    build:
+      context: filebeat
+      args:
+        EFK_VERSION: $EFK_VERSION
     user: root
+    hostname: filebeat
     volumes:
-      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - type: bind
+        source: ./filebeat/config/filebeat.yml
+        target: /usr/share/filebeat/filebeat.yml
+        read_only: true
       - /var/lib/docker:/var/lib/docker:ro
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
 
 volumes:
   elasticsearch_data:
+
+networks:
+  efk:
+    driver: bridge
