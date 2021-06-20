@@ -3,6 +3,7 @@ version: "3.7"
 services:
   elasticsearch:
     image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    container_name: efk_elastic
     build:
       context: ./elasticsearch
       args:
@@ -10,11 +11,15 @@ services:
         ELASTIC_PORT1: $ELASTIC_PORT1
         ELASTIC_PORT2: $ELASTIC_PORT2
     environment:
-      node.name: node
-      cluster.name: elasticsearch-default
+      # node.name: node
+      # cluster.name: elasticsearch-default
       ES_JAVA_OPTS: -Xms1g -Xmx1g
       discovery.type: single-node
       ELASTIC_PASSWORD: changeme
+      http.cors.enabled: "true"
+      http.cors.allow-credentials: "true"
+      http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      http.cors.allow-origin: /https?:\/\/localhost(:[0-9]+)?/
     hostname: elasticsearch
     ports:
       - "${ELASTIC_EXPOSED_PORT1}:$ELASTIC_PORT1"
@@ -29,11 +34,17 @@ services:
         target: /usr/share/elasticsearch/data
     networks:
       - efk
+    healthcheck:
+      test: curl -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
     depends_on:
       - filebeat
 
   kibana:
     image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    container_name: efk_kibana
     user: kibana
     build:
       context: ./kibana
@@ -57,6 +68,7 @@ services:
 
   filebeat:
     image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    container_name: efk_filebeat
     build:
       context: ./filebeat
       args:
