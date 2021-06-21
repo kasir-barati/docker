@@ -12,8 +12,6 @@ services:
       args:
         ELASTIC_VERSION: $ELASTIC_VERSION
     environment:
-      # node.name: node
-      # cluster.name: elasticsearch-default
       ES_JAVA_OPTS: -Xms1g -Xmx1g
       discovery.type: single-node
       ELASTIC_PASSWORD: changeme
