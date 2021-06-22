@@ -4,10 +4,9 @@ services:
   mongo:
     image: bitnami/mongodb:4.4-debian-10
     container_name: test_mongo
-    hostname: mongo
+    hostname: mongo111hostname
     ports:
       - 27018:27017
-    hostname: "mongo"
     environment:
       - MONGODB_USERNAME=user
       - MONGODB_PASSWORD=123456789
