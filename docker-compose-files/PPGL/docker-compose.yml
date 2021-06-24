@@ -1,7 +1,7 @@
 version: "3.4"
 services:
   traefik:
-    image: traefik:latest
+    image: traefik:v2.3.6
     container_name: traefik
     command:
       - "--api=true"
@@ -24,7 +24,7 @@ services:
       - http_network
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.28.0
     container_name: prometheus
     volumes:
       - ./prometheus/:/etc/prometheus/
@@ -46,10 +46,12 @@ services:
       - services_network
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:8.0.3
     container_name: grafana
     depends_on:
       - prometheus
+    env_file:
+      - ./grafana.env
     volumes:
       - grafana:/var/lib/grafana
     labels:
@@ -63,7 +65,7 @@ services:
       - services_network
 
   alertmanager:
-    image: prom/alertmanager
+    image: prom/alertmanager:v0.22.2
     container_name: alertmanager
     volumes:
       - ./alertmanager/:/etc/alertmanager/
@@ -81,7 +83,7 @@ services:
       - services_network
 
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:main-b77bb56
     container_name: loki
     command: -config.file=/etc/loki/local-config.yaml
     volumes:
@@ -98,7 +100,7 @@ services:
       - services_network
 
   promtail:
-    image: grafana/promtail:latest
+    image: grafana/promtail:main-b77bb56
     container_name: promtail
     volumes:
       - /var/log:/var/log
@@ -107,7 +109,7 @@ services:
     networks:
       - services_network
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.1.2
     container_name: node-exporter
     volumes:
       - /proc:/host/proc:ro
@@ -122,7 +124,7 @@ services:
       - services_network
 
   cadvisor:
-    image: google/cadvisor
+    image: google/cadvisor:latest
     container_name: cadvisor
     privileged: true
     volumes:
