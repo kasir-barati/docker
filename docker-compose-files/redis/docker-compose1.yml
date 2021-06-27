@@ -8,4 +8,4 @@ services:
       - 6379:6379
     environment:
       # - ALLOW_EMPTY_PASSWORD=yes
-      - REDIS_PASSWORD=&gBB\zvx/\02n_1Dali
+      - REDIS_PASSWORD=a-very-hard=password
