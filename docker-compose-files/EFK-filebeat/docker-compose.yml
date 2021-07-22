@@ -11,24 +11,13 @@ services:
         ELASTIC_PORT1: $ELASTIC_PORT1
         ELASTIC_PORT2: $ELASTIC_PORT2
     environment:
-      # node.name: node
-      # cluster.name: elasticsearch-default
       ES_JAVA_OPTS: -Xms1g -Xmx1g
-      discovery.type: single-node
-      ELASTIC_PASSWORD: changeme
-      http.cors.enabled: "true"
-      http.cors.allow-credentials: "true"
-      http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
-      http.cors.allow-origin: /https?:\/\/localhost(:[0-9]+)?/
+      ELASTIC_PASSWORD: $ELASTICSEARCH_PASSWORD
     hostname: elasticsearch
     ports:
       - "${ELASTIC_EXPOSED_PORT1}:$ELASTIC_PORT1"
       - "$ELASTIC_EXPOSED_PORT2:${ELASTIC_PORT2}"
     volumes:
-      # - type: bind
-      #   source: ./elasticsearch/config/elasticsearch.yml
-      #   target: /usr/share/elasticsearch/config/elasticsearch.yml
-      #   read_only: true
       - type: volume
         source: elasticsearch_data
         target: /usr/share/elasticsearch/data
@@ -54,11 +43,6 @@ services:
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     hostname: kibana
-    # volumes:
-    #   - type: bind
-    #     source: ./kibana/config/kibana.yml
-    #     target: /usr/share/kibana/config/kibana.yml
-    #     read_only: true
     ports:
       - "$KIBANA_EXPOSED_PORT:$KIBANA_PORT"
     networks:
@@ -76,10 +60,6 @@ services:
     user: root
     hostname: filebeat
     volumes:
-      # - type: bind
-      #   source: ./filebeat/config/filebeat.yml
-      #   target: /usr/share/filebeat/filebeat.yml
-      #   read_only: true
       - /var/lib/docker:/var/lib/docker:ro
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
