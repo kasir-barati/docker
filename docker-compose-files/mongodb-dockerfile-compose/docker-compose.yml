@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+  mongo:
+    image: mongodump:v1
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    container_name: mongodump-db
+    hostname: mongodump-db
+    ports:
+      - 27017:27017
+    volumes:
+      - type: bind
+        source: ./volume
+        target: /data/db
+        volume:
+          nocopy: true
