@@ -4,3 +4,4 @@ Run the application:
 
 - `cp .env.example .env`
 - Update the `.env` values
+- `mkdir volume`

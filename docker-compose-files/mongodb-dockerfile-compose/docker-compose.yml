@@ -6,6 +6,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+      args:
+        ONLINE_MONGODB_URI: $ONLINE_MONGODB_URI
+        MONGODB_DATABASE: $MONGODB_DATABASE
+        ONLINE_MONGODB_DATABASE: $ONLINE_MONGODB_DATABASE
     env_file:
       - .env
     container_name: mongodump-db
