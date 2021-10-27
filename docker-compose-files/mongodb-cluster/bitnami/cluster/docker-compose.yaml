@@ -1,0 +1,53 @@
+version: "3.7"
+
+services:
+  primary-mongodb:
+    image: "bitnami/mongodb:4.4-debian-10"
+    restart: always
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb-primary_data:/bitnami/mongodb
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: primary-mongodb
+      MONGODB_REPLICA_SET_MODE: primary
+    env_file:
+      - .env
+    container_name: inifiniti-primary-database
+    depends_on:
+      - secondary-mongodb
+      - arbiter-mongodb
+
+  secondary-mongodb:
+    image: "bitnami/mongodb:4.4-debian-10"
+    ports:
+      - "27020:27017"
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: secondary-mongodb
+      MONGODB_REPLICA_SET_MODE: secondary
+    volumes:
+      - mongodb-secondary_data:/bitnami/mongodb
+    env_file:
+      - .env.cluster
+    container_name: inifiniti-secondary-database
+
+  arbiter-mongodb:
+    image: "bitnami/mongodb:4.4-debian-10"
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: arbiter-mongodb
+      MONGODB_REPLICA_SET_MODE: arbiter
+    volumes:
+      - mongodb-arbiter_data:/bitnami/mongodb
+    env_file:
+      - .env.cluster
+    container_name: inifiniti-arbiter-database
+
+volumes:
+  mongodb-primary_data:
+  mongodb-secondary_data:
+  mongodb-arbiter_data:
+
+networks:
+  default:
+    external:
+      name: mongo
