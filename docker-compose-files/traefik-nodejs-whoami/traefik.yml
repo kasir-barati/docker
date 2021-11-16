@@ -1,0 +1,29 @@
+api:
+  dashboard: true
+providers:
+  docker:
+    exposedByDefault: false
+    endpoint: "unix:///var/run/docker.sock"
+    network: traefik_default
+    # defaultRule: 'Host(`{{ .Name }}.{{ index .Labels "customLabel"}}`)'
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+    #postgres:
+    #address: '5432'
+certificatesResolvers:
+  site-name-com-resolver:
+    acme:
+      email: "temp.mail@gmail.com"
+      storage: "site-name-com-acme.json"
+      # tlsChallenge: {}
+      httpChallenge:
+        entryPoint: web
+http:
+  middlewares:
+    https-redirection:
+      redirectScheme:
+        scheme: "websecure"
+        permanent: true

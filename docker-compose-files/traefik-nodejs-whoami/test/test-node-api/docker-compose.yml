@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  api:
+    image: test-node-api
+    build:
+      context: .
+      dockerfile: ./dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.test-node.rule=Host(`test.site-name.com`)"
+      - "traefik.http.routers.test-node.tls=true"
+      - "traefik.http.routers.test-node.tls.certresolver=site-name-com-resolver"
+      - "traefik.http.routers.test-node.middlewares=my-test-node-stripprefix"
+      - "traefik.http.middlewares.my-test-node-stripprefix.stripprefix.prefixes=/"
+
+    networks:
+      - traefik_default
+networks:
+  traefik_default:
+    external: true
