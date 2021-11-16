@@ -17,11 +17,11 @@ services:
       PORT: 3003
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sitename-website-backend.rule=Host(`api.sitename-team.ir`)"
+      - "traefik.http.routers.sitename-website-backend.rule=Host(`api.site-name.com`)"
       - "traefik.http.routers.sitename-website-backend.tls=true"
-      - "traefik.http.routers.sitename-website-backend.tls.certresolver=sitename-team-ir-resolver"
-      - "traefik.http.routers.sitename-website-backend.middlewares=my-sitename-website-backend-stripprefix"
-      - "traefik.http.middlewares.my-sitename-website-backend-stripprefix.stripprefix.prefixes=/"
+      - "traefik.http.routers.sitename-website-backend.tls.certresolver=site-name-com-resolver"
+      - "traefik.http.routers.sitename-website-backend.middlewares=my-site-website-backend-stripprefix"
+      - "traefik.http.middlewares.my-site-website-backend-stripprefix.stripprefix.prefixes=/"
     networks:
       - traefik_default
       - default
@@ -38,15 +38,15 @@ services:
       - "5432:5432"
     # labels:
     #     - 'traefik.enable=true'
-    #     - 'traefik.http.routers.sitename-website-db.rule=Host(`postgres.sitename-team.ir`)'
+    #     - 'traefik.http.routers.sitename-website-db.rule=Host(`postgres.site-name.com`)'
     #     - 'traefik.http.routers.sitename-website-db.tls=true'
-    #     - 'traefik.http.routers.sitename-website-db.tls.certresolver=sitename-team-ir-resolver'
-    #     - 'traefik.http.routers.sitename-website-db.middlewares=my-sitename-website-db-stripprefix'
-    #     - 'traefik.http.middlewares.my-sitename-website-db-stripprefix.stripprefix.prefixes=/'
+    #     - 'traefik.http.routers.sitename-website-db.tls.certresolver=site-name-com-resolver'
+    #     - 'traefik.http.routers.sitename-website-db.middlewares=my-site-website-db-stripprefix'
+    #     - 'traefik.http.middlewares.my-site-website-db-stripprefix.stripprefix.prefixes=/'
     environment:
-      POSTGRES_PASSWORD: sitename
-      POSTGRES_USER: sitename
-      POSTGRES_DB: sitename
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: uname
+      POSTGRES_DB: db-name
 networks:
   traefik_default:
     external: true
