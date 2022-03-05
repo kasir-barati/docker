@@ -28,6 +28,8 @@ services:
       - ./.pgadmin.env
     ports:
       - "${PGADMIN_EXPOSED_PORT}:80"
+    networks:
+      - postgres
 
 networks:
   postgres:
