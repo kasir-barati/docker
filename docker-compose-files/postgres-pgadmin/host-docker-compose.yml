@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:13
+    restart: always
+    volumes:
+      - postgres:/data/postgres
+    env_file:
+      - .postgresql.env
+    network_mode: host
+
+  pgAdmin:
+    image: dpage/pgadmin4:6.5
+    restart: always
+    depends_on:
+      - postgres
+    env_file:
+      - ./.pgadmin.env
+    network_mode: host
+
+volumes:
+  postgres:
