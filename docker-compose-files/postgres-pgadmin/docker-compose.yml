@@ -1,23 +1,17 @@
-version: '3.7'
+version: "3.7"
 
 services:
   postgres:
     image: postgres:13
     restart: always
     ports:
-      - '${POSTGRESQL_EXPOSED_PORT}:5432'
+      - "${POSTGRESQL_EXPOSED_PORT}:5432"
     volumes:
       - /data/postgres:/data/postgres
     env_file:
       - .postgresql.env
     networks:
       - postgres
-    volumes:
-      - type: bind
-        source: ./pgdata
-        target: /var/lib/postgresql/data:z
-        volume:
-          nocopy: true
 
   pgAdmin:
     image: dpage/pgadmin4:6.5
