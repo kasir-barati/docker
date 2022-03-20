@@ -1,0 +1,75 @@
+log:
+  level: "DEBUG"
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  docker:
+    network: traefik_default
+    exposedByDefault: false
+    endpoint: "unix:///var/run/docker.sock"
+    defaultRule: 'Host(`{{ .Name }}.{{ index .Labels "customLabel"}}`)'
+
+entryPoints:
+  web:
+    address: ":80"
+    forwardedHeaders:
+      insecure: true
+  websecure:
+    address: ":443"
+    forwardedHeaders:
+      insecure: true
+  #postgres:
+  #address: '5432'
+# http:
+#   middlewares:
+#     https-redirection:
+#       redirectScheme:
+#         scheme: "websecure"
+#         permanent: true
+
+# certificatesResolvers:
+#   default_global_resolver:
+#     acme:
+#       # Email address used for registration.
+#       #
+#       # Required
+#       #
+#       email: "kasir.barati@gmail.com"
+#       # File or key used for certificates storage.
+#       #
+#       # Required
+#       #
+#       storage: "/letsencrypt/acme.json"
+#       # CA server to use.
+#       # Uncomment the line to use Let's Encrypt's staging server,
+#       # leave commented to go to prod.
+#       #
+#       # Optional
+#       # Default: "https://acme-v02.api.letsencrypt.org/directory"
+#       #
+#       caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+#       # The certificates' duration in hours.
+#       # It defaults to 2160 (90 days) to follow Let's Encrypt certificates' duration.
+#       #
+#       # Optional
+#       # Default: 2160
+#       #
+#       certificatesDuration: 2160
+#       # Use a TLS-ALPN-01 ACME challenge.
+#       #
+#       # Optional (but recommended)
+#       #
+#       tlsChallenge: {}
+#       # Use a HTTP-01 ACME challenge.
+#       #
+#       # Optional
+#       #
+#       httpChallenge:
+#         # EntryPoint to use for the HTTP-01 challenges.
+#         #
+#         # Required
+#         #
+#         entryPoint: web

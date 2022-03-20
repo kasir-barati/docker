@@ -13,10 +13,8 @@ services:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
       - "./traefik.yml:/etc/traefik/traefik.yml:ro"
-    # labels:
-    # Enable dashboard.
-    # TODO: IDK why we have to specify the same config multiple times - Remeber we also activate the dashboard in the traefik.yml
-    # - "traefik.enable=true"
+    labels:
+      - "traefik.enable=true"
     # README: Set a subdomain for the dashboard.
     # TODO: R&D about this section: *.traefik.* or *.dashboard.*
     # - "traefik.http.routers.traefik.rule=Host(`monitor.take-report.com`)"
