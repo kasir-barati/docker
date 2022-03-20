@@ -1,5 +1,7 @@
 # How to configure Traefik for the server
 
+# Run a dockerized traefik in you local system. You can checkout to this commit sha: fa8379558dab47770b75d490963d815a5766ab16
+
 ## Normal mistakes
 
 The following mistakes were common for me while start using traefik but I was newbie in traefik
