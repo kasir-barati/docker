@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   traefik:
@@ -13,7 +13,8 @@ services:
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
-   
+    scale: 1
+
   whoami:
     # A container that exposes an API to show its IP address
     image: traefik/whoami:v1.8.0
@@ -21,4 +22,4 @@ services:
       - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
     depends_on:
       - traefik
-    scale: 2
+    scale: 1

@@ -1,0 +1,41 @@
+log:
+  level: "DEBUG"
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  docker:
+    network: traefik_default
+    exposedByDefault: false
+    endpoint: "unix:///var/run/docker.sock"
+    defaultRule: 'Host(`{{ .Name }}.{{ index .Labels "customLabel"}}`)'
+
+entryPoints:
+  web:
+    address: ":80"
+    forwardedHeaders:
+      insecure: true
+  websecure:
+    address: ":443"
+    forwardedHeaders:
+      insecure: true
+  #postgres:
+  #address: '5432'
+
+http:
+  middlewares:
+    https-redirection:
+      redirectScheme:
+        scheme: "websecure"
+        permanent: true
+
+certificatesResolvers:
+  site-name-com-resolver:
+    acme:
+      email: "kasir.barati@gmail.com"
+      storage: "/letsencrypt/acme.json"
+      tlsChallenge: {}
+      httpChallenge:
+        entryPoint: web
