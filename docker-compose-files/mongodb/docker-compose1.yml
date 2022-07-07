@@ -2,13 +2,16 @@ version: "3.7"
 
 services:
   mongo:
-    image: mongo:4
-    container_name: mongodump-primary-db
-    hostname: mongo111hostname
+    image: mongo:4.4.14-rc0-focal
+    container_name: mongodb
+    hostname: mongodb
     ports:
-      - 27018:27017
+      - 27017:27017
     volumes:
-      - mongodump
+      - mongodb_volume:/data/db
+    env_file:
+      - .mongodb.env
+    restart: always
 
 volumes:
-  mongodump:
+  mongodb_volume:

@@ -1,21 +1,21 @@
 // @ts-check
-const sanitize = require("sanitize-filename");
-const multer = require("multer");
+const sanitize = require('sanitize-filename');
+const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
     cb(
       null,
-      "".concat(
+      ''.concat(
         file.fieldname,
-        "_",
+        '_',
         new Date().toISOString(),
-        "_",
-        sanitize(file.originalname)
-      )
+        '_',
+        sanitize(file.originalname),
+      ),
     );
   },
 });

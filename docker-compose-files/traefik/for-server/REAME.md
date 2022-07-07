@@ -42,7 +42,7 @@ networks:
 
 ```yml
 log:
-  level: "DEBUG"
+  level: 'DEBUG'
 api:
   dashboard: true
   insecure: true
@@ -60,7 +60,7 @@ providers:
 
 ```yml
 log:
-  level: "DEBUG"
+  level: 'DEBUG'
 api:
   dashboard: true
   insecure: true
@@ -76,22 +76,22 @@ providers:
   <summary markdown="span">docker-compose.yml</summary>
 
 ```yml
-version: "3.7"
+version: '3.7'
 
 services:
   traefik:
     image: traefik:v2.6
     ports:
-      - "80:80"
-      - "8080:8080"
+      - '80:80'
+      - '8080:8080'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - "./traefik.yml:/etc/traefik/traefik.yml:ro"
+      - './traefik.yml:/etc/traefik/traefik.yml:ro'
     scale: 1
     networks:
       - traefik_default
     healthcheck:
-      test: ["CMD", "./traefik", "healthcheck", "--ping"]
+      test: ['CMD', './traefik', 'healthcheck', '--ping']
       interval: 30s
       timeout: 3s
       retries: 30

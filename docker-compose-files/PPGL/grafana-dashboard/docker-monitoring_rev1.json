@@ -38,9 +38,7 @@
   "id": null,
   "title": "Docker monitoring",
   "description": "Docker monitoring with Prometheus and cAdvisor",
-  "tags": [
-    "docker"
-  ],
+  "tags": ["docker"],
   "style": "dark",
   "timezone": "browser",
   "editable": true,

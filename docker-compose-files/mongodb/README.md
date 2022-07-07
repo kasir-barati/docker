@@ -1,0 +1,52 @@
+# Error: Authentication failed.
+
+- What I've tried to find the problem:
+  - Googling: I reached [this Stackoverflow Q&A](https://stackoverflow.com/questions/60394290) and followed this steps:
+    - Clean state
+      - `docker volume prune`
+      - `docker-compose down --remove-orphans`
+      - Then exec into container: `docker exec -it anime_die_heart_mongodb bash`
+        - `mongo -u python -p student`
+        - `mongo -u python -p student --authenticationDatabase anime_videos`
+        - `mongo -u python -p student --authenticationDatabase admin`
+      - **FAILED**
+        - Passed env:
+          - `MONGODB_USERNAME=docker`
+          - `MONGODB_PASSWORD=student`
+          - `MONGODB_DATABASE=learning`
+    - Used both different way to pass env to the container:
+      - `env_file`
+      - `environment`
+      - Then exec into container: `docker exec -it anime_die_heart_mongodb bash`
+        - `mongo -u python -p student`
+        - `mongo -u python -p student --authenticationDatabase anime_videos`
+      - **FAILED**
+        - Passed env:
+          - `MONGODB_USERNAME=docker`
+          - `MONGODB_PASSWORD=student`
+          - `MONGODB_DATABASE=learning`
+    - Use different env set:
+      - First set:
+        - `MONGO_INITDB_ROOT_USERNAME=python`
+        - `MONGO_INITDB_ROOT_PASSWORD=student`
+        - `MONGO_INITDB_DATABASE=anime_videos`
+      - Then exec into container: `docker exec -it anime_die_heart_mongodb bash`
+        - `mongo -u python -p student`
+        - `mongo -u python -p student --authenticationDatabase anime_videos`
+      - **FAILED**
+      - Second set:
+        - `MONGODB_USERNAME=docker`
+        - `MONGODB_PASSWORD=student`
+        - `MONGODB_DATABASE=learning`
+      - Then exec into container: `docker exec -it anime_die_heart_mongodb bash`
+        - `mongo -u python -p student`
+        - `mongo -u python -p student --authenticationDatabase anime_videos`
+        - `mongo -u python -p student --authenticationDatabase admin`
+      - **FAILED**
+    - Finally I put these envs in `.mongodb.env` and remove `environment` instruction from the compose file.
+      - `MONGO_INITDB_ROOT_USERNAME=python`
+      - `MONGO_INITDB_ROOT_PASSWORD=student`
+      - `MONGO_INITDB_DATABASE=anime_videos`
+      - Then exec into container: `docker exec -it anime_die_heart_mongodb bash`
+      - `mongo -u python -p student --authenticationDatabase admin`
+      - **Worked**

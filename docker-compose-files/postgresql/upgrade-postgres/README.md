@@ -22,7 +22,7 @@
     - Data volume:
 
       ```yml
-      version: "3.8"
+      version: '3.8'
 
       services:
         postgres:
@@ -35,7 +35,7 @@
       Or
 
       ```yml
-      version: "3.8"
+      version: '3.8'
 
       services:
         postgres:
@@ -54,7 +54,7 @@
       In this way we are mounting a directory from our host inside the container
 
       ```yml
-      version: "3.8"
+      version: '3.8'
 
       services:
         postgres:

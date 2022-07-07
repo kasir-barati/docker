@@ -2,21 +2,22 @@
 
 **Logging Stack:** Loki, Promtail and Grafana
 
-**Web Interface:** Traefik 
+**Web Interface:** Traefik
 
 ## Requirement before running compose file
+
 1. Hardening OS
 
-2. Install docker 
+2. Install docker
 
 3. Install docker-compose
 
 4. Change and complate config files
 
-
 ## Installation
 
 **Step1**: chnage service config files:
+
 ```bash
 tree logging
 .
@@ -42,6 +43,7 @@ docker-compose up -d
 ```
 
 **Step5:** Check compose services and view all services logs
+
 ```bash
 docker-compose ps
 docker-compose logs -f --tail 100
@@ -58,4 +60,5 @@ docker-compose logs -f --tail 100
 **Step7:** config grafana service for view all log on Explore menu
 
 ## License
+
 [DockerMe.ir](https://dockerme.ir)
