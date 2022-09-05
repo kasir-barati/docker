@@ -3,9 +3,10 @@ version: "3.7"
 services:
   primary-mongodb:
     image: bitnami/mongodb:4.4-debian-10
+    hostname: mongo
     restart: always
     ports:
-      - "27018:27017"
+      - "27017:27017"
     volumes:
       - mongodb-primary_data:/bitnami/mongodb
     environment:
@@ -23,8 +24,6 @@ services:
 
   secondary-mongodb:
     image: bitnami/mongodb:4.4-debian-10
-    ports:
-      - "27020:27017"
     environment:
       MONGODB_ADVERTISED_HOSTNAME: secondary-mongodb
       MONGODB_REPLICA_SET_MODE: secondary
