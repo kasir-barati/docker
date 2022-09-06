@@ -1,3 +1,16 @@
+# General info
+
+- Connection string: `mongodb://docker:student@localhost:27017/learning?authSource=admin`
+
+# How to start the compose file
+
+1. `cp .mongodb.env.example .mongodb.env`
+2. `docker-compose up`
+
+# How to stop and delete all the MongoDB information
+
+1. `docker-compose down --remove-orphans`
+
 # Error: Authentication failed.
 
 - What I've tried to find the problem:
