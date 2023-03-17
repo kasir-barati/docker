@@ -63,3 +63,4 @@
       - Then exec into container: `docker exec -it anime_die_heart_mongodb bash`
       - `mongo -u python -p student --authenticationDatabase admin`
       - **Worked**
+        - #### Recently I realized that if I am using another file name - e.x. `dev.docker-compose.yml` - I need to set the `env_file` in the yaml file. Otherwise it won't create user and you'll get the Authentication failed error for the rest of the eternity :joy:
