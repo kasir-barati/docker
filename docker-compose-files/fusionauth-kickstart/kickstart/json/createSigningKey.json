@@ -1,0 +1,12 @@
+{
+  "method": "POST",
+  "url": "/api/key/generate/#{signingKeyID}",
+  "body": {
+    "key": {
+      "algorithm": "RS256",
+      "issuer": "#{issuer}",
+      "name": "JWT signing key",
+      "length": 4096
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "method": "PATCH",
+  "url": "api/theme/#{themeID}",
+  "body": {
+    "theme": {
+      "stylesheet": "@{stylesheet.css}",
+      "templates": {
+        "index": "@{templates/index.ftl}",
+        "helpers": "@{templates/helpers.ftl}",
+        "oauth2Authorize": "@{templates/login.ftl}"
+      }
+    }
+  }
+}

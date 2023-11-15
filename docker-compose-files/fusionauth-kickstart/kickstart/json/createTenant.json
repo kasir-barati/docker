@@ -1,0 +1,19 @@
+{
+  "method": "POST",
+  "url": "/api/tenant/#{tenantID}",
+  "body": {
+    "tenant": {
+      "name": "TenantName",
+      "issuer": "#{issuer}",
+      "emailConfiguration": {
+        "setPasswordEmailTemplateID": "#{setPasswordEmailTemplateID}",
+        "host": "mailcatcher",
+        "port": 1026
+      },
+      "jwtConfiguration": {
+        "accessTokenKeyId": "#{signingKeyID}",
+        "idTokenKeyId": "#{signingKeyID}"
+      }
+    }
+  }
+}

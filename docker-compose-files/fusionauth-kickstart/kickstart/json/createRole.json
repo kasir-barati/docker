@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "url": "/api/application/#{applicationID}/role/#{roleID}",
+  "tenantId": "#{tenantID}",
+  "body": {
+    "role": {
+      "description": "Allow login to ApplicationName frontend",
+      "name": "application-name"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "method": "POST",
+  "url": "/api/application/#{applicationID}",
+  "tenantId": "#{tenantID}",
+  "body": {
+    "application": {
+      "name": "ApplicationName",
+      "oauthConfiguration": {
+        "clientId": "#{applicationID}",
+        "requireRegistration": "true",
+
+        "clientSecret": "#{clientSecret}",
+        "authorizedRedirectURLs": ["http://localhost:3000/auth/oauth-callback"],
+        "enabledGrants": ["authorization_code", "refresh_token", "password"],
+        "generateRefreshTokens": true,
+        "proofKeyForCodeExchangePolicy": "NotRequired",
+        "clientAuthenticationPolicy": "NotRequired"
+      },
+      "lambdaConfiguration": {
+        "accessTokenPopulateId": "#{accessTokenPopulateLambdaID}",
+        "idTokenPopulateId": "#{idTokenPopulateLambdaID}"
+      }
+    }
+  }
+}
