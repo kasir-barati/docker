@@ -31,7 +31,10 @@ label {
 }
 
 label i.fa,
-.my-button + a {
+.my-button + a,
+.text-green,
+a:hover,
+a:visited {
   color: green;
 }
 
@@ -47,4 +50,9 @@ label i.fa,
   position: fixed;
   top: 82px;
   left: 118px;
+}
+
+.my-error {
+  color: red;
+  display: block;
 }
