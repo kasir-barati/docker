@@ -10,6 +10,11 @@ variable "fusionauth_api_key" {
   description = "Super API Key used to access the FusionAuth API"
 }
 
+variable "fusionauth_application_name" {
+  type    = string
+  default = "FusionAuth"
+}
+
 variable "deployment" {
   type        = string
   default     = "local"

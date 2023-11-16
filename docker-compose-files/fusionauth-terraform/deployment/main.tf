@@ -22,6 +22,9 @@ resource "fusionauth_tenant" "my-tenant" {
   name     = "my-tenant"
   issuer   = "http://localhost:9011"
   theme_id = fusionauth_theme.custom-theme.id
+  login_configuration {
+    require_authentication = true
+  }
   multi_factor_configuration {
     login_policy = "Disabled"
   }
@@ -204,7 +207,7 @@ data "httpclient_request" "get-default-tenant" {
 }
 
 data "httpclient_request" "get-default-application" {
-  url            = "${var.fusionauth_host}/api/application/search?name=FusionAuth"
+  url            = "${var.fusionauth_host}/api/application/search?name=${var.fusionauth_application_name}"
   request_method = "GET"
   request_headers = {
     "Accept"        = "application/json"
