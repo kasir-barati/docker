@@ -194,7 +194,7 @@ resource "fusionauth_email" "setup-password-email-template" {
   from_email            = "email@email.com"
 }
 
-data "httpclient_request" "get-tenants" {
+data "httpclient_request" "get-default-tenant" {
   url            = "${var.fusionauth_host}/api/tenant/search?name=Default"
   request_method = "GET"
   request_headers = {
@@ -203,13 +203,23 @@ data "httpclient_request" "get-tenants" {
   }
 }
 
+data "httpclient_request" "get-default-application" {
+  url            = "${var.fusionauth_host}/api/application/search?name=FusionAuth"
+  request_method = "GET"
+  request_headers = {
+    "Accept"        = "application/json"
+    "Authorization" = "${var.fusionauth_api_key}"
+  }
+}
+
 locals {
-  fusionauth_tenant_id   = jsondecode(data.httpclient_request.get-tenants.response_body).tenants[0].id
-  fusionauth_tenant_name = jsondecode(data.httpclient_request.get-tenants.response_body).tenants[0].name
+  fusionauth_tenant_id      = jsondecode(data.httpclient_request.get-default-tenant.response_body).tenants[0].id
+  fusionauth_tenant_name    = jsondecode(data.httpclient_request.get-default-tenant.response_body).tenants[0].name
+  fusionauth_application_id = jsondecode(data.httpclient_request.get-default-application.response_body).applications[0].id
 }
 
 data "httpclient_request" "set-default-tenant-theme" {
-  depends_on     = [fusionauth_theme.custom-theme, data.httpclient_request.get-tenants]
+  depends_on     = [fusionauth_theme.custom-theme, data.httpclient_request.get-default-tenant]
   url            = "${var.fusionauth_host}/api/tenant/${local.fusionauth_tenant_id}"
   request_method = "PATCH"
   request_headers = {
@@ -227,27 +237,32 @@ data "httpclient_request" "set-default-tenant-theme" {
   )
 }
 
-# data "httpclient_request" "create-super-admin-user" {
-#   depends_on     = [fusionauth_theme.custom-theme]
-#   url            = "${var.fusionauth_host}/api/user/registration"
-#   request_method = "POST"
-#   request_headers = {
-#     "Accept"                = "application/json"
-#     "Authorization"         = "${var.fusionauth_api_key}"
-#     "X-FusionAuth-TenantId" = "${var.fusionauth_tenant_id}"
-#   }
-#   request_body = jsonencode(
-#     {
-#       "skipRegistrationVerification" : true,
-#       "registration" : {
-#         "applicationId" : "${var.fusionauth_application_id}",
-#         "roles" : ["admin"],
-#         "username" : "admin@admin.com"
-#       }
-#       "user" : {
-#         "email" : "admin@admin.com",
-#         "password" : "adminadmin"
-#       }
-#     }
-#   )
-# }
+data "httpclient_request" "create-super-admin-user" {
+  depends_on     = [fusionauth_theme.custom-theme, data.httpclient_request.get-default-application]
+  url            = "${var.fusionauth_host}/api/user/registration"
+  request_method = "POST"
+  request_headers = {
+    "Accept"                = "application/json"
+    "Content-Type"          = "application/json"
+    "Authorization"         = "${var.fusionauth_api_key}"
+    "X-FusionAuth-TenantId" = "${local.fusionauth_tenant_id}"
+  }
+  request_body = jsonencode(
+    {
+      "skipRegistrationVerification" : true,
+      "skipVerification" : true,
+      "registration" : {
+        "applicationId" : "${local.fusionauth_application_id}",
+        "roles" : ["admin"],
+        "username" : "admin@admin.com"
+      }
+      "user" : {
+        "email" : "admin@admin.com",
+        "password" : "adminadmin",
+        "firstName" : "Admin",
+        "lastName" : "Admin"
+      }
+    }
+  )
+}
+
