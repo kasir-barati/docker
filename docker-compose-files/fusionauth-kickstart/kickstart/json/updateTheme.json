@@ -7,7 +7,8 @@
       "templates": {
         "index": "@{templates/index.ftl}",
         "helpers": "@{templates/helpers.ftl}",
-        "oauth2Authorize": "@{templates/login.ftl}"
+        "oauth2Authorize": "@{templates/login.ftl}",
+        "passwordComplete": "@{templates/change-password-complete.ftl}"
       }
     }
   }

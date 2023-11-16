@@ -180,12 +180,13 @@ resource "fusionauth_lambda" "id-token-populate-lambda-function" {
 }
 
 resource "fusionauth_theme" "custom-theme" {
-  name             = "Custom Theme"
-  source_theme_id  = var.fusionauth_default_theme_id
-  stylesheet       = file("${path.module}/stylesheet.css")
-  helpers          = file("${path.module}/templates/helpers.ftl")
-  index            = file("${path.module}/templates/index.ftl")
-  oauth2_authorize = file("${path.module}/templates/login.ftl")
+  name              = "Custom Theme"
+  source_theme_id   = var.fusionauth_default_theme_id
+  stylesheet        = file("${path.module}/stylesheet.css")
+  helpers           = file("${path.module}/templates/helpers.ftl")
+  index             = file("${path.module}/templates/index.ftl")
+  oauth2_authorize  = file("${path.module}/templates/login.ftl")
+  password_complete = file("${path.module}/templates/change-password-complete.ftl")
 }
 
 resource "fusionauth_email" "setup-password-email-template" {

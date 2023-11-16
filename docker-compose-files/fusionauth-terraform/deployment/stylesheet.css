@@ -56,3 +56,8 @@ a:visited {
   color: red;
   display: block;
 }
+
+.code {
+  background: transparent !important;
+  overflow: scroll;
+}
