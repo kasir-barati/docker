@@ -15,6 +15,11 @@ variable "fusionauth_application_name" {
   default = "FusionAuth"
 }
 
+variable "migrate_user" {
+  type    = string
+  default = "up_user_data_settings"
+}
+
 variable "deployment" {
   type        = string
   default     = "local"

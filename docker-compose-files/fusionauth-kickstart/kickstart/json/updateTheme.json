@@ -4,6 +4,7 @@
   "body": {
     "theme": {
       "stylesheet": "@{stylesheet.css}",
+      "defaultMessages": "@{templates/messages.ftl}",
       "templates": {
         "index": "@{templates/index.ftl}",
         "helpers": "@{templates/helpers.ftl}",

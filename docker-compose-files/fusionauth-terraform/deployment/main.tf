@@ -3,8 +3,8 @@ terraform {
 
   required_providers {
     fusionauth = {
-      source  = "gpsinsight/fusionauth"
-      version = "0.1.96"
+      source  = "FusionAuth/fusionauth"
+      version = "0.1.101"
     }
     httpclient = {
       version = "0.0.3"
@@ -186,6 +186,7 @@ resource "fusionauth_theme" "custom-theme" {
   helpers           = file("${path.module}/templates/helpers.ftl")
   index             = file("${path.module}/templates/index.ftl")
   oauth2_authorize  = file("${path.module}/templates/login.ftl")
+  default_messages  = file("${path.module}/templates/messages.ftl")
   password_complete = file("${path.module}/templates/change-password-complete.ftl")
 }
 
