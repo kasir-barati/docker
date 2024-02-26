@@ -63,7 +63,7 @@ services:
       DATABASE_URL: jdbc:postgresql://db:5432/fusionauth
       DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
       DATABASE_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
-      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_USERNAME: fusionauth # IDK why but it seems that I cannot change this and it might be related to DATABASE_URL
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       FUSIONAUTH_APP_MEMORY: 512M
       FUSIONAUTH_APP_KICKSTART_FILE: /usr/local/fusionauth/kickstart/kickstart.json

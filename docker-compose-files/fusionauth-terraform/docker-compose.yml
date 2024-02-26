@@ -3,21 +3,21 @@ version: "3"
 services:
   db:
     image: postgres:12.14
-    restart: always
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PGUSER: ${POSTGRES_USER}
+      PGUSER: ${POSTGRES_USER} # instead of `-U postgres` in healthcheck
+    # restart: always
+    # networks:
+    #   - db_net
+    # volumes:
+    #   - db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - db_net
-    volumes:
-      - db_data:/var/lib/postgresql/data
 
   search:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
@@ -42,15 +42,15 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - search_net
-    restart: unless-stopped
+    # restart: unless-stopped
+    # networks:
+    #   - search_net
+    # volumes:
+    #   - search_data:/usr/share/elasticsearch/data
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - search_data:/usr/share/elasticsearch/data
 
   fusionauth:
     image: fusionauth/fusionauth-app:1.45.3
@@ -63,7 +63,7 @@ services:
       DATABASE_URL: jdbc:postgresql://db:5432/fusionauth
       DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
       DATABASE_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
-      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_USERNAME: fusionauth # IDK why but it seems that I cannot change this and it might be related to DATABASE_URL
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       FUSIONAUTH_APP_MEMORY: 512M
       # Could not find a way to create super admin and default apiKey in terrafrom or any other mean, so just used the old kickstart.json file
@@ -72,34 +72,33 @@ services:
       FUSIONAUTH_APP_URL: http://fusionauth:9012
       SEARCH_SERVERS: http://search:9200
       SEARCH_TYPE: elasticsearch
+    ports:
+      - 9012:9011
+    # restart: unless-stopped
+    # networks:
+    #   - db_net
+    #   - search_net
+    volumes:
+      # - fusionauth_config:/usr/local/fusionauth/config
+      # Could not find a way to create super admin and default apiKey in terrafrom or any other mean, so just used the old kickstart.json file
+      - ./kickstart.json:/usr/local/fusionauth/kickstart.json
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9012/api/status"]
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - db_net
-      - search_net
-    restart: unless-stopped
-    ports:
-      - 9012:9011
-    volumes:
-      - fusionauth_config:/usr/local/fusionauth/config
-      # Could not find a way to create super admin and default apiKey in terrafrom or any other mean, so just used the old kickstart.json file
-      - ./kickstart.json:/usr/local/fusionauth/kickstart.json
 
   mailcatcher:
     image: sj26/mailcatcher:v0.8.2
     ports:
       - "1021:1025"
       - "1081:1080"
-networks:
-  db_net:
-    driver: bridge
-  search_net:
-    driver: bridge
-
-volumes:
-  db_data:
-  fusionauth_config:
-  search_data:
+# networks:
+#   db_net:
+#     driver: bridge
+#   search_net:
+#     driver: bridge
+# volumes:
+#   db_data:
+#   fusionauth_config:
+#   search_data:
