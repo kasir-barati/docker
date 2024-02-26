@@ -3,10 +3,8 @@
 # How to use?
 
 1. `cp .env.example .env`
-2. `cp .pgadmin.env.example .pgadmin.env`
-3. `cp .postgresql.env.example .postgresql.env`
-4. `mkdir pgdata`
-5. `docker-compose up`
+2. `mkdir pgdata`
+3. `docker-compose up`
 
 ## `network_mode: host` is incompatible with port binding
 

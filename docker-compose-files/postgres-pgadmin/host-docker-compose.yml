@@ -7,16 +7,22 @@ services:
     volumes:
       - postgres:/data/postgres
     env_file:
-      - .postgresql.env
+      - .env
     network_mode: host
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U typeorm"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   pgAdmin:
     image: dpage/pgadmin4:6.5
     restart: always
     depends_on:
       - postgres
-    env_file:
-      - ./.pgadmin.env
+    environment:
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
     network_mode: host
 
 volumes:
