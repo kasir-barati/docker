@@ -1,4 +1,17 @@
-# [Q&A](https://forums.docker.com/t/connection-refused-postgres-pgadmin/121911?u=9109679196)
+# How to connect to you DB in your pgadmin4?
+
+1. Add New Server
+2. Give it a name (It can be anything)
+3. Go to the second tab (Connection)
+4. Enter your service name in the “Host name/address” text box -- In our case `postgres`.
+   ```yml
+   # ...
+   services:
+     postgres:
+   # ...
+   ```
+   You need to use it also in your codebase to connect to it
+5. Now enter your `POSTGRES_PASSWORD` as the “Maintenance database” and `POSTGRES_DB` as the “Password” and `POSTGRES_USER` as the “Username”
 
 # How to use?
 

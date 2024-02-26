@@ -11,18 +11,18 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U username"]
+      test: ["CMD-SHELL", "pg_isready"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   pgAdmin:
-    image: dpage/pgadmin4:6.5
+    image: dpage/pgadmin4:8.1
     restart: always
     depends_on:
       - postgres
     environment:
-      PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "${PGADMIN_EXPOSED_PORT}:80"
