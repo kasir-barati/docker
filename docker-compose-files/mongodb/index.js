@@ -4,15 +4,19 @@ const mongoose = require("mongoose");
 
 /** @type {string} */
 const DATABASE_URL = process.env.DATABASE_URL;
+/** @type {string} */
+const DATABASE_NAME = process.env.MONGO_INITDB_DATABASE;
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
 
-console.log(`DATABASE_URL: ${DATABASE_URL}`);
-
 mongoose
-  .connect(DATABASE_URL, { autoIndex: true, autoCreate: true })
-  .then(console.log.bind("Connected to MongoDB"))
+  .connect(DATABASE_URL, {
+    autoIndex: true,
+    autoCreate: true,
+    dbName: DATABASE_NAME,
+  })
+  .then(() => console.log(`Connected to MongoDB: ${DATABASE_URL}`))
   .catch((error) => console.error("Could not connect to MongoDB", error));
 
 const Schema = mongoose.Schema;
