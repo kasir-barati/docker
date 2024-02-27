@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/dbname --quiet
       interval: 5s
       timeout: 5s
       retries: 3
@@ -27,9 +27,9 @@ services:
         PORT: ${PORT}
     ports:
       - 6666:${PORT}
-    # depends_on:
-    #   mongo:
-    #     condition: service_healthy
+    depends_on:
+      mongo:
+        condition: service_healthy
     env_file:
       - .env
 
@@ -48,5 +48,8 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: admin@admin.com
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    depends_on:
+      mongo:
+        condition: service_healthy
 # volumes:
 #   mongodb_volume:
