@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/dbname --quiet
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/${MONGO_INITDB_DATABASE} --quiet
       interval: 5s
       timeout: 5s
       retries: 3
@@ -38,7 +38,8 @@ services:
     ports:
       - 8081:8081
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     environment:
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_MONGODB_SERVER: mongo
@@ -48,8 +49,5 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: admin@admin.com
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    depends_on:
-      mongo:
-        condition: service_healthy
 # volumes:
 #   mongodb_volume:
