@@ -4,14 +4,51 @@ services:
   mongo:
     image: mongo:4.4.14-rc0-focal
     container_name: mongodb
-    hostname: mongodb
+    # hostname: mongodb
+    # restart: always
+    # volumes:
+    #   - mongodb_volume:/data/db
     ports:
       - 27017:27017
-    volumes:
-      - mongodb_volume:/data/db
     env_file:
-      - .mongodb.env
-    restart: always
+      - .env
+    # healthcheck:
+    #   test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 3
+    #   start_period: 5s
 
-volumes:
-  mongodb_volume:
+  api:
+    image: mongo-test-api
+    container_name: mongo-test-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PORT: ${PORT}
+    ports:
+      - 6666:${PORT}
+    # depends_on:
+    #   mongo:
+    #     condition: service_healthy
+    env_file:
+      - .env
+
+  mongoexpress:
+    image: mongo-express:0.54.0
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "false"
+      ME_CONFIG_BASICAUTH_PASSWORD: adminadmin
+      ME_CONFIG_BASICAUTH_USERNAME: admin@admin.com
+      ME_CONFIG_MONGODB_AUTH_DATABASE: ${MONGO_INITDB_DATABASE}
+      ME_CONFIG_MONGODB_AUTH_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+# volumes:
+#   mongodb_volume:
