@@ -53,7 +53,11 @@ services:
         hard: -1
 
   fusionauth:
-    image: fusionauth/fusionauth-app:1.45.3
+    image: fusionauth-image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fusionauth-container
     depends_on:
       db:
         condition: service_healthy
@@ -81,7 +85,7 @@ services:
       - ./kickstart:/usr/local/fusionauth/kickstart
       # - fusionauth_config:/usr/local/fusionauth/config
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9012/api/status"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9011/api/status"]
       interval: 5s
       timeout: 5s
       retries: 5
