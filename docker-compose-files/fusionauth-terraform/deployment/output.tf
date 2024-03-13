@@ -1,5 +1,9 @@
-output "tenant_id" {
-  value = local.fusionauth_tenant_id
+output "my_tenant_id" {
+  value = local.fusionauth_my_tenant_id
+}
+
+output "default_tenant_id" {
+  value = local.fusionauth_default_tenant_id
 }
 
 #region Why? IDK

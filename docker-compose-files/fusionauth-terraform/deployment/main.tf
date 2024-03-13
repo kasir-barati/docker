@@ -203,7 +203,7 @@ resource "fusionauth_email" "setup-password-email-template" {
 
 data "httpclient_request" "set-default-tenant-theme" {
   depends_on     = [fusionauth_theme.custom-theme, data.httpclient_request.get-default-tenant]
-  url            = "${var.fusionauth_host}/api/tenant/${local.fusionauth_tenant_id}"
+  url            = "${var.fusionauth_host}/api/tenant/${local.fusionauth_default_tenant_id}"
   request_method = "PATCH"
   request_headers = {
     "Accept"        = "application/json"
@@ -228,7 +228,7 @@ data "httpclient_request" "create-super-admin-user" {
     "Accept"                = "application/json"
     "Content-Type"          = "application/json"
     "Authorization"         = "${var.fusionauth_api_key}"
-    "X-FusionAuth-TenantId" = "${local.fusionauth_tenant_id}"
+    "X-FusionAuth-TenantId" = "${local.fusionauth_default_tenant_id}"
   }
   request_body = jsonencode(
     {
