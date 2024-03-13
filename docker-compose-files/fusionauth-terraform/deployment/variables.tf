@@ -1,6 +1,6 @@
 variable "fusionauth_host" {
   type        = string
-  default     = "http://localhost:9012"
+  default     = "http://localhost:9011"
   description = "Host of our FusionAuth deployment"
 }
 
@@ -24,15 +24,6 @@ variable "deployment" {
   type        = string
   default     = "local"
   description = "A string to specify the deployment env; local, stage, etc"
-}
-
-variable "fusionauth_default_theme_id" {
-  default     = "75a068fd-e94b-451a-9aeb-3ddb9a3b5987"
-  description = "This is the default theme id that comes by default"
-  validation {
-    condition     = length(regexall("^(75a068fd-e94b-451a-9aeb-3ddb9a3b5987)$", var.fusionauth_default_theme_id)) > 0
-    error_message = "ERROR: it can only be 75a068fd-e94b-451a-9aeb-3ddb9a3b5987"
-  }
 }
 
 variable "fusionauth_email_configuration_host" {

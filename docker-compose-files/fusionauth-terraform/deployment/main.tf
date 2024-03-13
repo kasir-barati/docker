@@ -20,7 +20,7 @@ provider "fusionauth" {
 
 resource "fusionauth_tenant" "my-tenant" {
   name     = "my-tenant"
-  issuer   = "http://localhost:9012"
+  issuer   = "http://localhost:9011"
   theme_id = fusionauth_theme.custom-theme.id
   login_configuration {
     require_authentication = true
@@ -181,7 +181,7 @@ resource "fusionauth_lambda" "id-token-populate-lambda-function" {
 
 resource "fusionauth_theme" "custom-theme" {
   name              = "Custom Theme"
-  source_theme_id   = var.fusionauth_default_theme_id
+  source_theme_id   = "75a068fd-e94b-451a-9aeb-3ddb9a3b5987"
   stylesheet        = file("${path.module}/stylesheet.css")
   helpers           = file("${path.module}/templates/helpers.ftl")
   index             = file("${path.module}/templates/index.ftl")
@@ -197,30 +197,6 @@ resource "fusionauth_email" "setup-password-email-template" {
   default_subject       = "Setup password"
   default_text_template = file("${path.module}/templates/email/set-password.txt.ftl")
   from_email            = "email@email.com"
-}
-
-data "httpclient_request" "get-default-tenant" {
-  url            = "${var.fusionauth_host}/api/tenant/search?name=Default"
-  request_method = "GET"
-  request_headers = {
-    "Accept"        = "application/json"
-    "Authorization" = "${var.fusionauth_api_key}"
-  }
-}
-
-data "httpclient_request" "get-default-application" {
-  url            = "${var.fusionauth_host}/api/application/search?name=${var.fusionauth_application_name}"
-  request_method = "GET"
-  request_headers = {
-    "Accept"        = "application/json"
-    "Authorization" = "${var.fusionauth_api_key}"
-  }
-}
-
-locals {
-  fusionauth_tenant_id      = jsondecode(data.httpclient_request.get-default-tenant.response_body).tenants[0].id
-  fusionauth_tenant_name    = jsondecode(data.httpclient_request.get-default-tenant.response_body).tenants[0].name
-  fusionauth_application_id = jsondecode(data.httpclient_request.get-default-application.response_body).applications[0].id
 }
 
 data "httpclient_request" "set-default-tenant-theme" {

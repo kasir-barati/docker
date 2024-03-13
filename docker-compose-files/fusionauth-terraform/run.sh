@@ -1,13 +1,20 @@
 #!/bin/bash
 
+clear;
+
 docker compose down -v;
 docker compose up -d;
-sleep 7;
+sleep 20;
 
 # Check if the .terraform directory exists
-if [ ! -d ".terraform" ]; then
-    # Initialize the Terraform project
-    terraform init -chdir=deployment;
+if [ ! -d "deployment/.terraform" ] || [[ "$*" == *"--init"* ]]; then
+    echo "Initializing terrafrom"
+    rm -rf deployment/terraform.tfstate* deployment/.terraform*
+    terraform -chdir=deployment init;
+else
+    echo "Initialization were skipped!"
+fi
 
-terraform plan -chdir=deployment;
-terraform apply -chdir=deployment -auto-approve;
+terraform -chdir=deployment plan;
+terraform -chdir=deployment apply -auto-approve;
+terraform -chdir=deployment apply -auto-approve;
