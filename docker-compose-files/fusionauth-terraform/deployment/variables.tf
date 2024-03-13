@@ -13,15 +13,9 @@ variable "fusionauth_issuer" {
 
 variable "fusionauth_api_key" {
   type        = string
-  default     = "7ef6fa566cf6bd2948f86dc9174b1ad87a40a67fa00c72edab82d566b79eeb206d532b9f217eac391423d087c0a329bb5518d6281d2bb29c2919642b4cc7300f"
+  sensitive   = true
   description = "Super API Key used to access the FusionAuth API"
 }
-
-# variable "fusionauth_api_key" {
-#   type = string
-#   # sensitive   = true
-#   description = "Super API Key used to access the FusionAuth API"
-# }
 
 variable "fusionauth_tenant_id" {
   type        = string
