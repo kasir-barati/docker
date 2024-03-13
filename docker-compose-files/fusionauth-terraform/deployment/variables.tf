@@ -3,8 +3,12 @@
 
 variable "fusionauth_host" {
   type        = string
-  default     = "http://localhost:9011"
   description = "Host of our FusionAuth deployment"
+}
+
+variable "fusionauth_issuer" {
+  type        = string
+  description = "The URL of the JWT tokens issuer"
 }
 
 variable "fusionauth_api_key" {
@@ -13,9 +17,28 @@ variable "fusionauth_api_key" {
   description = "Super API Key used to access the FusionAuth API"
 }
 
+# variable "fusionauth_api_key" {
+#   type = string
+#   # sensitive   = true
+#   description = "Super API Key used to access the FusionAuth API"
+# }
+
 variable "fusionauth_tenant_id" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
+  description = "FusionAuth tenant id for local dev env"
+}
+
+variable "fusionauth_application_id" {
+  type        = string
+  default     = ""
+  description = "FusionAuth application id for local dev env"
+}
+
+variable "fusionauth_my_group_id" {
+  type        = string
+  default     = ""
+  description = "FusionAuth my group id for local dev env"
 }
 
 variable "fusionauth_application_name" {
@@ -23,9 +46,16 @@ variable "fusionauth_application_name" {
   default = "FusionAuth"
 }
 
-variable "migrate_user" {
-  type    = string
-  default = "up_user_data_settings"
+# variable "oauth_configuration_client_secret" {
+#   type        = string
+#   default     = "ee5e6b455bfe90afd80709da39a3b0d32f956018"
+#   description = "The Client Secret used to authenticate with the OAuth Provider"
+# }
+
+variable "oauth_configuration_client_secret" {
+  type        = string
+  sensitive   = true
+  description = "The Client Secret used to authenticate with the OAuth Provider"
 }
 
 variable "deployment" {
@@ -55,6 +85,14 @@ variable "fusionauth_email_security" {
   }
 }
 
-variable "client_secret" {
-  default = "ee5e6b455bfe90afd80709da39a3b0d32f956018"
+variable "fusionauth_email_configuration_username" {
+  type        = string
+  default     = "you-say-email-conf-user"
+  description = "The email username used to authenticate with the OAuth Provider"
+}
+
+variable "fusionauth_email_configuration_password" {
+  type        = string
+  sensitive   = true
+  description = "The email password used to authenticate with the OAuth Provider"
 }

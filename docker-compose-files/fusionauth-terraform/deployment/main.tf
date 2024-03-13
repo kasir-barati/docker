@@ -20,7 +20,7 @@ provider "fusionauth" {
 
 resource "fusionauth_tenant" "my-tenant" {
   name      = "my-tenant"
-  issuer    = "http://localhost:9011"
+  issuer    = var.fusionauth_issuer
   theme_id  = fusionauth_theme.custom-theme.id
   tenant_id = var.fusionauth_tenant_id == "" ? null : var.fusionauth_tenant_id
 
@@ -35,6 +35,8 @@ resource "fusionauth_tenant" "my-tenant" {
     host                           = var.fusionauth_email_configuration_host
     port                           = var.fusionauth_email_configuration_port
     security                       = var.fusionauth_email_security
+    username                       = var.fusionauth_email_configuration_username
+    password                       = var.fusionauth_email_configuration_password
   }
   jwt_configuration {
     access_token_key_id                   = fusionauth_key.access-token-key.id
@@ -102,10 +104,12 @@ resource "fusionauth_tenant" "my-tenant" {
 }
 
 resource "fusionauth_application" "my-application" {
-  name      = "my-application"
-  tenant_id = fusionauth_tenant.my-tenant.id
+  name           = var.fusionauth_application_name
+  tenant_id      = fusionauth_tenant.my-tenant.id
+  application_id = var.fusionauth_application_id == "" ? null : var.fusionauth_application_id
+
   oauth_configuration {
-    client_secret           = var.client_secret
+    client_secret           = var.oauth_configuration_client_secret
     enabled_grants          = ["authorization_code", "refresh_token", "password"]
     generate_refresh_tokens = true
     logout_url              = "http://localhost:3000/auth/login"
@@ -152,6 +156,7 @@ resource "fusionauth_application_role" "my-role" {
 resource "fusionauth_group" "my-group" {
   name      = "my-group"
   tenant_id = fusionauth_tenant.my-tenant.id
+  group_id  = var.fusionauth_my_group_id == "" ? null : var.fusionauth_my_group_id
   role_ids = [
     fusionauth_application_role.my-role.id
   ]
