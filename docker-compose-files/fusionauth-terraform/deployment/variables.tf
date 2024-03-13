@@ -41,7 +41,7 @@ variable "fusionauth_my_group_id" {
   description = "FusionAuth my group id for local dev env"
 }
 
-variable "fusionauth_application_name" {
+variable "fusionauth_default_application_name" {
   type    = string
   default = "FusionAuth"
 }

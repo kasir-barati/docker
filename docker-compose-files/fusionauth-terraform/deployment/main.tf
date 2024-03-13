@@ -104,7 +104,7 @@ resource "fusionauth_tenant" "my-tenant" {
 }
 
 resource "fusionauth_application" "my-application" {
-  name           = var.fusionauth_application_name
+  name           = "my-application"
   tenant_id      = fusionauth_tenant.my-tenant.id
   application_id = var.fusionauth_application_id == "" ? null : var.fusionauth_application_id
 
@@ -240,7 +240,7 @@ data "httpclient_request" "create-super-admin-user" {
       "skipRegistrationVerification" : true,
       "skipVerification" : true,
       "registration" : {
-        "applicationId" : "${local.fusionauth_application_id}",
+        "applicationId" : "${local.fusionauth_default_application_id}",
         "roles" : ["admin"],
         "username" : "admin@admin.com"
       }
