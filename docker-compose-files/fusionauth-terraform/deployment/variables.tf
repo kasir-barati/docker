@@ -1,3 +1,6 @@
+# For local development environment we are gonna use -var-file=dev.tfvars but for production env we are pass them - if they are not optional** - using GH variables or something similar
+# **If they are optional we let terraform to generate them for us and we just export them as output where ever we needed, so we can use them in our codebase
+
 variable "fusionauth_host" {
   type        = string
   default     = "http://localhost:9011"
@@ -8,6 +11,11 @@ variable "fusionauth_api_key" {
   type        = string
   default     = "7ef6fa566cf6bd2948f86dc9174b1ad87a40a67fa00c72edab82d566b79eeb206d532b9f217eac391423d087c0a329bb5518d6281d2bb29c2919642b4cc7300f"
   description = "Super API Key used to access the FusionAuth API"
+}
+
+variable "fusionauth_tenant_id" {
+  type    = string
+  default = ""
 }
 
 variable "fusionauth_application_name" {

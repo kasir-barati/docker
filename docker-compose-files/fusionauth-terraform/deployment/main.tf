@@ -19,9 +19,11 @@ provider "fusionauth" {
 }
 
 resource "fusionauth_tenant" "my-tenant" {
-  name     = "my-tenant"
-  issuer   = "http://localhost:9011"
-  theme_id = fusionauth_theme.custom-theme.id
+  name      = "my-tenant"
+  issuer    = "http://localhost:9011"
+  theme_id  = fusionauth_theme.custom-theme.id
+  tenant_id = var.fusionauth_tenant_id == "" ? null : var.fusionauth_tenant_id
+
   login_configuration {
     require_authentication = true
   }
