@@ -40,12 +40,6 @@ variable "fusionauth_default_application_name" {
   default = "FusionAuth"
 }
 
-# variable "oauth_configuration_client_secret" {
-#   type        = string
-#   default     = "ee5e6b455bfe90afd80709da39a3b0d32f956018"
-#   description = "The Client Secret used to authenticate with the OAuth Provider"
-# }
-
 variable "oauth_configuration_client_secret" {
   type        = string
   sensitive   = true
