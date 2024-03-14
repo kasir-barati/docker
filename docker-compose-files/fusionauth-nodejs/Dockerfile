@@ -1,10 +1,17 @@
-FROM fusionauth/fusionauth-app:1.45.3
+FROM docker.io/node:20.10.0-alpine
 
-USER root
+WORKDIR /app
 
-# Install curl
-RUN apt-get update && \
-    apt-get install -y curl && \
-    rm -rf /var/lib/apt/lists/*
+RUN addgroup --system api && \
+    adduser --system -G api api
 
-USER fusionauth
+COPY package*.json ./
+RUN npm ci
+COPY index.ts tsconfig.json healthcheck.js ./
+RUN npm run build
+
+RUN chown -R api:api .
+
+EXPOSE 3000
+
+CMD ["npm", "start"]

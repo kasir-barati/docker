@@ -6,7 +6,7 @@ services:
     container_name: api-container
     build:
       context: .
-      dockerfile: api.Dockerfile
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
     env_file:
@@ -67,7 +67,7 @@ services:
     image: fusionauth-image
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: deployment/Dockerfile
     container_name: fusionauth-container
     depends_on:
       fusionauth-db:
