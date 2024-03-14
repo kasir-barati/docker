@@ -8,20 +8,6 @@ config({
   path: join(process.cwd(), ".env"),
 });
 
-console.log(
-  " host:           ",
-  process.env.FUSIONAUTH_HOST,
-  "\n\r",
-  "api key:        ",
-  process.env.FUSIONAUTH_API_KEY,
-  "\n\r",
-  "tenant id:      ",
-  process.env.FUSIONAUTH_TENANT_ID,
-  "\n\r",
-  "application id: ",
-  process.env.FUSIONAUTH_APPLICATION_ID
-);
-
 const app = express();
 const fusionAuthClient = new FusionAuthClient(
   process.env.FUSIONAUTH_API_KEY!,
@@ -30,6 +16,7 @@ const fusionAuthClient = new FusionAuthClient(
 );
 
 app.use(cookieParser());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/healthcheck", (req, res) => {
@@ -41,10 +28,6 @@ app.post("/register", async (req, res) => {
   const groups: FusionAuthUserGroup[] = [];
   const applicationId = process.env.FUSIONAUTH_APPLICATION_ID;
   const memberships = getMemberships(groups);
-
-  console.log("fusionAuthClient.host:     ", fusionAuthClient.host);
-  console.log("fusionAuthClient.apiKey:   ", fusionAuthClient.apiKey);
-  console.log("fusionAuthClient.tenantId: ", fusionAuthClient.tenantId);
 
   try {
     const {
@@ -66,8 +49,6 @@ app.post("/register", async (req, res) => {
     });
 
     if (exception) {
-      console.debug("EEEEEEEEEEEE");
-      console.debug(exception);
       res.send(exception);
       return;
     }
