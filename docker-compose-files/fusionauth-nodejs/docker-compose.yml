@@ -6,7 +6,13 @@ services:
     container_name: api-container
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dev.Dockerfile
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+        volume:
+          nocopy: true
     ports:
       - 3000:3000
     env_file:

@@ -8,6 +8,20 @@ config({
   path: join(process.cwd(), ".env"),
 });
 
+console.log(
+  " host:           ",
+  process.env.FUSIONAUTH_HOST,
+  "\n\r",
+  "api key:        ",
+  process.env.FUSIONAUTH_API_KEY,
+  "\n\r",
+  "tenant id:      ",
+  process.env.FUSIONAUTH_TENANT_ID,
+  "\n\r",
+  "application id: ",
+  process.env.FUSIONAUTH_APPLICATION_ID
+);
+
 const app = express();
 const fusionAuthClient = new FusionAuthClient(
   process.env.FUSIONAUTH_API_KEY!,
@@ -28,9 +42,14 @@ app.post("/register", async (req, res) => {
   const applicationId = process.env.FUSIONAUTH_APPLICATION_ID;
   const memberships = getMemberships(groups);
 
+  console.log("fusionAuthClient.host:     ", fusionAuthClient.host);
+  console.log("fusionAuthClient.apiKey:   ", fusionAuthClient.apiKey);
+  console.log("fusionAuthClient.tenantId: ", fusionAuthClient.tenantId);
+
   try {
     const {
       response: { user },
+      exception,
     } = await fusionAuthClient.register("", {
       sendSetPasswordEmail: true,
       registration: {
@@ -45,6 +64,13 @@ app.post("/register", async (req, res) => {
         data: {},
       },
     });
+
+    if (exception) {
+      console.debug("EEEEEEEEEEEE");
+      console.debug(exception);
+      res.send(exception);
+      return;
+    }
 
     if (!user) {
       res.send({ message: "no user" });
