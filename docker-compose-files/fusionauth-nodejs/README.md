@@ -8,6 +8,4 @@
 5. Do not close your browser, login with these credentials:
    - Email: admin@admin.com
    - Password: adminadmin
-6. Go to the **FusionAuth** application and **Default** tenant, in the theme section you can see that CustomTheme is selected as the theme for that tenant.
-
-`rm -rf deployment/terraform.tfstate* deployment/.terraform*`
+6. Now make the request as it is described in this file: `./register.http`

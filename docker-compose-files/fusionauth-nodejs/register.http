@@ -2,9 +2,11 @@
 
 POST http://localhost:3000/register HTTP/1.1
 
+# Reuqst headers
 Accept: application/json
 Content-Type: application/json
 
+# Reuqst body
 {
   "email": "sample@mail.com",
   "fistName": "Mohammad Jawad",
