@@ -27,7 +27,7 @@ services:
         condition: service_healthy
 
   fusionauth-db:
-    image: postgres:12.14
+    image: postgres:16.0-bookworm
     container_name: fusionauth-db-container
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
@@ -80,6 +80,8 @@ services:
         condition: service_healthy
       fusionauth-search-engine:
         condition: service_healthy
+      mailcatcher:
+        condition: service_healthy
     environment:
       DATABASE_URL: jdbc:postgresql://fusionauth-db:5432/fusionauth
       DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
@@ -89,7 +91,7 @@ services:
       FUSIONAUTH_APP_MEMORY: 512M
       # Could not find a way to create super admin and default apiKey in terrafrom or any other mean, so just used the old kickstart.json file
       FUSIONAUTH_APP_KICKSTART_FILE: /usr/local/fusionauth/kickstart.json
-      FUSIONAUTH_APP_RUNTIME_MODE: development
+      FUSIONAUTH_APP_RUNTIME_MODE: development # or production
       FUSIONAUTH_APP_URL: http://fusionauth:9011
       SEARCH_SERVERS: http://fusionauth-search-engine:9200
       SEARCH_TYPE: elasticsearch
@@ -110,3 +112,7 @@ services:
     ports:
       - "1026:1025"
       - "1081:1080"
+    healthcheck:
+      test: wget -q -O /dev/null http://mailcatcher:1080/
+      interval: 10s
+      retries: 80
