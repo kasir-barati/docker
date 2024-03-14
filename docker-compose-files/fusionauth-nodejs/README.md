@@ -8,4 +8,6 @@
 5. Do not close your browser, login with these credentials:
    - Email: admin@admin.com
    - Password: adminadmin
-6. Now make the request as it is described in this file: `./register.http`
+
+**Now make the request as it is described in this file: `./register.http` which fails**
+**BUT when you execute the curl script it works just fine without the connection refused error**
