@@ -1,5 +1,3 @@
-version: "3.7"
-
 services:
   restore:
     build:
@@ -10,5 +8,4 @@ services:
         DUMP_MONGODB_URI: $DUMP_MONGODB_URI
         MONGODB_DATABASE: $MONGODB_DATABASE
         RESTORE_MONGODB_URI: $RESTORE_MONGODB_URI
-    env_file:
-      - .env
+    env_file: .env
