@@ -2,7 +2,7 @@ version: "3"
 
 services:
   mongo:
-    image: mongo:4.4.14-rc0-focal
+    image: mongo:8.0.0-rc17-noble
     container_name: mongodb
     # volumes:
     #   - mongodb_volume:/data/db
