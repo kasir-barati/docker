@@ -32,10 +32,7 @@ export class MockserverDriver {
    * Will matches requests sent to this path with the provided method.
    */
   async mockResponse(expectation: Expectation) {
-    await this.mockServerClient.mockSimpleResponse(
-      '/mockserver/expectation',
-      expectation,
-    );
+    await this.mockServerClient.mockAnyResponse(expectation);
   }
   async verifyRequestWasNotReceived(request: RequestDefinition) {
     try {

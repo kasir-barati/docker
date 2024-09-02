@@ -4,5 +4,6 @@ services:
     restart: on-failure:3
     ports:
       - 1080:1080
-    volumes:
-      - ./mockserver.properties:/config/mockserver.properties
+    # volumes:
+    #   # chmod o+r $(pwd)/mockserver.properties
+    #   - ./mockserver.properties:/config/mockserver.properties
