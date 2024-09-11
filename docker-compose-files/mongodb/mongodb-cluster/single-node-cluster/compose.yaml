@@ -21,9 +21,9 @@ services:
         exec docker-entrypoint.sh $$@
     command: mongod --bind_ip_all --replSet rs0 --keyFile /data/replica.key
     environment:
-      MONGO_INITDB_DATABASE: app
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: pass
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
@@ -37,7 +37,7 @@ services:
       db:
         condition: service_healthy
     command: >
-      mongosh --username root --password pass --host db:27017 --eval
+      mongosh --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD} --host db:27017 --eval
       '
       rs.initiate( {
          _id : "rs0",

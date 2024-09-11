@@ -1,12 +1,25 @@
 // @ts-check
 
 import mongoose from "mongoose";
+import { config } from "dotenv";
+import { join } from "path";
 
-mongoose.connect("mongodb://root:pass@db:27017", {
+config({
+  path: [join(process.cwd(), ".env")],
+});
+
+const {
+  MONGO_INITDB_DATABASE,
+  MONGO_INITDB_ROOT_USERNAME,
+  MONGO_INITDB_ROOT_PASSWORD,
+} = process.env;
+const connectionString = `mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@db:27017`;
+
+mongoose.connect(connectionString, {
   replicaSet: "rs0",
   autoIndex: true,
   autoCreate: true,
-  dbName: "app",
+  dbName: MONGO_INITDB_DATABASE,
 });
 
 const catSchema = new mongoose.Schema({
