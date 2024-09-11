@@ -1,0 +1,46 @@
+{
+  "variables": {
+    "userID": "#{UUID()}",
+    "themeID": "#{UUID()}",
+    "issuer": "https://issuer.com",
+    "roleID": "30e5a2c9-a8a5-42b8-8829-4a0797ccd131",
+    "groupID": "d38f3e5b-6510-4aee-ae6e-7accb48330d1",
+    "tenantID": "da025934-3ba7-4a13-83f0-aab68c9919b8",
+    "signingKeyID": "7f19e927-613c-4448-a4de-092686e678bc",
+    "applicationID": "a05254e4-03c9-449f-a9d6-bcac0432ee53",
+    "idTokenPopulateLambdaID": "153c785c-82eb-4903-8f18-05c1366b9601",
+    "accessTokenPopulateLambdaID": "b0dadc3a-d888-4805-ab06-75f7db81ac96",
+    "setPasswordEmailTemplateID": "f45dbc24-32a1-11ed-a261-0242ac120002",
+    "clientSecret": "b9c9855cc279193e253a445c75a9be65b2a99f316f8c0c84ed8440cccda42be0c50abe37fa9434e17d25d40afd5f9002959c04496fc74530ee438e39fecdd328"
+  },
+  "apiKeys": [
+    {
+      "key": "7ef6fa566cf6bd2948f86dc9174b1ad87a40a67fa00c72edab82d566b79eeb206d532b9f217eac391423d087c0a329bb5518d6281d2bb29c2919642b4cc7300f"
+    }
+  ],
+  "requests": [
+    "&{json/createSigningKey.json}",
+    "&{json/createAccessTokenPopulateLambda.json}",
+    "&{json/createIdTokenPopulateLambda.json}",
+    "&{json/createSetPasswordEmailTemplate.json}",
+    "&{json/createTenant.json}",
+    "&{json/createApplication.json}",
+    "&{json/createRole.json}",
+    "&{json/createGroup.json}",
+    "&{json/createUser.json}",
+    "&{json/registerUser.json}",
+    "&{json/createFusionAuthAdminUser.json}",
+    "&{json/createTheme.json}",
+    "&{json/updateTheme.json}",
+    "&{json/setDefaultTheme.json}",
+    {
+      "method": "PATCH",
+      "url": "/api/tenant/#{FUSIONAUTH_TENANT_ID}",
+      "body": {
+        "tenant": {
+          "themeId": "#{themeID}"
+        }
+      }
+    }
+  ]
+}

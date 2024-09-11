@@ -1,0 +1,55 @@
+version: "3.7"
+
+services:
+  primary:
+    image: mongo-primary-replica:4.4
+    hostname: primary
+    container_name: primary
+    build: ./primary
+    volumes:
+      - type: bind
+        target: ./primary/data
+        source: /data/db
+        volume:
+          nocopy: true
+    depends_on:
+      - secondary
+      - tertiary
+    ports:
+      - $MONGODB_PRIMARY_PORT:27017
+
+  secondary:
+    image: mongo:4
+    hostname: secondary
+    container_name: secondary
+    command: --replSet mongo-cluster --oplogSize 128
+    ports:
+      - $MONGODB_SECONDARY_PORT:27017
+    volumes:
+      - type: bind
+        target: ./secondary/data
+        source: /data/db
+        volume:
+          nocopy: true
+
+  tertiary:
+    image: mongo:4
+    hostname: tertiary
+    container_name: tertiary
+    command: --replSet mongo-cluster --oplogSize 128
+    ports:
+      - $MONGODB_TERTIARY_PORT:27017
+    volumes:
+      - type: bind
+        target: ./tertiary/data
+        source: /data/db
+        volume:
+          nocopy: true
+
+  setup-replica:
+    image: setup-replica:v1
+    hostname: setup-replica
+    container_name: setup-replica
+    build: ./setup
+    depends_on:
+      - primary

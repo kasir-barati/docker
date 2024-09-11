@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  postgres:
+    # image: postgres:14.2-alpine3.15
+    image: postgres:14.3-alpine3.16
+    container_name: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data/pgdata
+    environment:
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=db-name
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+volumes:
+  postgres:

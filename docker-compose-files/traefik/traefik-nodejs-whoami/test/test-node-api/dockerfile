@@ -1,0 +1,21 @@
+from node:14.5.0
+
+run mkdir -p /usr/src/app
+run chown -R 1000:1000 /usr/src/app
+
+workdir /usr/src/app
+
+user 1000:1000
+
+env PORT=8000
+
+expose ${PORT}
+
+copy --chown=1000:1000 ./package*.json ./
+
+run npm install && npm cache clean --force --loglevel=error
+
+copy --chown=1000:1000 . ./
+run npm run-script build
+
+cmd node ./app.js

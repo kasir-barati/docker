@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  redis:
+    image: bitnami/redis:6.2.1-debian-10-r38
+    restart: always
+    ports:
+      - 6379:6379
+    environment:
+      # - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_PASSWORD=a-very-hard=password

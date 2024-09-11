@@ -1,0 +1,13 @@
+{
+  "method": "POST",
+  "url": "/api/lambda/#{accessTokenPopulateLambdaID}",
+  "body": {
+    "lambda": {
+      "body": "function populate(jwt, user, registration) { jwt.tenant = {}; jwt.tenant.customerId = user.data ? user.data.customerId : undefined; jwt.fullName = user.fullName; }",
+      "debug": false,
+      "engine": "GraalJS",
+      "name": "AccessToken populate lambda",
+      "type": "JWTPopulate"
+    }
+  }
+}

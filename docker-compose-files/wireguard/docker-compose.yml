@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  wireguard:
+    image: linuxserver/wireguard:1.0.20210914
+    container_name: wireguard
+    volumes:
+      - ${WIREGUARD_DIRECTORY_PATH}/config:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - ${WIREGUARD_PORT}:${WIREGUARD_PORT}/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${WIREGUARD_TIMEZONE}
+      - SERVERURL=auto
+      - SERVERPORT=${WIREGUARD_PORT}
+      - PEERS=1
+      - PEERDNS=auto
+      - INTERNAL_SUBNET=10.13.13.0
+      - ALLOWEDIPS=0.0.0.0/0
+      - LOG_CONFS=true

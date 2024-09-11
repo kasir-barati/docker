@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "url": "/api/group/#{groupID}",
+  "tenantId": "#{tenantID}",
+  "body": {
+    "group": {
+      "name": "Group 1 for ApplicationName"
+    },
+    "roleIds": ["#{roleID}"]
+  }
+}

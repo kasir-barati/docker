@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  traefik:
+    # restart: always
+    image: traefik:v2.3.6
+    # container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.dashboard"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    volumes:
+      - "./traefik.yml:/etc/traefik/traefik.yml:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`monitor.site-name.com`)"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=site-name-com-resolver"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$eRUBYsfz$$vZRv4gapw0mL4bOeiFrdS/"
+    ports:
+      - "8080:8080"
+      - "80:80"
+      - "443:443"
+#         networks:
+#             - traefik_default
+# networks:
+#     web:
+#         external: true

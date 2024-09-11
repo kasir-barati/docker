@@ -1,0 +1,5 @@
+# PostgreSQL
+pgdata
+
+#env
+*.env

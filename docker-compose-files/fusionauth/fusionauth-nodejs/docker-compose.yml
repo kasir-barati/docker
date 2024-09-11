@@ -1,0 +1,122 @@
+version: "3"
+
+services:
+  api:
+    image: api
+    container_name: api-container
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+        volume:
+          nocopy: true
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "node", "healthcheck.js"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      fusionauth:
+        condition: service_healthy
+
+  fusionauth-db:
+    image: postgres:16.0-bookworm
+    container_name: fusionauth-db-container
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGUSER: ${POSTGRES_USER} # instead of `-U postgres` in healthcheck
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  fusionauth-search-engine:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: fusionauth-search-engine-container
+    environment:
+      cluster.name: fusionauth
+      bootstrap.memory_lock: "true"
+      discovery.type: single-node
+      ES_JAVA_OPTS: ${ES_JAVA_OPTS}
+      xpack.security.enabled: "false" # https://stackoverflow.com/a/60873733/8784518
+    # ports:
+    #   - 9200:9200
+    #   - 9300:9300
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "--write-out",
+          "'HTTP %{http_code}'",
+          "--silent",
+          "--output",
+          "/dev/null",
+          "http://localhost:9200/",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  fusionauth:
+    image: fusionauth-image
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile
+    container_name: fusionauth-container
+    depends_on:
+      fusionauth-db:
+        condition: service_healthy
+      fusionauth-search-engine:
+        condition: service_healthy
+      mailcatcher:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://fusionauth-db:5432/fusionauth
+      DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
+      DATABASE_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_USERNAME: fusionauth # IDK why but it seems that I cannot change this and it might be related to DATABASE_URL
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      FUSIONAUTH_APP_MEMORY: 512M
+      # Could not find a way to create super admin and default apiKey in terrafrom or any other mean, so just used the old kickstart.json file
+      FUSIONAUTH_APP_KICKSTART_FILE: /usr/local/fusionauth/kickstart.json
+      FUSIONAUTH_APP_RUNTIME_MODE: development # or production
+      FUSIONAUTH_APP_URL: http://fusionauth:9011
+      SEARCH_SERVERS: http://fusionauth-search-engine:9200
+      SEARCH_TYPE: elasticsearch
+    ports:
+      - 9011:9011
+    volumes:
+      # Could not find a way to create super admin and default apiKey in terrafrom or any other mean, so just used the old kickstart.json file
+      - ./kickstart.json:/usr/local/fusionauth/kickstart.json
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9011/api/status"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mailcatcher:
+    image: sj26/mailcatcher:v0.8.2
+    container_name: fusionauth-smtp
+    ports:
+      - "1026:1025"
+      - "1081:1080"
+    healthcheck:
+      test: wget -q -O /dev/null http://mailcatcher:1080/
+      interval: 10s
+      retries: 80

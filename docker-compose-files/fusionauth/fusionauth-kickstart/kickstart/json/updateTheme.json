@@ -1,0 +1,16 @@
+{
+  "method": "PATCH",
+  "url": "api/theme/#{themeID}",
+  "body": {
+    "theme": {
+      "stylesheet": "@{stylesheet.css}",
+      "defaultMessages": "@{templates/messages.ftl}",
+      "templates": {
+        "index": "@{templates/index.ftl}",
+        "helpers": "@{templates/helpers.ftl}",
+        "oauth2Authorize": "@{templates/login.ftl}",
+        "passwordComplete": "@{templates/change-password-complete.ftl}"
+      }
+    }
+  }
+}

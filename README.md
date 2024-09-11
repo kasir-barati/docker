@@ -1,3 +1,10 @@
+# Tips:
+
+- Passing multiple env file to the docker-compose file -- [ref](https://github.com/docker/compose/issues/7326#issuecomment-1252426491)
+  ```cmd
+  docker-compose --env-file <(cat "./docker/.env" "./docker/.env.local") up -d
+  ```
+
 # docker
 
 My Dockerfiles &amp; docker-compose files that tested

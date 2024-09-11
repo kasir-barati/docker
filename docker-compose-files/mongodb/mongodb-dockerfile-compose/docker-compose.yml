@@ -1,0 +1,24 @@
+version: "3.7"
+
+services:
+  mongo:
+    image: mongodump:v1
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        ONLINE_MONGODB_URI: $ONLINE_MONGODB_URI
+        MONGODB_DATABASE: $MONGODB_DATABASE
+        ONLINE_MONGODB_DATABASE: $ONLINE_MONGODB_DATABASE
+    env_file:
+      - .env
+    container_name: mongodump-db
+    hostname: mongodump-db
+    ports:
+      - 27017:27017
+    volumes:
+      - type: bind
+        source: ./volume
+        target: /data/db
+        volume:
+          nocopy: true

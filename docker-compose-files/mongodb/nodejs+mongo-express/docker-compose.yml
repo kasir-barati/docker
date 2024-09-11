@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo:8.0.0-rc17-noble
+    container_name: mongodb
+    # volumes:
+    #   - mongodb_volume:/data/db
+    ports:
+      - 27017:27017
+    env_file:
+      - .env
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/${MONGO_INITDB_DATABASE} --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  api:
+    image: mongo-test-api
+    container_name: mongo-test-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PORT: ${PORT}
+    ports:
+      - 6666:${PORT}
+    depends_on:
+      mongo:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  mongoexpress:
+    image: mongo-express:0.54.0
+    ports:
+      - 8081:8081
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: adminadmin
+      ME_CONFIG_BASICAUTH_USERNAME: admin@admin.com
+      ME_CONFIG_MONGODB_AUTH_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+# volumes:
+#   mongodb_volume:

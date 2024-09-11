@@ -1,0 +1,59 @@
+services:
+  primary-mongodb:
+    image: bitnami/mongodb:7.0.12-debian-12-r2
+    restart: unless-stopped
+    hostname: mongo
+    ports:
+      - "27017:27017/tcp"
+    volumes:
+      - mongodb-primary_data:/bitnami/mongodb
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: primary-mongodb
+      MONGODB_REPLICA_SET_MODE: primary
+      # MONGODB_REPLICA_SET_NAME: replicaset
+      # MONGODB_PORT_NUMBER: 27017
+    env_file:
+      - .env
+      - .shared.env
+    container_name: primary-database
+    depends_on:
+      - secondary-mongodb
+      - arbiter-mongodb
+
+  secondary-mongodb:
+    image: bitnami/mongodb:7.0.12-debian-12-r2
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: secondary-mongodb
+      MONGODB_REPLICA_SET_MODE: secondary
+      # MONGODB_REPLICA_SET_NAME: replicaset
+      # MONGODB_PORT_NUMBER: 27017
+    volumes:
+      - mongodb-secondary_data:/bitnami/mongodb
+    env_file:
+      - .cluster.env
+      - .shared.env
+    container_name: secondary-database
+
+  arbiter-mongodb:
+    image: bitnami/mongodb:7.0.12-debian-12-r2
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: arbiter-mongodb
+      MONGODB_REPLICA_SET_MODE: arbiter
+      # MONGODB_REPLICA_SET_NAME: replicaset
+      # MONGODB_PORT_NUMBER: 27017
+    volumes:
+      - mongodb-arbiter_data:/bitnami/mongodb
+    env_file:
+      - .cluster.env
+      - .shared.env
+    container_name: arbiter-database
+
+volumes:
+  mongodb-primary_data:
+  mongodb-secondary_data:
+  mongodb-arbiter_data:
+
+networks:
+  default:
+    external:
+      name: mongo

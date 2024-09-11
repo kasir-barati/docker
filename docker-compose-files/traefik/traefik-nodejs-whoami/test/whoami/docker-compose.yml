@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  whoami:
+    image: "containous/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.site-name.com`)"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.routers.whoami.tls.certresolver=site-name-com-resolver"
+      # - 'traefik.http.routers.whoami.middlewares=my-whoami-stripprefix'
+      # - 'traefik.http.middlewares.my-whoami-stripprefix.stripprefix.prefixes=/'
+    networks:
+      - traefik_default
+networks:
+  traefik_default:
+    external: true

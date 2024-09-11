@@ -1,0 +1,62 @@
+version: "3.7"
+
+services:
+  es01:
+    image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    container_name: es01
+    env_file:
+      - ./.env
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        ELASTICSEARCH_VERSION: $ELASTICSEARCH_VERSION
+    environment:
+      node.name: es01
+      discovery.seed_hosts: es02
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - "${ELASTIC_EXPOSED_PORT1}:$ELASTIC_PORT1"
+      - "$ELASTIC_EXPOSED_PORT2:${ELASTIC_PORT2}"
+    networks:
+      - elastic
+
+  es02:
+    image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    container_name: es02
+    env_file:
+      - ./.env
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        ELASTICSEARCH_VERSION: $ELASTICSEARCH_VERSION
+    environment:
+      node.name: es02
+      discovery.seed_hosts: es01
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge

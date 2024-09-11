@@ -1,0 +1,5 @@
+node_modules
+resttest.http
+uploads/
+pgdata/
+.vscode/settings.json

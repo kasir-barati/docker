@@ -1,0 +1,53 @@
+version: "3.7"
+
+services:
+  sitename-website-backend:
+    restart: always
+    image: sitename-website-backend
+    volumes:
+      - type: bind
+        source: ./uploads
+        target: /usr/src/app/uploads
+        volume:
+          nocopy: true
+    build:
+      context: .
+      dockerfile: ./dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sitename-website-backend.rule=Host(`api.site-name.com`)"
+      - "traefik.http.routers.sitename-website-backend.tls=true"
+      - "traefik.http.routers.sitename-website-backend.tls.certresolver=site-name-com-resolver"
+      - "traefik.http.routers.sitename-website-backend.middlewares=my-site-website-backend-stripprefix"
+      - "traefik.http.middlewares.my-site-website-backend-stripprefix.stripprefix.prefixes=/"
+    networks:
+      - traefik_default
+      - default
+  sitename-website-backend-db:
+    image: "postgres"
+    restart: always
+    volumes:
+      - type: bind
+        source: ./pgdata
+        target: /var/lib/postgresql/data
+        volume:
+          nocopy: true
+    ports:
+      - "5432:5432"
+    # labels:
+    #     - 'traefik.enable=true'
+    #     - 'traefik.http.routers.sitename-website-db.rule=Host(`postgres.site-name.com`)'
+    #     - 'traefik.http.routers.sitename-website-db.tls=true'
+    #     - 'traefik.http.routers.sitename-website-db.tls.certresolver=site-name-com-resolver'
+    #     - 'traefik.http.routers.sitename-website-db.middlewares=my-site-website-db-stripprefix'
+    #     - 'traefik.http.middlewares.my-site-website-db-stripprefix.stripprefix.prefixes=/'
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: uname
+      POSTGRES_DB: db-name
+networks:
+  traefik_default:
+    external: true

@@ -1,0 +1,18 @@
+{
+  "method": "POST",
+  "url": "/api/user/#{userID}",
+  "tenantId": "#{tenantID}",
+  "body": {
+    "applicationId": "#{applicationID}",
+    "user": {
+      "email": "user@user.com",
+      "fullName": "user useri",
+      "password": "useruser",
+      "memberships": [
+        {
+          "groupId": "#{groupID}"
+        }
+      ]
+    }
+  }
+}

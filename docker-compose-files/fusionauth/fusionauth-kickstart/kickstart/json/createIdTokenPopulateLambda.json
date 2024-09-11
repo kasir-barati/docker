@@ -1,0 +1,13 @@
+{
+  "method": "POST",
+  "url": "/api/lambda/#{idTokenPopulateLambdaID}",
+  "body": {
+    "lambda": {
+      "body": "function populate(jwt, user, registration) { jwt.roles = registration.roles; }",
+      "debug": false,
+      "engine": "GraalJS",
+      "name": "IDToken populate lambda",
+      "type": "JWTPopulate"
+    }
+  }
+}

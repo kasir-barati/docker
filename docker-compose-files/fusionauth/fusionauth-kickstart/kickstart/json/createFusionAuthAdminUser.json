@@ -1,0 +1,15 @@
+{
+  "method": "POST",
+  "url": "/api/user/registration",
+  "tenantId": "#{FUSIONAUTH_TENANT_ID}",
+  "body": {
+    "user": {
+      "email": "admin@admin.com",
+      "password": "adminadmin"
+    },
+    "registration": {
+      "applicationId": "#{FUSIONAUTH_APPLICATION_ID}",
+      "roles": ["admin"]
+    }
+  }
+}

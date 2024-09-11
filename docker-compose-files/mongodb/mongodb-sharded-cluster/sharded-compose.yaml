@@ -1,0 +1,41 @@
+services:
+  mongo-shard1-primary:
+    image: mongo:8.0-rc
+    container_name: shard1-primary
+    restart: on-failure:3
+    command: --shardsvr --replSet mongo-shard1-rs --port 27017 --bind_ip localhost,mongo-shard1-primary
+    ports:
+      - "27101:27017/tcp"
+    depends_on:
+      mongo-shard1-secondary1:
+        condition: service_healthy
+      mongo-shard1-secondary2:
+        condition: service_healthy
+
+  mongo-shard1-secondary1:
+    image: mongo:8.0-rc
+    container_name: shard1-secondary1
+    command: --shardsvr --replSet mongo-shard1-rs --port 27017 --bind_ip localhost,mongo-shard1-secondary1
+    ports:
+      - "27102:27017/tcp"
+    restart: on-failure:3
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017 --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  mongo-shard1-secondary2:
+    image: mongo:8.0-rc
+    container_name: shard1-secondary2
+    command: --shardsvr --replSet mongo-shard1-rs --port 27017 --bind_ip localhost,mongo-shard1-secondary2
+    restart: on-failure:3
+    ports:
+      - "27103:27017/tcp"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017 --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

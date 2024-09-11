@@ -1,0 +1,22 @@
+{
+  "name": "main-site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "build": "echo *** no build ***"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "pg": "^8.3.0",
+    "pg-hstore": "^2.3.3",
+    "sanitize-filename": "^1.6.3",
+    "sequelize": "^6.3.4"
+  }
+}

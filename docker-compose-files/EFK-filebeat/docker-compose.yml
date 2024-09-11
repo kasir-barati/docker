@@ -1,0 +1,73 @@
+version: "3.7"
+
+services:
+  elasticsearch:
+    image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    container_name: efk_elastic
+    build:
+      context: ./elasticsearch
+      args:
+        EFK_VERSION: $EFK_VERSION
+        ELASTIC_PORT1: $ELASTIC_PORT1
+        ELASTIC_PORT2: $ELASTIC_PORT2
+    environment:
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+      ELASTIC_PASSWORD: $ELASTICSEARCH_PASSWORD
+    hostname: elasticsearch
+    ports:
+      - "${ELASTIC_EXPOSED_PORT1}:$ELASTIC_PORT1"
+      - "$ELASTIC_EXPOSED_PORT2:${ELASTIC_PORT2}"
+    volumes:
+      - type: volume
+        source: elasticsearch_data
+        target: /usr/share/elasticsearch/data
+    networks:
+      - efk
+    healthcheck:
+      test: curl -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      - filebeat
+
+  kibana:
+    image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    container_name: efk_kibana
+    user: kibana
+    build:
+      context: ./kibana
+      args:
+        EFK_VERSION: $EFK_VERSION
+        KIBANA_PORT: $KIBANA_PORT
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    hostname: kibana
+    ports:
+      - "$KIBANA_EXPOSED_PORT:$KIBANA_PORT"
+    networks:
+      - efk
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    image: "${CREATED_IMAGE_NAME_PREFIX}:1"
+    container_name: efk_filebeat
+    build:
+      context: ./filebeat
+      args:
+        EFK_VERSION: $EFK_VERSION
+    user: root
+    hostname: filebeat
+    volumes:
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - efk
+
+volumes:
+  elasticsearch_data:
+
+networks:
+  efk:
+    driver: bridge
