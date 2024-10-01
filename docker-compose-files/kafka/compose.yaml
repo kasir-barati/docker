@@ -20,3 +20,11 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+
+  kafka-manager:
+    build: .
+    depends_on:
+      kafka:
+        condition: service_started
+      zookeeper:
+        condition: service_started

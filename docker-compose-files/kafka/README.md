@@ -62,11 +62,19 @@
 
 # Zookeeper
 
-A centralized service for maintaining configuration information, naming, providing distributed synchronization, and group services. In kafka we tend to use it primarily for:
+- Apache Kafka server was a standalone service: a simple and functional application that quickly became famous.
+- It lacked high availability and resiliency.
+- The standard way for a system administrator to solve that issue was often to create multiple broker copies for replication purposes, coordinated by leveraging Apache ZooKeeper which quickly became a part of a standard Kafka deployment.
+
+So Zookeeper is a centralized service for maintaining configuration information, naming, providing distributed synchronization, and group services. In kafka we tend to use it primarily for:
 
 - Tracking Kafka brokers (cluster metadata).
 - Managing partition assignment and leader election.
 - Tracking consumer offsets.
+
+> [!IMPORTANT]
+>
+> This technology is deprecated ([PR](https://github.com/apache/kafka/pull/8482), [learn more](https://www.redpanda.com/guides/kafka-tutorial-kafka-without-zookeeper)).
 
 ## hostname
 
