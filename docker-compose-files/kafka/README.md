@@ -65,6 +65,15 @@
     </d>
     you can learn more about this.
   </dd>
+  <dt><code>KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR</code></dt>
+  <dd><code>1</code></dd>
+  <dd>
+    This image translates
+    <code>KAFKA_X_Y_Z</code>
+    vars to 
+    <code>x.y.z</code>
+    properties in the <i>server.properties</i> files.
+  </dd>
 </dl>
 
 ## Volumes
