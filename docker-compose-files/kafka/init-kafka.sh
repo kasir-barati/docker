@@ -2,6 +2,8 @@
 
 cd kafka_2.12-2.8.2
 
+# TODO: users without credentials are still able to access the local broker
+
 ./bin/kafka-configs.sh \
   --zookeeper zookeeper:2181 \
   --alter \
@@ -9,11 +11,3 @@ cd kafka_2.12-2.8.2
   --entity-type users \
   --entity-name admin
 
-# TODO: users without credentials are still able to access the local broker
-
-./bin/kafka-topics.sh \
-  --zookeeper zookeeper:2181 \
-  --topic topic-name \
-  --create \
-  --partitions 3 \
-  --replication-factor 1

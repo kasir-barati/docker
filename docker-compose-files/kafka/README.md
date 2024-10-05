@@ -49,6 +49,22 @@
   <dd>
     Points to a Java Auth Service (JAAS) conf file for Kafka, which defines how SASL should be performed.
   </dd>
+  <dt><code>KAFKA_BROKER_ID</code></dt>
+  <dd><code>1</code></dd>
+  <dd>
+    To prevent the following error from occurring you need to specify a unique ID for each broker:
+    <code>
+      There is no leader for this topic-partition as we are in the middle of a leadership election.
+    </code>
+  </dd>
+  <dt><code>KAFKA_CREATE_TOPICS</code></dt>
+  <dd><code>"topic-name:3:1"</code></dd>
+  <dd>
+    <a href="https://github.com/wurstmeister/kafka-docker?tab=readme-ov-file#automatically-create-topics">
+      Here
+    </d>
+    you can learn more about this.
+  </dd>
 </dl>
 
 ## Volumes
