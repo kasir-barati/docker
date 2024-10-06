@@ -65,7 +65,10 @@
     </d>
     you can learn more about this.
   </dd>
-  <dt><code>KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR</code></dt>
+  <dt id="kafkaParameters">
+    <a href="#kafkaParameters">#</a>
+    <code>KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR</code>
+  </dt>
   <dd><code>1</code></dd>
   <dd>
     This image translates
