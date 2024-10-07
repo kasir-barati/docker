@@ -25,17 +25,7 @@ export class RabbitmqService {
   @RabbitRPC({
     exchange: TOPIC_EXCHANGE,
     queue: AUDIT_LOG_QUEUE,
-    routingKey: CREATED_ROUTING_KEY,
-  })
-  @RabbitRPC({
-    exchange: TOPIC_EXCHANGE,
-    queue: AUDIT_LOG_QUEUE,
-    routingKey: UPDATED_ROUTING_KEY,
-  })
-  @RabbitRPC({
-    exchange: TOPIC_EXCHANGE,
-    queue: AUDIT_LOG_QUEUE,
-    routingKey: DELETED_ROUTING_KEY,
+    routingKey: [CREATED_ROUTING_KEY, UPDATED_ROUTING_KEY, DELETED_ROUTING_KEY],
   })
   async log(@RabbitPayload() payload: any) {
     this.logger.log('Logging info...');
