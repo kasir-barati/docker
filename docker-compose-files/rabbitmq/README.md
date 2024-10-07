@@ -4,6 +4,7 @@
 - What this means for usage in Docker?
   - We should specify `-h`/`--hostname` explicitly for each daemon so that we don't get a random hostname
   - To be able keep track of our data
+- You can learn how to work with topic exchange in NestJS [here](./topic-nestjs/).
 
 # Configure your rabbitmq
 
