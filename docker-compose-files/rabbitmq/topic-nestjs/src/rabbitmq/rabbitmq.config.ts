@@ -37,17 +37,11 @@ export class RabbitmqModuleConfig
       queues: [
         {
           name: AUDIT_LOG_QUEUE,
-          routingKey: CREATED_ROUTING_KEY,
-          createQueueIfNotExists: true,
-        },
-        {
-          name: AUDIT_LOG_QUEUE,
-          routingKey: UPDATED_ROUTING_KEY,
-          createQueueIfNotExists: true,
-        },
-        {
-          name: AUDIT_LOG_QUEUE,
-          routingKey: DELETED_ROUTING_KEY,
+          routingKey: [
+            CREATED_ROUTING_KEY,
+            UPDATED_ROUTING_KEY,
+            DELETED_ROUTING_KEY,
+          ],
           createQueueIfNotExists: true,
         },
         {
