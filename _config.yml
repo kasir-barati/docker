@@ -18,3 +18,5 @@ kramdown:
   syntax_highlighter: rouge
 include:
   - .github
+  - .github/**/*
+  - .github/docs/postgresql.md
