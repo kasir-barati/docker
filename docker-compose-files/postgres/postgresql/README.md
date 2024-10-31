@@ -2,14 +2,14 @@
 
 ## How to use these `docker-compose`?
 
-1. Create a directory named `pgdata` next to the `docker-compose.yml`
-2. Change the defined values in `.env` and `.postgresql.env`
-3. Add `.env` and `.postgresql.env` in your `.gitignore`
-4. `docker-compose up`
+1. Create a directory named `pgdata` next to the `compose.yml`.
+2. `cp .env.example .env` (make necessary changes if needed any).
+3. `cp .postgresql.env.example .postgresql.env` (make necessary changes if needed any).
+4. `docker compose up`.
 
 ---
 
-## More details about what I did in docker-compose:
+## More details about what I did in `compose.yml`
 
 In the following sections you can see more info about the reasons behind what I did in this docker-compose file.
 

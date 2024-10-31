@@ -1,0 +1,20 @@
+title: Docker
+email: kasir.barati@gmail.com
+description: >- # this means to ignore newlines until "baseurl:"
+  Write an awesome doc for Docker, Docker Compose, and everything else in this domain. You can find invaluable examples and explanations here. I am trying to keep it up to date and relevant too. BTW if you also have a cool idea, or example open a PR/issue/discussion.
+baseurl: "/docker" # the repository name
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: kasir_barati
+github_username: kasir-barati
+plugins:
+  - jekyll-relative-links
+  - jekyll-remote-theme # add this line to the plugins list if you already have one
+relative_links:
+  enabled: true
+  collections: true
+remote_theme: pages-themes/hacker@v0.2.0
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+include:
+  - .github
