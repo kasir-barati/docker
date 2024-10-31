@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+>
+> Keep `index.md` in the root in sync with me!
+
 # docker
 
 My Dockerfiles &amp; docker-compose files that tested
