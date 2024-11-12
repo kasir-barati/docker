@@ -23,8 +23,8 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
     network_mode: host
     volumes:
-      - ./servers.json:/tmp/servers.json
-      - ./preferences.json:/tmp/preferences.json
+      - ./conf/servers.json:/tmp/servers.json
+      - ./conf/preferences.json:/tmp/preferences.json
 
 volumes:
   postgres:
