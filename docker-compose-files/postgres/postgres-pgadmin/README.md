@@ -13,6 +13,7 @@
 - Documented here: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html#mapped-files-and-directories.
 - You can also pre-configure things like theme to dark if you like through `preferences.json` but it is not working for me. Learn about its schema here: https://www.pgadmin.org/docs/pgadmin4/latest/preferences.html#updating-preferences-preferences-json.
 - You can see `servers.json` schema here: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html#json-format.
+- One interesting fact about defining `servers.json` content inside `compose.yml` is that then we can utilize our `.env` file and reuse them. No need to hardcode anything.
 - Here we are passing the password through docker secrets.
 
 &mdash; [Ref](https://stackoverflow.com/a/77519799/8784518).
