@@ -1,10 +1,23 @@
 # How to use?
 
-1. `cp .env.example .env`
-2. `mkdir pgdata`
-3. `docker compose up`
+1. `cp .env.example .env`.
+2. `docker compose up -d`.
 
 # How to connect to you DB in your pgadmin4?
+
+## Using `servers.json` config file
+
+- The most easiest way to do this.
+- It configures your server connection to your DB automatically for you.
+- There are certain limitations. learn more here: https://github.com/pgadmin-org/pgadmin4/issues/8117#issuecomment-2469921653.
+- Documented here: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html#mapped-files-and-directories.
+- You can also pre-configure things like theme to dark if you like through `preferences.json` but it is not working for me. Learn about its schema here: https://www.pgadmin.org/docs/pgadmin4/latest/preferences.html#updating-preferences-preferences-json.
+- You can see `servers.json` schema here: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html#json-format.
+- Here we are passing the password through docker secrets.
+
+&mdash; [Ref](https://stackoverflow.com/a/77519799/8784518).
+
+## The usual way
 
 1. Add New Server
 2. Give it a name (It can be anything)
