@@ -56,7 +56,6 @@ configs:
             "SSLMode": "prefer",
             "BGColor": "#FF4500",
             "FGColor": "#222222",
-            "PassFile": "/pgpass",
             "Comment": "This server will connect to the instance we've created in our compose file."
           }
         }
