@@ -1,8 +1,0 @@
-{
-  "preferences": {
-    "misc:themes:theme": "dark",
-    "browser:display:show_system_objects": true,
-    "browser:display:confirm_on_refresh_close": false,
-    "browser:display:show_user_defined_templates": true
-  }
-}

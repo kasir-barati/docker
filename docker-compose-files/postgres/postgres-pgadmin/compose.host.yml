@@ -22,9 +22,41 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
     network_mode: host
-    volumes:
-      - ./conf/servers.json:/tmp/servers.json
-      - ./conf/preferences.json:/tmp/preferences.json
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+      - source: preferences.json
+        target: /pgadmin4/preferences.json
 
 volumes:
   postgres:
+
+configs:
+  preferences.json:
+    content: |
+      {
+        "preferences": {
+          "misc:themes:theme": "dark",
+          "browser:display:show_system_objects": true,
+          "browser:display:confirm_on_refresh_close": false,
+          "browser:display:show_user_defined_templates": true
+        }
+      }
+  servers.json:
+    content: |
+      {
+        "Servers": {
+          "1": {
+            "Group": "Servers",
+            "Name": "Database name",
+            "Host": "postgres",
+            "Port": 5432,
+            "MaintenanceDB": "db-name",
+            "Username": "username",
+            "SSLMode": "prefer",
+            "BGColor": "#FF4500",
+            "FGColor": "#222222",
+            "Comment": "This server will connect to the instance we've created in our compose file."
+          }
+        }
+      }
