@@ -4,8 +4,9 @@ My Dockerfiles &amp; docker-compose files that tested
 
 ## Docs
 
-- [PostgreSQL](./.github/docs/postgresql.md).
-- [Choosing the right image](./.github/docs/choose-the-right-image.md).
+- [PostgreSQL](./docs/docs/postgresql.md).
+- [Choosing the right image](./docs/docs/choose-the-right-image.md).
+- [Docker volumes](./docs/volumes.md).
 
 # Tips:
 
