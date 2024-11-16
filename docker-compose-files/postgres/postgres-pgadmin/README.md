@@ -5,6 +5,15 @@
 
 # How to connect to you DB in your pgadmin4?
 
+> [!TIP]
+>
+> Does not matter how many times you:
+>
+> - Restart your container (`docker compose up`).
+> - Delete and run it again (`docker compose down && docker compose up -d`).
+>
+> It is not gonna pick up on changes made in `configs.json` or top-level `config` section in your `compose.yml` file. The only way for pgadmin to see new changes is losing its memory (volumes), delete the containers alongside their volumes: `docker compose down -v`. Of course you only need to delete the volumes assigned to your pgadmin (i.e. `pgadmin`).
+
 ## Using `servers.json` config file
 
 - The most easiest way to do this.
