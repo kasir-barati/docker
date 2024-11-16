@@ -1,0 +1,16 @@
+{
+  "Servers": {
+    "1": {
+      "Group": "Servers",
+      "Name": "Database name",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "db-name",
+      "Username": "username",
+      "SSLMode": "prefer",
+      "BGColor": "#FF4500",
+      "FGColor": "#222222",
+      "Comment": "This server will connect to the instance we've created in our compose file."
+    }
+  }
+}

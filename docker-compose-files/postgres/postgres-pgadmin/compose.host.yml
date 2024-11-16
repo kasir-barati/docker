@@ -3,7 +3,7 @@ services:
     image: postgres:17.0-alpine3.20
     restart: always
     volumes:
-      - postgres:/data/postgres
+      - postgres:${PGDATA}
     env_file:
       - .env
     network_mode: host
@@ -13,8 +13,9 @@ services:
       timeout: 5s
       retries: 5
 
+  # Will be accessible on port 80 unline the default compose file!
   pgAdmin:
-    image: dpage/pgadmin4:8.12
+    image: dpage/pgadmin4:8.4
     restart: always
     depends_on:
       - postgres
@@ -22,41 +23,11 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
     network_mode: host
-    configs:
-      - source: servers.json
-        target: /pgadmin4/servers.json
-      - source: preferences.json
-        target: /pgadmin4/preferences.json
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+      - ./configs/servers.config.json:/pgadmin4/servers.json
+      - ./configs/preferences.config.json:/pgadmin4/preferences.json
 
 volumes:
   postgres:
-
-configs:
-  preferences.json:
-    content: |
-      {
-        "preferences": {
-          "misc:themes:theme": "dark",
-          "browser:display:show_system_objects": true,
-          "browser:display:confirm_on_refresh_close": false,
-          "browser:display:show_user_defined_templates": true
-        }
-      }
-  servers.json:
-    content: |
-      {
-        "Servers": {
-          "1": {
-            "Group": "Servers",
-            "Name": "Database name",
-            "Host": "postgres",
-            "Port": 5432,
-            "MaintenanceDB": "db-name",
-            "Username": "username",
-            "SSLMode": "prefer",
-            "BGColor": "#FF4500",
-            "FGColor": "#222222",
-            "Comment": "This server will connect to the instance we've created in our compose file."
-          }
-        }
-      }
+  pgadmin:
