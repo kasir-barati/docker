@@ -1,0 +1,49 @@
+services:
+  redis:
+    image: bitnami/redis:7.4.1-debian-12-r2
+    restart: always
+    container_name: redis-container
+    ports:
+      - 7000:${REDIS_PORT_NUMBER}
+    volumes:
+      - redis:/bitnami/redis/data
+    env_file:
+      - ./.env
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli -a $$REDIS_PASSWORD -p $$REDIS_PORT_NUMBER ping | grep PONG",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  redis-insight:
+    image: redis/redisinsight:latest
+    restart: always
+    container_name: redis-insight-container
+    ports:
+      - 5540:5540
+    volumes:
+      - redis-insight:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      RI_APP_PORT: 5540
+      RI_LOG_LEVEL: debug
+    healthcheck:
+      test: [
+          "CMD-SHELL",
+          "node",
+          "--experimental-default-type=module",
+          '-e "console.log((await fetch(''http://localhost:5540/api/health/'')).ok =
+          == true && ''healthy'')"',
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis:
+  redis-insight:
