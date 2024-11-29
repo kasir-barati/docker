@@ -5,7 +5,7 @@
 # How to start the compose file
 
 1. `cp .env.example .env`
-2. `docker-compose up`
+2. `docker compose up`
 
 # How to stop and delete all the MongoDB information
 

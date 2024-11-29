@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/${MONGO_INITDB_DATABASE} --quiet
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
       retries: 3
@@ -33,6 +33,7 @@ services:
 
   mongoexpress:
     image: mongo-express:0.54.0
+    container_name: mongodb-express
     ports:
       - 8081:8081
     depends_on:
