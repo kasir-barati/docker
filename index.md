@@ -1,9 +1,11 @@
 # docker
 
-My Dockerfiles &amp; docker-compose files that tested
+My tested `Dockerfile`s &amp; docker compose files which I use them and try to keep them up to date. Consider giving this repo a star if it was helpful to you so it can reaches more devs such as yourself.
 
 ## Docs
 
+- [Glossary](./docs/glossary.md).
+- [Redis](./docs/redis.md).
 - [PostgreSQL](./docs/docs/postgresql.md).
 - [Choosing the right image](./docs/docs/choose-the-right-image.md).
 - [Docker volumes](./docs/volumes.md).

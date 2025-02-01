@@ -1,3 +1,7 @@
+> [!TIP]
+>
+> For more example on how to integrate RabbitMQ in your microservices architecture you can look at my work [here](https://github.com/kasir-barati/nestjs-materials/tree/main/microservices). **If this repo or the other one helped you consider giving them a star :star_struck:.**
+
 # `hostname`
 
 - RabbitMQ stores data based on what it calls the "Node Name" (`hostname`)
