@@ -1,7 +1,8 @@
 import { ModuleConfigFactory } from '@golevelup/nestjs-modules';
 import { RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
-import { Inject } from '@nestjs/common';
+import { ConfigurableModuleOptionsFactory, Inject } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
+
 import auditLogApiConfig from '../configs/app.config';
 import {
   AUDIT_LOG_QUEUE,
@@ -16,14 +17,14 @@ import {
 } from '../constants/app.constant';
 
 export class RabbitmqModuleConfig
-  implements ModuleConfigFactory<RabbitMQConfig>
+  implements ConfigurableModuleOptionsFactory<RabbitMQConfig, 'create'>
 {
   constructor(
     @Inject(auditLogApiConfig.KEY)
     private readonly auditLogApiConfigs: ConfigType<typeof auditLogApiConfig>,
   ) {}
 
-  createModuleConfig(): RabbitMQConfig | Promise<RabbitMQConfig> {
+  create(): RabbitMQConfig | Promise<RabbitMQConfig> {
     const { RABBITMQ_URL } = this.auditLogApiConfigs;
 
     return {

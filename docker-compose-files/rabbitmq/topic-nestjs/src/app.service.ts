@@ -1,11 +1,12 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
+
 import {
   TOPIC_EXCHANGE,
   USER_CREATED_ROUTING_KEY,
   USER_DELETED_ROUTING_KEY,
 } from './constants/app.constant';
-import { randomUUID } from 'crypto';
 import { generateRandomString } from './utils/generate-random-string.util';
 
 @Injectable()

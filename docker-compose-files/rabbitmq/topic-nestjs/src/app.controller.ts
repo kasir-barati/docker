@@ -1,6 +1,7 @@
 import { Controller, Delete, Post } from '@nestjs/common';
-import { AppService } from './app.service';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+
+import { AppService } from './app.service';
 import { CreatedUserDto } from './dtos/created-user.dto';
 
 @ApiTags('App')

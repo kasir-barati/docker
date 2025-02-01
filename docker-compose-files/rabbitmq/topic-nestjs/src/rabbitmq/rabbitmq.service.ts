@@ -4,6 +4,7 @@ import {
   RabbitRPC,
 } from '@golevelup/nestjs-rabbitmq';
 import { Injectable, Logger, UsePipes } from '@nestjs/common';
+
 import {
   AUDIT_LOG_QUEUE,
   CREATED_ROUTING_KEY,

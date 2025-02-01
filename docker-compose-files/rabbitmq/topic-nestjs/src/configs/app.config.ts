@@ -1,8 +1,9 @@
 import { registerAs } from '@nestjs/config';
 import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
+
 import { AppConfig } from '../types/app.type';
-import { validateEnv } from '../utils/validate-env.util';
 import { NodeEnv } from '../types/node-env.type';
+import { validateEnv } from '../utils/validate-env.util';
 
 declare global {
   namespace NodeJS {
