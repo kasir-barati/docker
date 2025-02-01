@@ -4,7 +4,7 @@ Here we are showing how you can use topic in RabbitMQ with `@golevelup/nestjs-ra
 
 > [!IMPORTANT]
 >
-> Although here in [`./src/rabbitmq/rabbitmq.config.ts`](./src/rabbitmq/rabbitmq.config.ts) file we are specifying how each routing key should be routed; to which queue. But keep in mind that if you configure it differently where you are using `@RabbitRPC` decorator or `@RabbitSubscribe` it is gonna take precedence (I am not sure if we can use this word though, I mean it might be overwritten or something else). What I am trying to say is that the following code would configure our `user.send_deregistration_email` queue to receive messages with this routing key: `user.created`:
+> Although here in [`./src/rabbitmq/rabbitmq.config.ts`](./src/rabbitmq/rabbitmq.config.ts) file we are specifying how each routing key should be routed; to which queue. But keep in mind that if you configure it differently where you are using `@RabbitRPC` decorator or `@RabbitSubscribe` it is gonna take precedence (I am not sure if we can use the word, "precedence" though, I mean it might be overwritten or something else). What I am trying to say is that the following code would configure our `user.send_deregistration_email` queue to receive messages with this routing key: `user.created`:
 >
 > `rabbitmq.config.ts`
 >
