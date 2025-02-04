@@ -1,5 +1,7 @@
+# Registers all the mocks and protobuf files in one go
+
 services:
-  mocked-sample-service:
+  mocked-services:
     image: tkpd/gripmock
     ports:
       - "4770:4770"

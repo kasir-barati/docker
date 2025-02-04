@@ -1,0 +1,6 @@
+{
+  "service": "TestService",
+  "method": "GetTest",
+  "input": {},
+  "output": { "data": { "name": "Something" } }
+}

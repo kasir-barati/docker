@@ -12,3 +12,5 @@
       To get a list of all mocked APIs.
 
     For a complete list take a look at [their doc](https://github.com/tokopedia/gripmock?tab=readme-ov-file#stubbing).
+
+- Here I also added an example (`compose2.yml`) of mocking different services with this while the default compose file will mock everything in one container.
