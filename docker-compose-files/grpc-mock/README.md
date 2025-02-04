@@ -18,6 +18,8 @@
 >    "output": { "data": { "name": "Something" } }
 >  }
 > ```
+>
+> **Note**: this is only the case when you do not expect any form of input from the caller.
 
 - We'll use [`tkpd/gripmock`](https://github.com/tokopedia/gripmock) docker image.
 - We're doing static mocking here.
