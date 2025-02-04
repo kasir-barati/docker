@@ -1,0 +1,10 @@
+services:
+  mocked-sample-service:
+    image: tkpd/gripmock
+    ports:
+      - "4770:4770"
+      - "4771:4771"
+    volumes:
+      - ./proto:/proto
+      - ./mocks:/stub
+    command: --stub=/stub /proto/sample.proto

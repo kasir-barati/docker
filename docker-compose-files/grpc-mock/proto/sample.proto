@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package sample;
+
+service SampleService {
+  rpc GetSamples (GetSamplesRequest) returns (GetSamplesResponse) {}
+}
+
+message GetSamplesRequest {
+}
+    
+message GetSamplesResponse {
+  string f1 = 1;
+}

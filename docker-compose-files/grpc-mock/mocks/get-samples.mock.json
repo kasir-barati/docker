@@ -1,0 +1,6 @@
+{
+  "service": "SampleService",
+  "method": "GetSamples",
+  "input": {},
+  "output": { "data": { "f1": "mocked f1" } }
+}
