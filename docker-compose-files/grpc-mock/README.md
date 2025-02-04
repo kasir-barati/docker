@@ -1,3 +1,7 @@
+> [!CAUTION]
+>
+> This docker image is really behind and is not maintained properly. I just faced another issue, `repeated` fields ain't supported ([ref](https://github.com/tokopedia/gripmock/issues/76))! So I guess I am just gonna keep this here as some sort of heads up.
+
 # Mocking gRPC procedures
 
 > [!CAUTION]
