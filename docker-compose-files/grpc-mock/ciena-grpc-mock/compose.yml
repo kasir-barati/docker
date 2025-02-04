@@ -1,0 +1,9 @@
+services:
+  mock:
+    image: ciena/grpc-mock
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./proto/sample.proto:/proto/sample.proto
+      - ./mock/sample.js:/main.js
+    command: /main.js
