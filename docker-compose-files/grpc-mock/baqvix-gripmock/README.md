@@ -4,5 +4,5 @@
 
 ## Ref
 
-- [gripmock](https://gripmock.org)
-- [bavix/gripmock](https://github.com/bavix/gripmock).
+- Documentation: [gripmock](https://gripmock.org).
+- GitHub repo: [bavix/gripmock](https://github.com/bavix/gripmock).
