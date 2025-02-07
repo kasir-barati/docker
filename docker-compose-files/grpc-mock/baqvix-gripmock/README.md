@@ -16,7 +16,7 @@
 > command: --stub=/stubs --imports=/proto /proto/user/user.proto /proto/common/address.proto
 > ```
 
-> > [!CAUTION]
+> [!CAUTION]
 >
 > I banged my head against brick wall since I was getting this error message in my Terminal:
 >
