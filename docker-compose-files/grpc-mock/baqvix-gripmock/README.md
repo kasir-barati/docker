@@ -15,6 +15,27 @@
 > ```yml
 > command: --stub=/stubs --imports=/proto /proto/user/user.proto /proto/common/address.proto
 > ```
+>
+> > [!CAUTION]
+>
+> I banged my head against brick wall since I was getting this error message in my Terminal:
+>
+> ```bash
+> Can't find stub
+> ```
+>
+> The reason was because of my mock files. So I had to use something like this in order to get it working in some instances:
+>
+> ```diff
+>  {
+>    "service": "TestService",
+>    "method": "GetTest",
+> +  "input": { "matches": {} },
+>    "output": { "data": { "name": "Something" } }
+>  }
+> ```
+>
+> **Note**: this is only the case when you do not expect any form of input from the caller.
 
 ## Ref
 
