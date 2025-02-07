@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package common.address;
+
+message Address {
+  string postal_code = 1;
+  repeated int32 some = 2;
+}

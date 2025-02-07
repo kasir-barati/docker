@@ -1,0 +1,18 @@
+services:
+  mocked-user-service:
+    image: bavix/gripmock
+    volumes:
+      - ./proto:/proto:ro
+      - ./mocks:/stubs:ro
+    command: |
+      --stub=/stubs \
+      --imports=/proto \
+      /proto/user/user.proto /proto/common/address.proto
+    ports:
+      - 4770:4770
+      - 4771:4771
+    healthcheck:
+      test: curl --fail http://localhost:4771/api/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5

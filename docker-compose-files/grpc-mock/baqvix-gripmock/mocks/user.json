@@ -1,0 +1,18 @@
+{
+  "service": "UserService",
+  "method": "GetUser",
+  "input": {},
+  "output": {
+    "data": {
+      "user": {
+        "name": "Anna",
+        "address": [
+          {
+            "postal_code": "12345",
+            "some": [1, 2, 3]
+          }
+        ]
+      }
+    }
+  }
+}

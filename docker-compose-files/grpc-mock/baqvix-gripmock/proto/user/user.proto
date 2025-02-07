@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package user;
+
+import "common/address.proto";
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message GetUserRequest {
+}
+
+message User {
+  string name = 1;
+  repeated common.address.Address address = 3;
+}
