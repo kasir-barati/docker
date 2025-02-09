@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package File;
+
+service FileService {
+  rpc Upload(stream Chunk) returns (stream UploadResponse) {}
+}
+
+// Upload in multiple chunks enables our client to upload a huge file faster, efficient and reliably.
+message Chunk {
+  int32 part_number = 1;
+  string file_name = 2;
+  float total_size = 3;
+  string checksum = 4;
+  bytes data = 5;
+}
+
+enum ChunkUploadStatus {
+  PLANNED = 0;
+  CREATED = 1;
+  UPLOADED = 2;
+  CLEANED = 3;
+}
+
+message UploadResponse {
+  ChunkUploadStatus status = 1;
+}
