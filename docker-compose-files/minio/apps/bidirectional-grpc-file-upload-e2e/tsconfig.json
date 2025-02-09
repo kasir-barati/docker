@@ -5,9 +5,13 @@
   "references": [
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "../../libs/shared"
     }
   ],
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "module": "NodeNext"
   }
 }

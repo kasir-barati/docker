@@ -5,9 +5,14 @@
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "types": ["jest", "node"],
-    "esModuleInterop": true,
-    "baseUrl": ".",
-    "rootDir": "src"
+    "rootDir": "src",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "importHelpers": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true
   },
   "include": [
     "jest.config.ts",

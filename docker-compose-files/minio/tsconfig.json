@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    {
+      "path": "./libs/shared"
+    },
+    {
+      "path": "./apps/bidirectional-grpc-file-upload"
+    },
+    {
+      "path": "./apps/bidirectional-grpc-file-upload-e2e"
+    }
+  ]
+}

@@ -5,9 +5,12 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.744.0",
+    "@aws-sdk/lib-storage": "^3.744.0",
     "@grpc/grpc-js": "^1.12.6",
     "@grpc/proto-loader": "^0.7.13",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "@minio/shared": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

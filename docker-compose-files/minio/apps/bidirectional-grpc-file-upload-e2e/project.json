@@ -11,7 +11,11 @@
         "jestConfig": "apps/bidirectional-grpc-file-upload-e2e/jest.config.ts",
         "passWithNoTests": true
       },
-      "dependsOn": ["bidirectional-grpc-file-upload:build"]
+      "dependsOn": [
+        "bidirectional-grpc-file-upload:compose:up",
+        "bidirectional-grpc-file-upload:build",
+        "bidirectional-grpc-file-upload:serve"
+      ]
     }
   }
 }

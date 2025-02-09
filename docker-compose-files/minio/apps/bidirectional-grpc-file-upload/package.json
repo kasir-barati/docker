@@ -1,0 +1,6 @@
+{
+  "name": "@minio/bidirectional-grpc-file-upload",
+  "devDependencies": {
+    "@minio/shared": "workspace:*"
+  }
+}
