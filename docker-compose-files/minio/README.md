@@ -1,5 +1,7 @@
 ## Bug
 
+**First** `cd docker-compose-files/minio` and then `pnpm i`. Now if you run the following command in your terminal you'll see the error message:
+
 ```bash
 $ nx build bidirectional-grpc-file-upload --verbose
 
