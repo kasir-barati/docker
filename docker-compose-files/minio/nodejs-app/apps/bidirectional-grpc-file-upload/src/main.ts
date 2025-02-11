@@ -13,8 +13,9 @@ import {
   UploadResponse,
 } from '@minio/shared';
 import { join } from 'path';
-import { s3Client } from './s3-client';
 import { PassThrough } from 'stream';
+
+import { s3Client } from './s3-client';
 
 const PROTO_PATH = join(__dirname, 'assets', 'file.proto');
 const packageDefinition = loadSync(PROTO_PATH, {

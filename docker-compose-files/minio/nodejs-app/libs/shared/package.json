@@ -5,7 +5,10 @@
   "type": "commonjs",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
-  "dependencies": {},
+  "dependencies": {
+    "@grpc/grpc-js": "^1.12.6",
+    "@aws-sdk/client-s3": "^3.744.0"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",

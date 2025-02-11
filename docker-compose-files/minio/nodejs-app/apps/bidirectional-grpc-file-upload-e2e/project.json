@@ -12,7 +12,6 @@
         "passWithNoTests": true
       },
       "dependsOn": [
-        "bidirectional-grpc-file-upload:compose:up",
         "bidirectional-grpc-file-upload:build",
         "bidirectional-grpc-file-upload:serve"
       ]

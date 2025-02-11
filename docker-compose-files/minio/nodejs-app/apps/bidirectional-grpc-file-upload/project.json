@@ -66,34 +66,6 @@
       "options": {
         "passWithNoTests": true
       }
-    },
-    "compose:up": {
-      "executor": "nx:run-commands",
-      "parallelism": false,
-      "cache": false,
-      "options": {
-        "commands": [
-          {
-            "command": "docker compose up -d",
-            "forwardAllArgs": true
-          }
-        ],
-        "cwd": "{workspaceRoot}"
-      }
-    },
-    "compose:down": {
-      "executor": "nx:run-commands",
-      "parallelism": false,
-      "cache": false,
-      "options": {
-        "commands": [
-          {
-            "command": "docker compose down",
-            "forwardAllArgs": true
-          }
-        ],
-        "cwd": "{workspaceRoot}"
-      }
     }
   }
 }

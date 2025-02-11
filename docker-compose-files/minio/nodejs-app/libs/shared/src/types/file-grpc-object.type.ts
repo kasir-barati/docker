@@ -17,10 +17,10 @@ export interface UploadRequest {
   data: Uint8Array;
 }
 export enum GrpcChunkUploadStatus {
-  PLANNED = 0,
-  CREATED = 1,
-  UPLOADED = 2,
   CLEANED = 3,
+  CREATED = 1,
+  PLANNED = 0,
+  UPLOADED = 2,
 }
 export interface UploadResponse {
   status: GrpcChunkUploadStatus;

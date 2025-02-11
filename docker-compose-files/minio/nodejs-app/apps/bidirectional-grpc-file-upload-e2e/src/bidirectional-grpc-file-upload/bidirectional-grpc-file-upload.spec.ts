@@ -2,9 +2,9 @@ import { ChecksumAlgorithm } from '@aws-sdk/client-s3';
 import { generateChecksum } from '@minio/shared';
 import { createReadStream } from 'fs';
 import { stat } from 'fs/promises';
+import { join } from 'path';
 
 import { getClient } from '../grpc-client';
-import { join } from 'path';
 
 describe('Upload a file into Minio', () => {
   it('should be able to upload', async () => {
