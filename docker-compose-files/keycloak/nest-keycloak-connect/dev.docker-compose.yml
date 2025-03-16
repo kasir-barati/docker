@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  postgres:
+    image: bitnami/postgresql:15.2.0-debian-11-r13
+    restart: always
+    environment:
+      POSTGRESQL_USERNAME: ${POSTGRESQL_USERNAME}
+      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRESQL_DATABASE: ${POSTGRESQL_DATABASE}
+    volumes:
+      - keycloak_db_volume:/bitnami/postgresql
+
+  keycloak:
+    image: bitnami/keycloak:21.0.2-debian-11-r0
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+      # - 8443:8443 HTTPS port
+    environment:
+      KEYCLOAK_CREATE_ADMIN_USER: true
+      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_NAME: ${POSTGRESQL_DATABASE}
+      KEYCLOAK_DATABASE_USER: ${POSTGRESQL_USERNAME}
+      KEYCLOAK_DATABASE_PASSWORD: ${POSTGRESQL_PASSWORD}
+      KEYCLOAK_DATABASE_SCHEMA: public
+      KEYCLOAK_ENABLE_STATISTICS: true
+      KEYCLOAK_DATABASE_VENDOR: postgresql
+      # https://www.keycloak.org/server/features
+      KEYCLOAK_EXTRA_ARGS: --features=declarative-user-profile -Dkeycloak.import=/tmp/nest-example.json
+      # KEYCLOAK_PRODUCTION: true In prod env and configure TLS pls
+    volumes:
+      - ./nest-example.json:/tmp/nest-example.json:ro
+      - keycloak_volume:/tmp
+      - ./packages/keycloakify/build_keycloak/src/main/resources/theme/you-say-keycloakify-theme:/opt/bitnami/keycloak/themes/you-say-keycloakify-theme:rw
+
+volumes:
+  keycloak_volume:
+  keycloak_db_volume:
