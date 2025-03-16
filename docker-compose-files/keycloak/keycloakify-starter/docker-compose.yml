@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  postgres:
+    image: bitnami/postgresql:15.2.0-debian-11-r13
+    restart: always
+    environment:
+      POSTGRESQL_USERNAME: ${POSTGRESQL_USERNAME}
+      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRESQL_DATABASE: ${POSTGRESQL_DATABASE}
+    volumes:
+      - keycloak_db_volume:/bitnami/postgresql
+
+  keycloak:
+    image: bitnami/keycloak:20.0.5-debian-11-r8
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+      # - 8443:8443 HTTPS port
+    environment:
+      KEYCLOAK_CREATE_ADMIN_USER: true
+      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_NAME: ${POSTGRESQL_DATABASE}
+      KEYCLOAK_DATABASE_USER: ${POSTGRESQL_USERNAME}
+      KEYCLOAK_DATABASE_PASSWORD: ${POSTGRESQL_PASSWORD}
+      KEYCLOAK_DATABASE_SCHEMA: public
+      KEYCLOAK_ENABLE_STATISTICS: true
+      KEYCLOAK_DATABASE_VENDOR: postgresql
+      KEYCLOAK_EXTRA_ARGS: --features=declarative-user-profile
+      # KEYCLOAK_EXTRA_ARGS: -Dkeycloak.profile=preview
+      # KEYCLOAK_EXTRA_ARGS: -Dkeycloak.profile.feature.scripts=enabled
+      # JAVA_OPTS: -Dkeycloak.profile=preview
+      # KEYCLOAK_PRODUCTION: true In prod env and configure TLS pls
+    volumes:
+      - keycloak_volume:/tmp
+      - ./build_keycloak/src/main/resources/theme/customized-keycloakify-starter:/opt/bitnami/keycloak/themes/customized-keycloakify-starter:rw
+
+volumes:
+  keycloak_volume:
+  keycloak_db_volume:
