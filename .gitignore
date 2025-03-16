@@ -2,3 +2,7 @@
 node_modules
 dist
 **/assets/interfaces/
+dist
+.next
+tmp
+.nx

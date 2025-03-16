@@ -1,0 +1,122 @@
+{
+  "name": "backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/backend/src",
+  "projectType": "application",
+  "targets": {
+    "build:docker": {
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/backend/Dockerfile --progress=plain . -t you-say-api-image"
+    },
+    "cleanup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "docker compose down -v",
+          "docker compose -f fusionauth.docker-compose.yml down -v",
+          "rm -rf ./dist/apps/backend",
+          "rm -rf ./dist/packages",
+          "rm -rf deployment/terraform.tfstate* deployment/.terraform*",
+          "docker system prune -f"
+        ]
+      }
+    },
+    "init:terraform": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "command": "terraform -chdir=deployment init"
+      }
+    },
+    "plan:terraform": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "command": "terraform -chdir=deployment plan"
+      }
+    },
+    "apply:terraform": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "command": "terraform -chdir=deployment apply -auto-approve"
+      }
+    },
+    "start:dev": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "backend:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "backend:build:development"
+        },
+        "production": {
+          "buildTarget": "backend:build:production"
+        }
+      }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "nx cleanup backend",
+          "docker compose -f fusionauth.docker-compose.yml up -d",
+          "curl --connect-timeout 5 --retry 5 --retry-delay 5 --retry-all-errors -f http://0.0.0.0:9011/api/status",
+          "docker compose build",
+          "docker compose up -d",
+          "nx init:terraform backend -var-file=./dev.tfvars",
+          "nx apply:terraform backend -var-file=./dev.tfvars",
+          "nx apply:terraform backend -var-file=./dev.tfvars"
+        ]
+      }
+    },
+    "openapi:create": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          {
+            "command": "ts-node --project apps/backend/tsconfig.app.json --transpile-only -r tsconfig-paths/register apps/backend/src/shared/helpers/create-openapi-json.helper.ts"
+          },
+          {
+            "command": "npx prettier --write apps/backend/openApi.json"
+          }
+        ]
+      }
+    },
+    "openapi:generate": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["openapi:create"],
+      "options": {
+        "parallel": false,
+        "commands": [
+          {
+            "command": "rm -rf apps/backend-e2e/src/api-client"
+          },
+          {
+            "command": "openapi-generator-cli generate -i apps/backend/openApi.json -o apps/backend-e2e/src/api-client -g typescript-axios --additional-properties=useSingleRequestParameter=true"
+          }
+        ]
+      }
+    },
+    "madge": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "cwd": "apps/backend",
+        "command": "madge --circular"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "apps/backend/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,16 @@
+node_modules
+**/*.json
+**/*.yml
+**/*.yaml
+**/*.md
+Dockerfile
+api-client
+.terraform*
+terraform.tfstate*
+**/*.tf
+**/*.tfvars
+deployment/**/*.js
+**/*.ftl
+**/*.css
+**Dockerfile
+**/*.ico

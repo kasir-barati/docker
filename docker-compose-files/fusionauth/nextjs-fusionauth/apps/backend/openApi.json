@@ -1,0 +1,895 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/healthcheck": {
+      "get": {
+        "operationId": "AppController_healthcheck",
+        "summary": "This endpoint exposes app's health state.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns app's health status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthCheckResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["App"]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "summary": "This endpoint creates a new user in FusionAuth.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Returns nothing. Use http status code 201 to indicate success."
+          },
+          "400": {
+            "description": "Bad request; email already exists, or name is invalid, etc.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/auth/login": {
+      "get": {
+        "operationId": "AuthController_login",
+        "summary": "This endpoint creates login URL with all necessary configurations.",
+        "description": "Client needs to call this endpoint first in order to generate a unique login URL so that OAuth server can take over. By redirecting user to the generated URL, user can enter their credentials. Calling this endpoint is crucial since it generates mandatory parameters and cookies. [Learn more here](https://github.com/FusionAuth/fusionauth-javascript-sdk-express/tree/main?tab=readme-ov-file#get-applogin).",
+        "parameters": [
+          {
+            "name": "client_id",
+            "required": true,
+            "in": "query",
+            "example": "60e15803-1857-400d-8167-968573834454",
+            "description": "Client ID is sent from the client side application to have more flexibility in backend.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "redirect_uri",
+            "required": true,
+            "in": "query",
+            "example": "http://localhost:3000/",
+            "description": "We are also getting the redirect url from the client side application so that if we had different frontend application we know to which one to redirect after completion of login process.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "state",
+            "required": true,
+            "in": "query",
+            "example": "/posts",
+            "description": "The `login` and `register` functions both accept an optional string parameter called state. We'll use it to indicate which page the user was on before redirecting to login or registration, so that the user can be returned to that location after a successful authentication ([ref](https://www.npmjs.com/package/@fusionauth/react-sdk#state-parameter)).",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User will be redirected to the generated login URL."
+          },
+          "400": {
+            "description": "Bad request; clientId is not string, etc.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/auth/oauth-callback": {
+      "get": {
+        "operationId": "AuthController_oauthCallback",
+        "summary": "Callback endpoint for FusionAuth after user entered their credentials and logged in.",
+        "description": "This is the URL in our application to which the OAuth server will redirect the user to after they log in. This URL must be and is registered with the OAuth server as a authorized redirect url. [Learn more here](https://github.com/FusionAuth/fusionauth-javascript-sdk-express/tree/main?tab=readme-ov-file#get-appcallback)",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "query",
+            "description": "This is the authorization code that the OAuth server created after the user was logged in. We'll exchange this code for tokens.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "state",
+            "required": true,
+            "in": "query",
+            "description": "This is the same value of the state parameter we passed to the OAuth server. This is echoed back to the application so that the application can verify that the code came from the correct location.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "locale",
+            "required": true,
+            "in": "query",
+            "example": "en",
+            "description": "Set by OAuth server",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "userState",
+            "required": true,
+            "in": "query",
+            "example": "Authenticated",
+            "description": "It is set by FusionAuth.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User will be redirected to the frontend application with the JWT tokens attached to it as cookies."
+          },
+          "400": {
+            "description": "Bad request; oauthState must be a string, etc.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or something about the request is not right.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "summary": "Will returns the Claims about the authenticated End-User.",
+        "description": "This endpoint gonna return userinfo which we get from OAuth server, our react SDK for OAuth server calls this endpoint after successful login.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Could not validate and verify the provided JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedException"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "operationId": "AuthController_logout",
+        "summary": "Log the User out of the OAuth server SSO session using a GET request",
+        "description": "By calling this endpoint user's OAuth cookies will be removed and they will be redirected to the specified URL in the query string.",
+        "parameters": [
+          {
+            "name": "post_logout_redirect_uri",
+            "required": true,
+            "in": "query",
+            "description": "",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "client_id",
+            "required": false,
+            "in": "query",
+            "description": "The unique client identifier. The client Id is the Id of the FusionAuth Application in which you are requesting to logout, this value is used to identify the correct redirect URI. Generally speaking this parameter is required, but it becomes redundant because the application can be identified based on the `id_token` in cookies.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Redirect user to the logout page of OAuth server."
+          },
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Could not validate and verify the provided JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedException"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "summary": "Refresh Token Grant Request",
+        "description": "You will make a request to this endpoint to exchange the user's refresh token for an access token and replace existing cookies with the new ones.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get new tokens from OAuth server and replace them with the existing ones"
+          },
+          "400": {
+            "description": "Refresh token is missing in request cookies.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/posts": {
+      "get": {
+        "operationId": "PostController_findAll",
+        "summary": "Find all posts",
+        "description": "You can filter posts based on different properties and for different pages",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number, it cannot be a negative number or zero.",
+            "example": 1,
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "How many documents per page, it cannot be a negative number or zero..",
+            "example": 3,
+            "schema": { "default": 10, "type": "number" }
+          },
+          {
+            "name": "createdAt",
+            "required": false,
+            "in": "query",
+            "example": "asc",
+            "schema": {
+              "default": "asc",
+              "enum": ["asc", "desc"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Post"]
+      }
+    },
+    "/auth/mobile/register": {
+      "post": {
+        "operationId": "MobileAuthController_register",
+        "summary": "This endpoint creates a new user in FusionAuth.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MobileRegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Returns nothing. Use http status code 201 to indicate success."
+          },
+          "400": {
+            "description": "Bad request; email already exists, or name is invalid, etc.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Mobile Auth"]
+      }
+    },
+    "/auth/mobile/login": {
+      "post": {
+        "operationId": "MobileAuthController_login",
+        "summary": "Login users from mobile devices.",
+        "description": "This endpoint will receive user credentials and exchanged them fo tokens with OAuth server.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MobileLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns generated tokens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MobileLoginResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request; email or password is invalid, etc.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Mobile Auth"]
+      }
+    },
+    "/newsletter-subscription": {
+      "post": {
+        "operationId": "NewsletterSubscriptionController_create",
+        "summary": "Add a new subscriber to newsletter.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewsletterSubscriptionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Returns nothing. You can use http status code to realize whether the operation was failed or completed."
+          },
+          "400": {
+            "description": "Bad request; e.g. email address is not valid!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorException"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Newsletter Subscription"]
+      }
+    }
+  },
+  "info": {
+    "title": "The you-say RESTful API",
+    "description": "",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [{ "url": "http://localhost:3001" }],
+  "components": {
+    "schemas": {
+      "HealthCheckResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "healthy",
+            "description": "The state of the app's health"
+          }
+        },
+        "required": ["message"]
+      },
+      "InternalServerErrorException": {
+        "type": "object",
+        "properties": {}
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's Email address",
+            "example": "some.random.email@gmail.com"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name"
+          }
+        },
+        "required": ["email", "firstName", "lastName"]
+      },
+      "ErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "object",
+            "description": "`class-validator` generates an array of strings, but everyone else throw a string as the error message."
+          },
+          "path": {
+            "type": "string",
+            "description": "Where the error occurred."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "When the error occurred."
+          }
+        },
+        "required": ["message", "path", "timestamp"]
+      },
+      "MeResponseDto": {
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "string",
+            "example": "uuid",
+            "description": "The unique Id of the Application for which the User has been authenticated."
+          },
+          "email": {
+            "type": "string",
+            "example": "example@ex.com",
+            "description": "The email address of the User whose claims are represented by this JWT."
+          },
+          "email_verified": {
+            "type": "boolean",
+            "example": true,
+            "description": "The OpenId Connect claim indicating if the User's email has been verified."
+          },
+          "family_name": {
+            "type": "string",
+            "example": "Kazuya",
+            "description": "User's family if available."
+          },
+          "given_name": {
+            "type": "string",
+            "example": "Souma",
+            "description": "User's name if available."
+          },
+          "preferred_username": {
+            "type": "string",
+            "example": "souma.kazuya@you-say.com",
+            "description": "We've configured our OAuth server to use user's email address as their preferred username."
+          },
+          "roles": {
+            "example": [],
+            "description": "The roles assigned to the User in the authenticated Application. This claim is only present if the User has a registration to the Application.",
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "scope": {
+            "type": "string",
+            "example": "openid offline_access",
+            "description": "Scopes of OAuth server"
+          },
+          "settings": {
+            "type": "object",
+            "example": {},
+            "description": "User's settings"
+          },
+          "sid": {
+            "type": "string",
+            "example": "659b75da-69f9-471f-813d-62c8baff1f86",
+            "description": "The unique Id of the refresh token returned along with this access token when the offline_access scope was requested. This unique Id is the persistent identifier for this refresh token, and will not change even when using one-time use refresh tokens. This value may optionally be used to revoke the token using the Refresh Token API."
+          },
+          "sub": {
+            "type": "string",
+            "example": "7b176652-c80f-47a4-9533-6e80ddc4f355",
+            "description": "The subject of the access token. This value is equal to the User's ID in OAuth server."
+          },
+          "tenant": {
+            "type": "object",
+            "example": {},
+            "description": "Tenant's info"
+          },
+          "tid": {
+            "type": "string",
+            "example": "16fc8438-3ec0-466d-89dc-92c35db746a4",
+            "description": "The FusionAuth Tenant unique Id."
+          }
+        },
+        "required": [
+          "applicationId",
+          "email",
+          "email_verified",
+          "family_name",
+          "given_name",
+          "preferred_username",
+          "roles",
+          "scope",
+          "settings",
+          "sid",
+          "sub",
+          "tenant",
+          "tid"
+        ]
+      },
+      "UnauthorizedException": { "type": "object", "properties": {} },
+      "FusionAuthUserDto": {
+        "type": "object",
+        "properties": {
+          "fusionAuthId": {
+            "type": "string",
+            "description": "User ID in FusionAuth",
+            "example": "3b467620-8dd3-48d1-a403-e4117f16ff41"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name",
+            "example": "Katarina"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name",
+            "example": "Santana"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "katarina.santana@bit.com"
+          }
+        },
+        "required": ["fusionAuthId", "firstName", "lastName", "email"]
+      },
+      "PostDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Post ID",
+            "example": "624616797870316ac1432d52"
+          },
+          "title": {
+            "type": "string",
+            "description": "Post title",
+            "example": "Post title"
+          },
+          "content": {
+            "type": "string",
+            "description": "Post content in markdown",
+            "example": "# Post content"
+          },
+          "postImage": {
+            "type": "string",
+            "description": "Post image",
+            "example": "https://you-say.com/images/post-image.png"
+          },
+          "description": {
+            "type": "string",
+            "description": "Post description",
+            "example": "Post description"
+          },
+          "fusionAuthUser": {
+            "description": "FusionAuth User info",
+            "allOf": [
+              { "$ref": "#/components/schemas/FusionAuthUserDto" }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Post created at",
+            "example": "Fri May 10 2024 14:19:53 GMT+0200 (Central European Summer Time)"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Post updated at",
+            "example": "Fri May 10 2024 14:19:53 GMT+0200 (Central European Summer Time)"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "content",
+          "postImage",
+          "description",
+          "fusionAuthUser",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "FindAllResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Paginated Data",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PostDto" }
+          },
+          "page": { "type": "number", "description": "Current page" },
+          "pages": {
+            "type": "number",
+            "description": "Total number of pages"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of row to be returned"
+          },
+          "items": {
+            "type": "number",
+            "description": "Total number of items"
+          }
+        },
+        "required": ["data", "page", "pages", "limit", "items"]
+      },
+      "MobileRegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's Email address",
+            "example": "some.random.email@gmail.com"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "User's password. Please do not allow user to use white space at the end or beginning of their password(we will trim it!). note that spaces inside password are fine (find specificities about password requirements in `deployment/fusionauth/main.tf` in `password_validation_rules` section). One more thing, since data will be sent over HTTPS there will be no issue with password being sent in plain text."
+          }
+        },
+        "required": ["email", "firstName", "lastName", "password"]
+      },
+      "MobileLoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "exmaple@gmail.com",
+            "description": "User's Email address"
+          },
+          "password": {
+            "type": "string",
+            "example": "<P@SS Word>",
+            "minLength": 8,
+            "description": "User's password. Find the details about password requirements in `deployment/fusionauth/main.tf` in `password_validation_rules` section."
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "MobileLoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string",
+            "description": "JWT ID Token"
+          },
+          "tokenType": {
+            "type": "object",
+            "example": "Bearer",
+            "description": "JWT token type"
+          },
+          "accessTokenExpiresIn": {
+            "type": "number",
+            "example": 3600,
+            "description": "JWT token expiration time in seconds"
+          },
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token, used to exchange for new tokens. It is not a JWT token."
+          }
+        },
+        "required": [
+          "idToken",
+          "tokenType",
+          "accessTokenExpiresIn",
+          "accessToken",
+          "refreshToken"
+        ]
+      },
+      "CreateNewsletterSubscriptionDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email@example.com",
+            "description": "Email address"
+          }
+        },
+        "required": ["email"]
+      }
+    }
+  }
+}
