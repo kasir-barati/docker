@@ -1,0 +1,67 @@
+services:
+  nodejs-app:
+    image: node:22.14.0-bullseye
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "npm run start:dev"
+    depends_on:
+      mongodb-primary:
+        condition: service_healthy
+    environment:
+      PORT: $PORT
+      NODE_ENV: development
+      MONGODB_USERNAME: $MONGODB_USERNAME
+      MONGODB_PASSWORD: $MONGODB_PASSWORD
+      MONGODB_REPLICA_SET_NAME: $MONGODB_REPLICA_SET_NAME
+    ports:
+      - $PORT:$PORT
+
+  mongodb-primary:
+    image: bitnami/mongodb:7.0.12-debian-12-r2
+    environment:
+      MONGODB_USERNAME: $MONGODB_USERNAME
+      MONGODB_PASSWORD: $MONGODB_PASSWORD
+      MONGODB_DATABASE: $MONGODB_DATABASE
+      MONGODB_ROOT_PASSWORD: $MONGODB_ROOT_PASSWORD
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_NAME: $MONGODB_REPLICA_SET_NAME
+      MONGODB_REPLICA_SET_KEY: $MONGODB_REPLICA_SET_KEY
+    depends_on:
+      mongodb-secondary:
+        condition: service_healthy
+      mongodb-arbiter:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mongodb-secondary:
+    image: bitnami/mongodb:7.0.12-debian-12-r2
+    environment:
+      MONGODB_PRIMARY_HOST: mongodb-primary
+      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: $MONGODB_ROOT_PASSWORD
+      MONGODB_REPLICA_SET_KEY: $MONGODB_REPLICA_SET_KEY
+      MONGODB_REPLICA_SET_MODE: secondary
+      MONGODB_REPLICA_SET_NAME: $MONGODB_REPLICA_SET_NAME
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mongodb-arbiter:
+    image: bitnami/mongodb:7.0.12-debian-12-r2
+    environment:
+      MONGODB_PRIMARY_HOST: mongodb-primary
+      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: $MONGODB_ROOT_PASSWORD
+      MONGODB_REPLICA_SET_KEY: $MONGODB_REPLICA_SET_KEY
+      MONGODB_REPLICA_SET_MODE: arbiter
+      MONGODB_REPLICA_SET_NAME: $MONGODB_REPLICA_SET_NAME
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
