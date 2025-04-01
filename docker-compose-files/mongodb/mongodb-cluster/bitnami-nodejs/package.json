@@ -1,0 +1,10 @@
+{
+  "name": "bitnami-mongodb-nodejs",
+  "main": "index.mjs",
+  "scripts": {},
+  "keywords": [],
+  "author": "kasir-barati",
+  "dependencies": {
+    "mongodb": "^6.15.0"
+  }
+}
