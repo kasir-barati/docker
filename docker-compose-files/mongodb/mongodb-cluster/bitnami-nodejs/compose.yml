@@ -1,0 +1,59 @@
+services:
+  nodejs-app:
+    image: node:22.14.0-bullseye
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "node index.mjs"
+    depends_on:
+      mongodb-primary:
+        condition: service_healthy
+
+  mongodb-primary:
+    image: bitnami/mongodb:7.0.12-debian-12-r2
+    environment:
+      MONGODB_REPLICA_SET_NAME: rs0
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_KEY: myReplicaSetKey
+      MONGODB_ROOT_PASSWORD: my
+      MONGODB_USERNAME: my
+      MONGODB_PASSWORD: my
+      MONGODB_DATABASE: my
+    depends_on:
+      - mongodb-secondary
+      - mongodb-arbiter
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mongodb-secondary:
+    image: bitnami/mongodb:7.0.12-debian-12-r2
+    environment:
+      MONGODB_REPLICA_SET_NAME: rs0
+      MONGODB_REPLICA_SET_MODE: secondary
+      MONGODB_PRIMARY_HOST: mongodb-primary
+      MONGODB_PRIMARY_PORT_NUMBER: 27017
+      MONGODB_REPLICA_SET_KEY: myReplicaSetKey
+      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: my
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mongodb-arbiter:
+    image: bitnami/mongodb:7.0.12-debian-12-r2
+    environment:
+      MONGODB_REPLICA_SET_NAME: rs0
+      MONGODB_REPLICA_SET_MODE: arbiter
+      MONGODB_PRIMARY_HOST: mongodb-primary
+      MONGODB_PRIMARY_PORT_NUMBER: 27017
+      MONGODB_REPLICA_SET_KEY: myReplicaSetKey
+      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: my
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
