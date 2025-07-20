@@ -1,5 +1,5 @@
 <details>
-<summary>Ho to use exported env variables inside the cotainer in <code>CMD</code></summary>
+<summary>How to use exported env variables inside the cotainer in <code>CMD</code> in a <code>Dockerfile</code></summary>
 
 I have this `Dockerfile`:
 
