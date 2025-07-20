@@ -1,6 +1,6 @@
 # Docs
 
-- [FAQ](./FAQ).
+- [FAQ](./FAQ.md).
 - [Redis](./redis.md).
 - [volumes](./volumes.md).
 - [Postgres](postgresql.md).
