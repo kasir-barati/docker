@@ -6,3 +6,4 @@
 - [Postgres](postgresql.md).
 - [Glossary](./glossary.md).
 - [Choose the right image](./choose-the-right-image.md).
+- [Merging docker compose files](./merging-compose-files/README.md).
