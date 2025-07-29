@@ -7,3 +7,4 @@
 - [Glossary](./glossary.md).
 - [Choose the right image](./choose-the-right-image.md).
 - [Merging docker compose files](./merging-compose-files/README.md).
+- [Send python sub processes' logs to `stdout`/`stderr` in Docker](./python-multiprocessing-logs/README.md).
