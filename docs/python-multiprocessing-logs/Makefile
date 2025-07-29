@@ -15,4 +15,5 @@ clean:
 	rm -rf .venv
 
 start:
-	$(PYTHON) -m src.main
+	$(PYTHON) -m src.main &
+	./tail-logs.sh
