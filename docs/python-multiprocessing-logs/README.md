@@ -1,6 +1,6 @@
 # Mapping Multiprocessing Logs to `stdout`/`stderr`
 
-In this example you can see how I am mapping everything we have **in `logs` dir** to `stdout`/`stderr`.
+In [this example](./) you can see how I am mapping everything we have **in `logs` dir** to `stdout`/`stderr`.
 
 > [!CAUTION]
 >
