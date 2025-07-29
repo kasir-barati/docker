@@ -22,7 +22,3 @@ for index in range(3):
     p = Process(target=worker, args=(index,), daemon=True)
     p.start()
     processes.append(p)
-
-while True:
-    print(f"[main process]: {datetime.now().isoformat()}")
-    sleep(30)
