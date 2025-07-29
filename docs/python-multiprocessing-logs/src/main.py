@@ -17,6 +17,8 @@ def worker(i: int) -> None:
 processes: list[Process] = []
 
 for index in range(3):
+    print(f"Create process #{index}")
+
     p = Process(target=worker, args=(index,), daemon=True)
     p.start()
     processes.append(p)

@@ -1,4 +1,14 @@
 services:
+  create-logs-dir:
+    image: python:3.12.9-bullseye
+    user: root
+    group_add:
+      - "1000"
+    volumes:
+      - ./logs:/app/logs
+    command: |
+      chown ${MY_UID:-1000}:${MY_GID:-1000} /app/logs
+
   app:
     build:
       context: .
@@ -11,3 +21,6 @@ services:
     volumes:
       - ./logs:/app/logs
       - ./src:/app/src
+    depends_on:
+      create-logs-dir:
+        condition: service_completed_successfully
