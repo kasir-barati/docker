@@ -1,0 +1,20 @@
+{
+  "name": "gen-thumbnail-in-nodejs-and-minio",
+  "version": "0.0.1",
+  "description": "Generating thumbnails in NodeJS & MinIO",
+  "scripts": {
+    "test": "docker compose up -d && ts-node index.ts && docker compose down -v"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.0",
+  "devDependencies": {
+    "@types/node": "^24.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.901.0"
+  }
+}
