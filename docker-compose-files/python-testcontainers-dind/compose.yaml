@@ -1,0 +1,20 @@
+services:
+  app:
+    build:
+      ssh:
+        - default
+      context: .
+      target: dev
+    privileged: true # Required for Docker-in-Docker
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 2G
+        reservations:
+          cpus: "0.5"
+          memory: 1G
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./Makefile:/app/Makefile:ro
