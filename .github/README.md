@@ -8,6 +8,10 @@ My tested `Dockerfile`s &amp; docker compose files which I use them and try to k
 
 ## [Docs](../docs/README.md)
 
+## Playgrounds
+
+- [MongoDB](../docker-compose-files/mongodb/playground/README.md).
+
 # Tips:
 
 - Passing multiple env file to the docker-compose file -- [ref](https://github.com/docker/compose/issues/7326#issuecomment-1252426491)

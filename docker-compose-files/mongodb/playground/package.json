@@ -1,0 +1,12 @@
+{
+  "name": "test-async-communication",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "mongoose": "^9.1.5"
+  }
+}
