@@ -2,32 +2,37 @@
 
 import { connect, Schema, model } from "mongoose";
 
-await connect('mongodb://mongodb:27017/temp', { autoIndex: false });
+await connect("mongodb://mongodb:27017/temp", { autoIndex: false });
+
+const TaskSchema = new Schema({
+  logs: [Object],
+});
+const TaskModel = model("Task", TaskSchema);
 
 const MetadataSchema = new Schema({
   someOtherField: String,
   taskId: String,
 });
 const MetadataModel = model("Metadata", MetadataSchema);
-const metadata = await MetadataModel.create({
-  taskId: "697bdc9a408014cad03bec1b",
-});
 
-const data = await MetadataModel.findById(metadata._id);
+await create();
 
-if (data) {
-  data.taskId = undefined;
-  await data.save();
-}
+async function create() {
+  console.log("Creating task and metadata...");
 
-console.log("Tried to unset taskId.");
+  const session = await TaskModel.db.startSession();
 
-/**
- * @param {number} minutes
- * @returns {Promise<void>}
- */
-function sleep(minutes) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, minutes * 60 * 1000);
-  });
+  try {
+    session.startTransaction();
+    const task = await TaskModel.create([{ logs: [] }], { session });
+    await MetadataModel.create([{ taskId: task[0]._id.toString() }], {
+      session,
+    });
+    await session.commitTransaction();
+  } catch (error) {
+    console.error("Error during creation: ", error);
+    await session.abortTransaction();
+  } finally {
+    session.endSession();
+  }
 }

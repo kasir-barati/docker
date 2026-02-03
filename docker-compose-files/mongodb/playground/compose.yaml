@@ -3,13 +3,25 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: production
+      target: development
+    volumes:
+      - ./index.js:/app/index.js
 
   mongodb:
     image: mongo:8.0
     ports:
       - "27017:27017"
-  
+    entrypoint: ["mongod", "--bind_ip_all", "--replSet", "rs0"]
+
+  mongodb-setup:
+    image: mongo:8.0
+    restart: on-failure
+    volumes:
+      - ./setup.sh:/scripts/setup.sh
+    entrypoint: ["/scripts/setup.sh"]
+    depends_on:
+      - mongodb
+
   mongo-express:
     image: mongo-express:1.0.2-20-alpine3.19
     environment:
