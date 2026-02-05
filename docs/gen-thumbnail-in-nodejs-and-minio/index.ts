@@ -38,7 +38,7 @@ async function generateThumbnail() {
       Key: key,
       Bucket: bucket,
       // Range: 'bytes=0-1024000', FIXME: this does NOT work with ffmpeg, have to download the whole file!
-    })
+    }),
   );
 
   if (!Body) {
@@ -100,7 +100,7 @@ async function uploadFile() {
       ContentDisposition: `attachment; filename="${fileName}"`,
     });
     const createMultiPartUploadResponse = await client.send(
-      createMultiPartUploadCommand
+      createMultiPartUploadCommand,
     );
 
     if (!createMultiPartUploadResponse.UploadId) {

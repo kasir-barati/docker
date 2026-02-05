@@ -2,14 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-
   test-compose:
-    name: 'Test suite: Compose'
+    name: "Test suite: Compose"
     # List of supported runners:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-runners-and-hardware-resources
     runs-on: ubuntu-latest
@@ -71,13 +70,13 @@ jobs:
       #                                                        #
       ##########################################################
 
-      - name:  Run the stack
+      - name: Run the stack
         run: docker-compose up -d
 
       - name: Execute core test suite
         run: .github/workflows/scripts/run-tests-core.sh
 
-      - name: 'debug: Display state and logs (core)'
+      - name: "debug: Display state and logs (core)"
         # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idif
         # https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions#job-status-check-functions
         if: always()
@@ -115,7 +114,7 @@ jobs:
 
           sed -i '/input { udp { port => 5000 codec => json } }/d' logstash/pipeline/logstash.conf
 
-      - name: 'debug: Display state and logs (Logspout)'
+      - name: "debug: Display state and logs (Logspout)"
         if: always()
         run: |
           docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml ps
@@ -150,7 +149,7 @@ jobs:
           sed -i '/xpack.security.authc.api_key.enabled: true/d' elasticsearch/config/elasticsearch.yml
           docker-compose restart elasticsearch
 
-      - name: 'debug: Display state and logs (Enterprise Search)'
+      - name: "debug: Display state and logs (Enterprise Search)"
         if: always()
         run: |
           docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml ps
@@ -167,7 +166,7 @@ jobs:
           docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml up -d apm-server
           .github/workflows/scripts/run-tests-apm-server.sh
 
-      - name: 'debug: Display state and logs (APM Server)'
+      - name: "debug: Display state and logs (APM Server)"
         if: always()
         run: |
           docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml ps
@@ -184,7 +183,7 @@ jobs:
           docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml up -d metricbeat
           .github/workflows/scripts/run-tests-metricbeat.sh
 
-      - name: 'debug: Display state and logs (Metricbeat)'
+      - name: "debug: Display state and logs (Metricbeat)"
         if: always()
         run: |
           docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml ps
@@ -210,7 +209,7 @@ jobs:
           down -v
 
   test-swarm:
-    name: 'Test suite: Swarm'
+    name: "Test suite: Swarm"
     runs-on: ubuntu-latest
 
     env:
@@ -268,13 +267,13 @@ jobs:
       #                                                        #
       ##########################################################
 
-      - name:  Run the stack
+      - name: Run the stack
         run: docker service scale elk_logstash=1 elk_kibana=1
 
       - name: Execute core test suite
         run: .github/workflows/scripts/run-tests-core.sh swarm
 
-      - name: 'debug: Display state and logs (core)'
+      - name: "debug: Display state and logs (core)"
         if: always()
         run: |
           docker stack services elk

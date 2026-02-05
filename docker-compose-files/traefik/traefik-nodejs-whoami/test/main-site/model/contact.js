@@ -1,9 +1,9 @@
 // @ts-check
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 
-const { sequelize } = require('./db-config.js');
+const { sequelize } = require("./db-config.js");
 
-module.exports.Contact = sequelize.define('contact', {
+module.exports.Contact = sequelize.define("contact", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,

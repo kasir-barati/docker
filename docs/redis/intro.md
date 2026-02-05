@@ -3,7 +3,6 @@
 - Fastest data platform.
 - Open source, advanced key-value store.
 - Provides cloud and on-premise solutions for:
-
   - Caching.
   - Vector search.
   - NoSQL databases.
@@ -21,7 +20,6 @@
     - [A few things about Redis security by antirez⁠](http://antirez.com/news/96).
 - We use [Redis Insight](https://hub.docker.com/r/redis/redisinsight) as our dashboard.
 - I use bitnami since it is well documented.
-
   - It uses [_AOF persistence_](./glossary.md#aofStandsForGlossary).
   - **NOTE**: The `@` is not supported for `REDIS_PASSWORD`.
   - Note that Redis's default port number is 6379, but we can change it:

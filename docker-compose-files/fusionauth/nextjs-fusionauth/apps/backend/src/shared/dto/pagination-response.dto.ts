@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PaginationResponse } from '@shared';
 
-export class PaginationResponseDto<T>
-  implements PaginationResponse<T>
-{
+export class PaginationResponseDto<
+  T,
+> implements PaginationResponse<T> {
   @ApiProperty({
     description: 'Paginated Data',
     type: [Object],

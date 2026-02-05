@@ -16,9 +16,10 @@ import {
   USER_WELCOME_MAIL_QUEUE,
 } from '../constants/app.constant';
 
-export class RabbitmqModuleConfig
-  implements ConfigurableModuleOptionsFactory<RabbitMQConfig, 'create'>
-{
+export class RabbitmqModuleConfig implements ConfigurableModuleOptionsFactory<
+  RabbitMQConfig,
+  'create'
+> {
   constructor(
     @Inject(auditLogApiConfig.KEY)
     private readonly auditLogApiConfigs: ConfigType<typeof auditLogApiConfig>,

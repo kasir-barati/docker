@@ -6,6 +6,7 @@ My tested `Dockerfile`s &amp; docker compose files which I use them and try to k
 
 ## Playgrounds
 
+- [Redis](./docker-compose-files/redis/cluster/README.md).
 - [MongoDB](./docker-compose-files/mongodb/playground/README.md).
 
 # Tips:

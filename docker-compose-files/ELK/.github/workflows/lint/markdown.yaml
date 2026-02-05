@@ -74,7 +74,7 @@ MD028: false
 
 # Ordered list item prefix <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md029>
 MD029:
-  style: 'one'
+  style: "one"
 
 # Spaces after list markers <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md030>
 MD030: true
@@ -93,7 +93,7 @@ MD034: true
 
 # Horizontal rule style <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md035>
 MD035:
-  style: '---'
+  style: "---"
 
 # Emphasis used instead of a heading <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md036>
 MD036: true
@@ -122,13 +122,13 @@ MD043: false
 # Proper names should have the correct capitalization <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md044>
 MD044:
   names:
-  - docker-elk
-  - Elasticsearch
-  - Logstash
-  - Kibana
-  - Docker
-  - Compose
-  - macOS
+    - docker-elk
+    - Elasticsearch
+    - Logstash
+    - Kibana
+    - Docker
+    - Compose
+    - macOS
   code_blocks: false
 
 # Images should have alternate text (alt text) <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md045>
@@ -143,7 +143,7 @@ MD047: true
 
 # Code fence style <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md048>
 MD048:
-  style: 'backtick'
+  style: "backtick"
 
 # Custom rules:
 CHANGELOG-RULE-001: true

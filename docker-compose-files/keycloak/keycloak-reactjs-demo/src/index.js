@@ -7,7 +7,6 @@ import App from "./components/App";
 import rootReducer from "./modules";
 import UserService from "./services/UserService";
 
-
 // HTTP
 
 const _axios = axios.create();
@@ -21,7 +20,6 @@ _axios.interceptors.request.use((config) => {
   }
 });
 
-
 // REDUX STORE
 
 const _middleware = applyMiddleware(thunk, axiosMiddleware(_axios));
@@ -29,6 +27,7 @@ const store = createStore(rootReducer, _middleware);
 
 // APP
 
-const renderApp = () => ReactDOM.render(<App store={store}/>, document.getElementById("app"));
+const renderApp = () =>
+  ReactDOM.render(<App store={store} />, document.getElementById("app"));
 
 UserService.initKeycloak(renderApp);

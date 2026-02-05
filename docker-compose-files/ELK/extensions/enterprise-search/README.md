@@ -105,7 +105,7 @@ You can also specify the options you want to override by setting environment var
 enterprise-search:
   environment:
     ent_search.auth.source: standard
-    worker.threads: '6'
+    worker.threads: "6"
 ```
 
 Any change to the Enterprise Search configuration requires a restart of the Enterprise Search container:

@@ -9,25 +9,25 @@ import SecretBooks from "./SecretBooks";
 
 const BookBox = () => (
   <>
-    <Menu/>
+    <Menu />
     <Switch>
       <Route exact path="/">
-        <BookList/>
+        <BookList />
       </Route>
       <Route exact path="/books/new">
-        <BookForm/>
+        <BookForm />
       </Route>
       <Route path="/books/:bookId">
-        <BookDetails/>
+        <BookDetails />
       </Route>
-      <RolesRoute path="/secret" roles={['admin']}>
-        <SecretBooks/>
+      <RolesRoute path="/secret" roles={["admin"]}>
+        <SecretBooks />
       </RolesRoute>
       <Route path="*">
-        <NoMatch/>
+        <NoMatch />
       </Route>
     </Switch>
   </>
-)
+);
 
-export default BookBox
+export default BookBox;

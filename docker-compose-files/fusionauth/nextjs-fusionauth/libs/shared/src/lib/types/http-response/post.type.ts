@@ -3,5 +3,4 @@
 import { Post } from '../entities/post.type';
 import { PaginationResponse } from './pagination.type';
 
-export interface FindAllPostsResponse
-  extends PaginationResponse<Post> {}
+export interface FindAllPostsResponse extends PaginationResponse<Post> {}

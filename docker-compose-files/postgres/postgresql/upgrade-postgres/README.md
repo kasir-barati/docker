@@ -12,17 +12,15 @@
     - Consistency
     - Reproducible changes
 - For unique data that our apps generate:
-
   - Unique data examples: Log, Keys, Database data, etc
   - Follow separation of concerns approach:
     - Do not save unique data inside container
     - Inside the container just our app binaries
   - Two solution:
-
     - Data volume:
 
       ```yml
-      version: '3.8'
+      version: "3.8"
 
       services:
         postgres:
@@ -35,7 +33,7 @@
       Or
 
       ```yml
-      version: '3.8'
+      version: "3.8"
 
       services:
         postgres:
@@ -54,7 +52,7 @@
       In this way we are mounting a directory from our host inside the container
 
       ```yml
-      version: '3.8'
+      version: "3.8"
 
       services:
         postgres:

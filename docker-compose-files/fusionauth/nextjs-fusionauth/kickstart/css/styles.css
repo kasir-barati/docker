@@ -8,8 +8,10 @@
   --error-background: #ffe8e8;
   --border-color: #dddddd;
   --logo-url: url(https://fusionauth.io/cdn/samplethemes/changebank/changebank.svg);
-  --font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --font-stack:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
 }
 body {
   font-family: var(--font-stack);
@@ -103,7 +105,8 @@ a:visited {
 }
 .button.blue:focus {
   background: var(--main-accent-color) !important;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4),
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.4),
     0 0 0 2px rgba(57, 152, 219, 0.4);
   outline: 1px solid #ffffff !important;
 }
@@ -167,7 +170,9 @@ label.checkbox {
 .input-addon-group > :last-child:not(.flat),
 .input-addon-group > .input:last-child:not(.flat),
 .input-addon-group > input:last-child:not(.flat) {
-  color: var(--main-text-color); /* overriding typical text color for inputs */
+  color: var(
+    --main-text-color
+  ); /* overriding typical text color for inputs */
 }
 .input-addon-group span {
   display: none; /* Hiding icons on inputs */
@@ -777,7 +782,11 @@ hr,
 #email-ver-required .grecaptcha-msg,
 #email-verification .grecaptcha-msg,
 #email-ver-required fieldset,
-#email-ver-required .panel > main > #verification-required-resend-code fieldset,
+#email-ver-required
+  .panel
+  > main
+  > #verification-required-resend-code
+  fieldset,
 #oauth-two-factor .panel .full > fieldset,
 #oauth-two-factor .panel > main > fieldset + .form-row,
 #oauth-two-factor-methods .full,
@@ -833,7 +842,11 @@ hr,
 #oauth-two-factor-methods .full fieldset .form-row:last-child label {
   padding-bottom: 0;
 }
-#oauth-two-factor-methods .radio-items .form-row label span:last-of-type {
+#oauth-two-factor-methods
+  .radio-items
+  .form-row
+  label
+  span:last-of-type {
   margin-left: 1.875rem;
 }
 #oauth-device .push-top {

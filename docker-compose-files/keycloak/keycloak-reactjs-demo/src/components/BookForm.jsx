@@ -5,9 +5,8 @@ import { addBook } from "../modules/books";
 import RenderOnRole from "./RenderOnRole";
 
 const BookForm = () => {
-
-  const [author, setAuthor] = useState('');
-  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState("");
+  const [title, setTitle] = useState("");
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -17,8 +16,7 @@ const BookForm = () => {
     if (!author || !title) {
       return;
     }
-    dispatch(addBook({ author, title }))
-      .then(() => history.push("/"))
+    dispatch(addBook({ author, title })).then(() => history.push("/"));
   };
 
   return (
@@ -28,21 +26,33 @@ const BookForm = () => {
           <h1>Add a new book:</h1>
           <div className="form-group">
             <label htmlFor="author">Author</label>
-            <input type="text" className="form-control" placeholder="Author"
-                   value={author} onChange={(e) => setAuthor(e.target.value)}/>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Author"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+            />
           </div>
           <div className="form-group">
             <label htmlFor="title">Title</label>
-            <input type="text" className="form-control" placeholder="Title"
-                   value={title} onChange={(e) => setTitle(e.target.value)}/>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
-          <RenderOnRole roles={['user']}>
-            <button type="submit" className="btn btn-primary">Add book</button>
+          <RenderOnRole roles={["user"]}>
+            <button type="submit" className="btn btn-primary">
+              Add book
+            </button>
           </RenderOnRole>
         </form>
       </div>
     </div>
   );
-}
+};
 
-export default BookForm
+export default BookForm;

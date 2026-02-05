@@ -1,4 +1,4 @@
-version: '3.2'
+version: "3.2"
 
 services:
   enterprise-search:
@@ -15,7 +15,7 @@ services:
       JAVA_OPTS: -Xmx2g -Xms2g
       ENT_SEARCH_DEFAULT_PASSWORD: changeme
     ports:
-      - '3002:3002'
+      - "3002:3002"
     networks:
       - elk
     depends_on:

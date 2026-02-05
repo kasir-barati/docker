@@ -1,4 +1,4 @@
-version: '3.2'
+version: "3.2"
 
 services:
   metricbeat:
@@ -10,7 +10,7 @@ services:
     # 'docker.sock' and the host's filesystem.
     user: root
     command:
-        # Log to stderr.
+      # Log to stderr.
       - -e
         # Disable config file permissions checks. Allows mounting
         # 'config/metricbeat.yml' even if it's not owned by root.

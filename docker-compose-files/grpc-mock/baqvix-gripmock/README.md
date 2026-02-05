@@ -5,13 +5,16 @@
 > [!TIP]
 >
 > IDK why but in one machine I could use this syntax in my compose file and it was working just fine:
+>
 > ```yml
 > command: |
 >   --stub=/stubs \
 >   --imports=/proto \
 >   /proto/user/user.proto /proto/common/address.proto
 > ```
+>
 > but in another machine I had to use this one:
+>
 > ```yml
 > command: --stub=/stubs --imports=/proto /proto/user/user.proto /proto/common/address.proto
 > ```

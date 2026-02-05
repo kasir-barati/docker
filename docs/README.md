@@ -1,7 +1,9 @@
 # Docs
 
 - [FAQ](./FAQ.md).
-- [Redis](./redis.md).
+- Redis:
+  - [Intro](./redis/intro.md).
+  - [Commands](./redis/commands.md).
 - [volumes](./volumes.md).
 - [Postgres](postgresql.md).
 - [Glossary](./glossary.md).

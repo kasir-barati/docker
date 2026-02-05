@@ -1,9 +1,9 @@
 import { SUCCESS_SUFFIX } from "redux-axios-middleware";
 import UserService from "../services/UserService";
 
-const LIST_BOOKS = 'LIST_BOOKS';
-const ADD_BOOK = 'ADD_BOOK';
-const DELETE_BOOK = 'DELETE_BOOK';
+const LIST_BOOKS = "LIST_BOOKS";
+const ADD_BOOK = "ADD_BOOK";
+const DELETE_BOOK = "DELETE_BOOK";
 
 const booksReducer = (state = [], action) => {
   switch (action.type) {
@@ -24,26 +24,26 @@ export const allBooks = () => ({
   type: LIST_BOOKS,
   payload: {
     request: {
-      url: '/demo/books',
+      url: "/demo/books",
     },
   },
 });
 
-export const addBook = book => {
+export const addBook = (book) => {
   console.log(`${UserService.getUsername()} added the book ${book.title}`);
   return {
     type: ADD_BOOK,
     payload: {
       request: {
-        url: '/demo/books',
-        method: 'POST',
+        url: "/demo/books",
+        method: "POST",
         data: book,
       },
     },
-  }
+  };
 };
 
-export const deleteBook = book => {
+export const deleteBook = (book) => {
   console.log(`${UserService.getUsername()} deletes the book ${book.title}`);
   return {
     type: DELETE_BOOK,
@@ -51,8 +51,8 @@ export const deleteBook = book => {
       book,
       request: {
         url: `/demo/books/${book.id}`,
-        method: 'DELETE',
+        method: "DELETE",
       },
     },
-  }
+  };
 };

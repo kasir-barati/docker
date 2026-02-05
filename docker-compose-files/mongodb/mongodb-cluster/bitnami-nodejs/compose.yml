@@ -23,7 +23,7 @@ services:
       - mongodb-secondary
       - mongodb-arbiter
     healthcheck:
-      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -38,7 +38,7 @@ services:
       MONGODB_REPLICA_SET_KEY: myReplicaSetKey
       MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: my
     healthcheck:
-      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -53,7 +53,7 @@ services:
       MONGODB_REPLICA_SET_KEY: myReplicaSetKey
       MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: my
     healthcheck:
-      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
       retries: 5

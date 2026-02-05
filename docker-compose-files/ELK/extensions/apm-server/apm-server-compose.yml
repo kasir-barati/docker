@@ -1,4 +1,4 @@
-version: '3.2'
+version: "3.2"
 
 services:
   apm-server:
@@ -7,8 +7,8 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     command:
-        # Disable strict permission checking on 'apm-server.yml' configuration file
-        # https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
+      # Disable strict permission checking on 'apm-server.yml' configuration file
+      # https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
       - --strict.perms=false
     volumes:
       - type: bind
@@ -16,7 +16,7 @@ services:
         target: /usr/share/apm-server/apm-server.yml
         read_only: true
     ports:
-      - '8200:8200'
+      - "8200:8200"
     networks:
       - elk
     depends_on:

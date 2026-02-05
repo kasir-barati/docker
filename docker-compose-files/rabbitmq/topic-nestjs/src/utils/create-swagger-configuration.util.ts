@@ -22,10 +22,7 @@ export function createSwaggerConfiguration({
     .setDescription(description)
     .addServer(normalizedUrl)
     .build();
-  const swaggerDocument = SwaggerModule.createDocument(
-    app,
-    documentBuilder,
-  );
+  const swaggerDocument = SwaggerModule.createDocument(app, documentBuilder);
 
   SwaggerModule.setup(swaggerPath, app, swaggerDocument);
 

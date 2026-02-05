@@ -3,11 +3,11 @@ import {
   Logger,
   NotFoundException,
   OnModuleInit,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Cat } from './schemas/cat.schema';
-import { Model, Types } from 'mongoose';
-import { PaginateSomethingArgs } from './dtos/paginate-something.dto';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Cat } from "./schemas/cat.schema";
+import { Model, Types } from "mongoose";
+import { PaginateSomethingArgs } from "./dtos/paginate-something.dto";
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -16,16 +16,16 @@ export class AppService implements OnModuleInit {
   constructor(@InjectModel(Cat.name) private readonly catModel: Model<Cat>) {}
 
   async onModuleInit() {
-    if (await this.catModel.exists({ name: 'Tom' })) {
+    if (await this.catModel.exists({ name: "Tom" })) {
       return;
     }
 
     await this.catModel.create({
-      name: 'Tom',
+      name: "Tom",
       something: new Array(100_000).fill(null).map(() => new Types.ObjectId()),
     });
 
-    this.logger.log('Tom created');
+    this.logger.log("Tom created");
   }
 
   async getCat(name: string) {
@@ -35,7 +35,7 @@ export class AppService implements OnModuleInit {
       .exec();
 
     if (!cat) {
-      throw new NotFoundException('Cat not found');
+      throw new NotFoundException("Cat not found");
     }
 
     return {
@@ -53,7 +53,7 @@ export class AppService implements OnModuleInit {
         { $match: { _id: new Types.ObjectId(id) } },
         {
           $project: {
-            something: { $slice: ['$something', args.offset, args.limit] },
+            something: { $slice: ["$something", args.offset, args.limit] },
           },
         },
       ])

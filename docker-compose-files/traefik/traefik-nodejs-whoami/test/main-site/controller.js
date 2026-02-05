@@ -1,6 +1,6 @@
 // @ts-check
-const { Order } = require('./model/order.js');
-const { Contact } = require('./model/contact.js');
+const { Order } = require("./model/order.js");
+const { Contact } = require("./model/contact.js");
 
 /**@type{import('express').RequestHandler} */
 exports.createContactForm = (req, res, next) => {
@@ -13,11 +13,11 @@ exports.createContactForm = (req, res, next) => {
     message: req.body.message,
   })
     .then((val) => {
-      console.log('hellow:');
+      console.log("hellow:");
       console.log(val);
       res.status(201).json({
         success: true,
-        message: 'Contact form sent!',
+        message: "Contact form sent!",
       });
     })
     .catch((err) => {
@@ -34,11 +34,11 @@ exports.createOrder = (req, res, next) => {
     filePath: req.files.map((file) => file.path),
   })
     .then((val) => {
-      console.log('hellow:');
+      console.log("hellow:");
       console.log(val);
       res.status(201).json({
         success: true,
-        message: 'Order created',
+        message: "Order created",
       });
     })
     .catch((err) => {

@@ -2,10 +2,9 @@ name: Update Elastic release
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # At 00:00 every Sunday
+    - cron: "0 0 * * 0" # At 00:00 every Sunday
 
 jobs:
-
   check-and-update:
     name: Check and update Elastic release
     runs-on: ubuntu-latest
@@ -18,7 +17,7 @@ jobs:
         id: get_latest_release
         with:
           route: GET /repos/:repository/releases/latest
-          repository:  elastic/elasticsearch
+          repository: elastic/elasticsearch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

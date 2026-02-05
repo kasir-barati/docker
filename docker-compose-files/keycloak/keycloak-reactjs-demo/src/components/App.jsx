@@ -10,10 +10,10 @@ const App = ({ store }) => (
     <BrowserRouter>
       <div className="container">
         <RenderOnAnonymous>
-          <Welcome/>
+          <Welcome />
         </RenderOnAnonymous>
         <RenderOnAuthenticated>
-          <BookBox/>
+          <BookBox />
         </RenderOnAuthenticated>
       </div>
     </BrowserRouter>

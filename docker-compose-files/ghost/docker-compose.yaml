@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   ghost:
@@ -23,8 +23,8 @@ services:
       mail__transport: SMTP
       mail__options__host: mailcatcher
       mail__options__port: 1025
-      mail__options__auth__user: ''
-      mail__options__auth__pass: ''
+      mail__options__auth__user: ""
+      mail__options__auth__pass: ""
       mail__options__secure_connection: false
       # contrary to the default mentioned in the linked documentation, this image defaults to NODE_ENV=production (so development mode needs to be explicitly specified if desired)
       #NODE_ENV: development
@@ -39,7 +39,11 @@ services:
     volumes:
       - db:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "exit | mysql -h localhost -P 3306 -u root -p$$MYSQL_ROOT_PASSWORD" ]
+      test:
+        [
+          "CMD-SHELL",
+          "exit | mysql -h localhost -P 3306 -u root -p$$MYSQL_ROOT_PASSWORD",
+        ]
       interval: 5s
       timeout: 20s
       retries: 30

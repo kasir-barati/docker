@@ -1,5 +1,5 @@
 version: "3.7"
-    
+
 services:
   db:
     image: mysql:5.7
@@ -11,7 +11,7 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
-    
+
   wordpress:
     depends_on:
       - db

@@ -17,7 +17,7 @@ And this `compose.yml` file:
 ```yaml
 services:
   app:
-    build: 
+    build:
       context: .
     env_file:
       - .env
@@ -37,7 +37,7 @@ Why when I run my compose file I get this error message:
 ```cmd
 app-1  | Usage: uvicorn [OPTIONS] APP
 app-1  | Try 'uvicorn --help' for help.
-app-1  | 
+app-1  |
 app-1  | Error: Invalid value for '--port': '$APP_PORT' is not a valid integer.
 ```
 
@@ -51,7 +51,7 @@ The issue occurs because environment variables are not expanded in Docker's exec
 CMD uvicorn src.main:app --host 0.0.0.0 --port $APP_PORT --log-level error
 ```
 
-Or you can use explicit shell invocation: 
+Or you can use explicit shell invocation:
 
 ```Dockerfile
 CMD ["sh", "-c", "uvicorn src.main:app --host 0.0.0.0 --port $APP_PORT --log-level error"]

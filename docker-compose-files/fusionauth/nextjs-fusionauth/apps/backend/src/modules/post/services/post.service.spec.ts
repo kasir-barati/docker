@@ -16,9 +16,7 @@ describe('PostService', () => {
   beforeEach(async () => {
     jest
       .spyOn(
-        await import(
-          '../../../shared/helpers/seed-posts-collection.helper'
-        ),
+        await import('../../../shared/helpers/seed-posts-collection.helper'),
         'seedPostsCollection',
       )
       .mockImplementation(mockedSeedPostsCollection);

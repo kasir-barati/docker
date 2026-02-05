@@ -14,6 +14,6 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "moduleResolution": "nodenext",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   }
 }

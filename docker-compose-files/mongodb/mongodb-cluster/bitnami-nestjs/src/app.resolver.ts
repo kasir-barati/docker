@@ -1,8 +1,8 @@
-import { AppService } from './app.service';
-import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Cat } from './schemas/cat.schema';
-import { GetCatArgs } from './dtos/get-cat.dto';
-import { PaginateSomethingArgs } from './dtos/paginate-something.dto';
+import { AppService } from "./app.service";
+import { Args, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Cat } from "./schemas/cat.schema";
+import { GetCatArgs } from "./dtos/get-cat.dto";
+import { PaginateSomethingArgs } from "./dtos/paginate-something.dto";
 
 @Resolver(() => Cat)
 export class AppResolver {

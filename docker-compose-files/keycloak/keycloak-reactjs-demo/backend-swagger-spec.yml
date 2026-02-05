@@ -10,21 +10,21 @@ info:
 host: "localhost"
 basePath: "/"
 tags:
-- name: "books"
-  description: "Your BookBox"
+  - name: "books"
+    description: "Your BookBox"
 schemes:
-- "http"
+  - "http"
 paths:
   /books:
     get:
       tags:
-      - "books"
+        - "books"
       summary: "Get all books from the box"
       operationId: "getAllBooks"
       security:
-      - oauth2: [global]
+        - oauth2: [global]
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "list of all books"
@@ -34,25 +34,25 @@ paths:
               $ref: "#/definitions/Book"
     post:
       tags:
-      - "books"
+        - "books"
       summary: "Add a new book to the box"
       operationId: "addNewBook"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Book object that needs to be added to the box"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            title:
-              type: "string"
-            author:
-              type: "string"
+        - in: "body"
+          name: "body"
+          description: "Book object that needs to be added to the box"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              title:
+                type: "string"
+              author:
+                type: "string"
       security:
-      - oauth2: [global]
+        - oauth2: [global]
       consumes:
-      - "application/json"
+        - "application/json"
       responses:
         201:
           description: "Book was created"
@@ -61,20 +61,20 @@ paths:
   /books/{bookId}:
     get:
       tags:
-      - "books"
+        - "books"
       summary: "Get book by id"
       operationId: "getBookById"
       parameters:
-      - name: "bookId"
-        in: "path"
-        description: "ID of the book to return"
-        required: true
-        type: "integer"
-        format: "int32"
+        - name: "bookId"
+          in: "path"
+          description: "ID of the book to return"
+          required: true
+          type: "integer"
+          format: "int32"
       security:
-      - oauth2: [global]
+        - oauth2: [global]
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "OK"
@@ -86,18 +86,18 @@ paths:
           description: "Book not found"
     delete:
       tags:
-      - "books"
+        - "books"
       summary: "Delete book by id"
       operationId: "deleteBookById"
       parameters:
-      - name: "bookId"
-        in: "path"
-        description: "ID of the book to delete"
-        required: true
-        type: "integer"
-        format: "int32"
+        - name: "bookId"
+          in: "path"
+          description: "ID of the book to delete"
+          required: true
+          type: "integer"
+          format: "int32"
       security:
-      - oauth2: [global]
+        - oauth2: [global]
       responses:
         204:
           description: "Book has been successfully removed from box"

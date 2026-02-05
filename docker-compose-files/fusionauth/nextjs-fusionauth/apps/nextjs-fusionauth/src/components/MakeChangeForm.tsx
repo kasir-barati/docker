@@ -34,7 +34,7 @@ export default function MakeChangeForm() {
       setMessage((m) => `${m}!`);
     } catch (ex: any) {
       setMessage(
-        `There was a problem converting the amount submitted. ${ex.message}`
+        `There was a problem converting the amount submitted. ${ex.message}`,
       );
     }
   };

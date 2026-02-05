@@ -27,8 +27,8 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      APP_HOST: ${APP_HOST} 
-      NODE_ENV: ${NODE_ENV} 
+      APP_HOST: ${APP_HOST}
+      NODE_ENV: ${NODE_ENV}
       SWAGGER_PATH: ${SWAGGER_PATH}
       DATABASE_URL: ${DATABASE_URL}
     healthcheck:
@@ -52,4 +52,3 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
-

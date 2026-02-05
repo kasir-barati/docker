@@ -31,9 +31,7 @@
 
 - We'll use [`tkpd/gripmock`](https://github.com/tokopedia/gripmock) docker image.
 - We're doing static mocking here.
-
   - But you should know that you can also do dynamic mocking by interacting to this tool over its RESTful API.
-
     - ```bash
       curl -X GET localhost:4771
       ```

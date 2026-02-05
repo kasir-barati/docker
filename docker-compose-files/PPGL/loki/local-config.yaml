@@ -14,13 +14,13 @@ ingester:
 
 schema_config:
   configs:
-  - from: 2019-01-01
-    store: boltdb
-    object_store: filesystem
-    schema: v9
-    index:
-      prefix: index_
-      period: 168h
+    - from: 2019-01-01
+      store: boltdb
+      object_store: filesystem
+      schema: v9
+      index:
+        prefix: index_
+        period: 168h
 
 storage_config:
   boltdb:

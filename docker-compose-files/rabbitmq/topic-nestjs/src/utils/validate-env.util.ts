@@ -15,8 +15,7 @@ export function validateEnv<T extends object>(
 
   if (validatedConfigsErrors.length > 0) {
     Logger.debug({
-      message:
-        'Application could not load required environment variables',
+      message: 'Application could not load required environment variables',
       optionalParams: {
         errors: validatedConfigsErrors.map((error) => ({
           value: error.value,

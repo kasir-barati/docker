@@ -14,8 +14,10 @@ export interface LoggerOptionsFactory {
     | Promise<LoggerModuleOptions>
     | LoggerModuleOptions;
 }
-export interface LoggerModuleAsyncOptions
-  extends Pick<ModuleMetadata, 'imports'> {
+export interface LoggerModuleAsyncOptions extends Pick<
+  ModuleMetadata,
+  'imports'
+> {
   useExisting?: Type<LoggerOptionsFactory>;
   useClass?: Type<LoggerOptionsFactory>;
   useFactory?: (

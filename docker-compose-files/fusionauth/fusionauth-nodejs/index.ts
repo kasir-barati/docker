@@ -12,7 +12,7 @@ const app = express();
 const fusionAuthClient = new FusionAuthClient(
   process.env.FUSIONAUTH_API_KEY!,
   process.env.FUSIONAUTH_HOST!,
-  process.env.FUSIONAUTH_TENANT_ID!
+  process.env.FUSIONAUTH_TENANT_ID!,
 );
 
 app.use(cookieParser());

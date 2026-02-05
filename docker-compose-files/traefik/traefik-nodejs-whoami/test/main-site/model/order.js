@@ -1,9 +1,9 @@
 // @ts-check
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 
-const { sequelize } = require('./db-config.js');
+const { sequelize } = require("./db-config.js");
 
-module.exports.Order = sequelize.define('order', {
+module.exports.Order = sequelize.define("order", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,

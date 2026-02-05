@@ -21,8 +21,10 @@ export interface AuthModuleOptions {
 export interface AuthOptionsFactory {
   createAuthOptions(): Promise<AuthModuleOptions> | AuthModuleOptions;
 }
-export interface AuthModuleAsyncOptions
-  extends Pick<ModuleMetadata, 'imports'> {
+export interface AuthModuleAsyncOptions extends Pick<
+  ModuleMetadata,
+  'imports'
+> {
   useExisting?: Type<AuthOptionsFactory>;
   useClass?: Type<AuthOptionsFactory>;
   useFactory?: (

@@ -1,6 +1,6 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { Logger } from "@nestjs/common";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,15 +10,15 @@ async function bootstrap() {
 
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/graphql`,
-    'Bootstrap',
+    "Bootstrap",
   );
   Logger.log(
     `🚀 GraphQL IDE is running on: http://localhost:${port}/graphql`,
-    'Bootstrap',
+    "Bootstrap",
   );
 }
 
 bootstrap().catch((error) => {
-  Logger.error(error, 'Bootstrap');
+  Logger.error(error, "Bootstrap");
   process.exit(1);
 });

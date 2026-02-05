@@ -106,8 +106,8 @@ export default function Login(
                                         !realm.loginWithEmailAllowed
                                             ? 'username'
                                             : realm.registrationEmailAsUsername
-                                            ? 'email'
-                                            : 'usernameOrEmail';
+                                              ? 'email'
+                                              : 'usernameOrEmail';
 
                                     const autoCompleteHelper: typeof label =
                                         label === 'usernameOrEmail'
@@ -135,12 +135,10 @@ export default function Login(
                                                 }
                                                 {...(usernameEditDisabled
                                                     ? {
-                                                          disabled:
-                                                              true,
+                                                          disabled: true,
                                                       }
                                                     : {
-                                                          autoFocus:
-                                                              true,
+                                                          autoFocus: true,
                                                           autoComplete:
                                                               'off',
                                                       })}

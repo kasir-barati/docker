@@ -1,11 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument, Types } from "mongoose";
 
 export type CatDocument = HydratedDocument<Cat>;
 
 @Schema()
-@ObjectType('Cat')
+@ObjectType("Cat")
 export class Cat {
   @Field(() => ID)
   id: string;

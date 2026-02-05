@@ -29,9 +29,7 @@ export function IsInt32(
 }
 
 @ValidatorConstraint({ name: decoratorName, async: false })
-export class IsInt32Constraint
-  implements ValidatorConstraintInterface
-{
+export class IsInt32Constraint implements ValidatorConstraintInterface {
   validate(
     value: number,
     validationArguments?: ValidationArguments,
