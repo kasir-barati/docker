@@ -1,8 +1,14 @@
 # Clustered Redis Environment
 
-```cmd
-docker compose up --build -d
-```
+1. ```cmd
+   docker compose up --build -d
+   ```
+2. Here we have two options:
+   - Use NodeJS: delete all the code inside the `src/index.ts` except the part that we are getting the cluster instance (i.e. `const cluster = getCluster();`) and start writing your code!.
+   - If you wanna execute Redis commands in terminal simply do the following:
+     ```cmd
+     $ docker compose exec -it redis-node-1 redis-cli -c -p 7001
+     ```
 
 ## Issue
 
