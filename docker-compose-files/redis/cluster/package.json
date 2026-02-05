@@ -1,0 +1,36 @@
+{
+  "name": "redis-cluster-test",
+  "version": "1.0.0",
+  "description": "Test ioredis cross-slot deletion in Redis cluster",
+  "type": "module",
+  "scripts": {
+    "start:dev": "tsx watch src/index.ts",
+    "start:prod": "node dist/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . -w -u",
+    "build": "tsc"
+  },
+  "keywords": [
+    "redis",
+    "cluster",
+    "ioredis"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ioredis": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-perfectionist": "^4.6.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

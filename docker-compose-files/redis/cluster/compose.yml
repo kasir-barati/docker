@@ -1,0 +1,52 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    depends_on:
+      - redis-cluster-init
+    volumes:
+      - .:/app
+    environment:
+      - REDIS_NODES=redis-node-1:7001,redis-node-2:7002,redis-node-3:7003
+    stdin_open: true
+    tty: true
+
+  redis-node-1:
+    image: redis:7-alpine
+    command: redis-server --port 7001 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - '7001:7001'
+    volumes:
+      - redis-node-1-data:/data
+
+  redis-node-2:
+    image: redis:7-alpine
+    command: redis-server --port 7002 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - '7002:7002'
+    volumes:
+      - redis-node-2-data:/data
+
+  redis-node-3:
+    image: redis:7-alpine
+    command: redis-server --port 7003 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - '7003:7003'
+    volumes:
+      - redis-node-3-data:/data
+
+  # Cluster initialization service
+  redis-cluster-init:
+    image: redis:7-alpine
+    depends_on:
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+    command: sh -c "sleep 5 && redis-cli --cluster create redis-node-1:7001 redis-node-2:7002 redis-node-3:7003 --cluster-replicas 0 --cluster-yes"
+
+volumes:
+  redis-node-1-data:
+  redis-node-2-data:
+  redis-node-3-data:
