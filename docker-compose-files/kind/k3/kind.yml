@@ -1,0 +1,25 @@
+services:
+  k3s:
+    image: rancher/k3s:v1.28.9-k3s1
+    command:
+      - server
+      # include TLS SAN so the API cert is valid for the service DNS name if you ever need it
+      - --tls-san
+      - k3s
+    privileged: true
+    environment:
+      - K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml
+      - K3S_KUBECONFIG_MODE=644
+    volumes:
+      - k3s-server:/var/lib/rancher/k3s
+      # write kubeconfig out to the host (handy if you have kubectl on host later)
+      - ./k3s_data/kubeconfig:/output
+      # auto-import local images (tar files) on startup
+      - ./k3s_data/docker_images:/var/lib/rancher/k3s/agent/images
+      # auto-apply your app manifests (Deployment/Service go here)
+      - ./k8s:/var/lib/rancher/k3s/server/manifests/user
+    ports:
+      - "6443:6443" # optional, exposes the API to your host if you want to use host kubectl later
+
+volumes:
+  k3s-server:

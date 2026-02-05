@@ -1,0 +1,12 @@
+services:
+  app-instance-1:
+    build: .
+    container_name: test-container-id-instance-1
+
+  app-instance-2:
+    build: .
+    container_name: test-container-id-instance-2
+
+  app-instance-3:
+    build: .
+    container_name: test-container-id-instance-3

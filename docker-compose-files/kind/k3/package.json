@@ -1,0 +1,13 @@
+{
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "format": "pnpx prettier . -w -u",
+    "start:kube": "pnpm build:kube && docker compose -f kind.yml up -d",
+    "start:docker": "docker compose up --build -d",
+    "prebuild:kube": "mkdir -p k3s_data/docker_images k3s_data/kubeconfig",
+    "build:kube": "docker build -t node-app:local .",
+    "postbuild:kube": "docker save node-app:local -o ./k3s_data/docker_images/node-app_local.tar"
+  }
+}
