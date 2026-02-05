@@ -1,6 +1,6 @@
 import { Cluster } from 'ioredis';
 
-import { calculateSlot , sleep , getCluster } from './utils/index.js';
+import { calculateSlot, sleep, getCluster } from './utils/index.js';
 
 async function main() {
   console.log('🚀 Starting Redis Cluster Cross-Slot Deletion Test\n');
@@ -32,19 +32,19 @@ async function main() {
 
     console.log('🗑️  Single key deletion (SHOULD WORK)...\n');
     const singleDelResult = await cluster.del(singleKeyDeletion);
-    console.log(`   ✅ DEL ${singleKeyDeletion} → Result: ${singleDelResult} key deleted\n`);
+    console.log(
+      `   ✅ DEL ${singleKeyDeletion} → Result: ${singleDelResult} key deleted\n`,
+    );
 
     console.log(
       '🗑️  Multi-key deletion ACROSS different slots (SHOULD FAIL)...\n',
     );
 
-    await cluster.del(multiKeyDeletionCrossSlots).catch(error => {
+    await cluster.del(multiKeyDeletionCrossSlots).catch((error) => {
       console.log(`   ❌ Expected Error: ${(error as Error).message}\n`);
     });
 
-    console.log(
-      '🗑️  Multi-key deletion in the SAME slot (SHOULD WORK)...\n',
-    );
+    console.log('🗑️  Multi-key deletion in the SAME slot (SHOULD WORK)...\n');
     const sameSlotDelResult = await cluster.del(sameSlotKeys);
     console.log(
       `   ✅ DEL ${sameSlotKeys.join(', ')} → Result: ${sameSlotDelResult} keys deleted\n`,
@@ -72,7 +72,7 @@ async function createKeys(cluster: Cluster, keys: string[]) {
 }
 
 /**
- * @description individual deletion ACROSS different slots (WORKAROUND) 
+ * @description individual deletion ACROSS different slots (WORKAROUND)
  */
 async function deleteKeysIndividually(cluster: Cluster, keys: string[]) {
   for (const key of keys) {
