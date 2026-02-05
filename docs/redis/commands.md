@@ -7,7 +7,7 @@ These are the commands we are using
   - The fields are labels like "age" or "city".
   - The values are the actual age or city name.
 
-  ![alt text](./hset.png)
+  ![alt text](./assets/hset.png)
 
   Redis offers different data structures, `SET` and `HSET` commands belong to two different ones:
   - `SET` works with simple string values.
