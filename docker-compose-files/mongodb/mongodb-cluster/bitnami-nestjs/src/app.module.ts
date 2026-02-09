@@ -31,7 +31,13 @@ import { GraphQLModule } from "@nestjs/graphql";
       },
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([{ name: Cat.name, schema: CatSchema }]),
+    MongooseModule.forFeature([
+      {
+        name: Cat.name,
+        schema: CatSchema,
+        collection: "mycats", // This overrides the default collection name and the explicitly set name in the schema
+      },
+    ]),
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
       inject: [ConfigService],

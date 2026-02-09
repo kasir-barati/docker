@@ -4,7 +4,7 @@ import { HydratedDocument, Types } from "mongoose";
 
 export type CatDocument = HydratedDocument<Cat>;
 
-@Schema()
+@Schema({ collection: "yourcats" }) // This is overridden by the AppModule configuration
 @ObjectType("Cat")
 export class Cat {
   @Field(() => ID)
