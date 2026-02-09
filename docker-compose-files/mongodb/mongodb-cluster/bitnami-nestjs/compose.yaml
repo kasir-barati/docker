@@ -18,7 +18,7 @@ services:
       - $PORT:$PORT
 
   mongodb-primary:
-    image: bitnami/mongodb:7.0.12-debian-12-r2
+    image: bitnami/mongodb
     environment:
       MONGODB_USERNAME: $MONGODB_USERNAME
       MONGODB_PASSWORD: $MONGODB_PASSWORD
@@ -39,7 +39,7 @@ services:
       retries: 5
 
   mongodb-secondary:
-    image: bitnami/mongodb:7.0.12-debian-12-r2
+    image: bitnami/mongodb
     environment:
       MONGODB_PRIMARY_HOST: mongodb-primary
       MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: $MONGODB_ROOT_PASSWORD
@@ -53,7 +53,7 @@ services:
       retries: 5
 
   mongodb-arbiter:
-    image: bitnami/mongodb:7.0.12-debian-12-r2
+    image: bitnami/mongodb
     environment:
       MONGODB_PRIMARY_HOST: mongodb-primary
       MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: $MONGODB_ROOT_PASSWORD
