@@ -17,6 +17,25 @@ services:
     ports:
       - $PORT:$PORT
 
+  mongo-express:
+    image: mongo-express:latest
+    restart: unless-stopped
+    depends_on:
+      mongodb-primary:
+        condition: service_healthy
+    environment:
+      # Prefer a full URL so replica set + authSource are correct
+      ME_CONFIG_MONGODB_URL: "mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongodb-primary:27017/?replicaSet=${MONGODB_REPLICA_SET_NAME}&authSource=admin"
+
+      # Optional but recommended: UI basic auth
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USERNAME:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD:-changeme}
+
+      # (Optional) Set the port inside the container; default is 8081
+      # ME_CONFIG site/env values can be added as needed
+    ports:
+      - "${MONGO_EXPRESS_PORT:-8080}:8081"
+
   mongodb-primary:
     image: bitnami/mongodb
     environment:
