@@ -1,63 +1,58 @@
 // @ts-check
 
-import { uniqueNamesGenerator, adjectives, colors, names } from 'unique-names-generator';
+import { hostname } from "os";
 import { connect, Schema, model } from "mongoose";
 
 await connect("mongodb://mongodb:27017/temp", { autoIndex: false });
 
-const TaskSchema = new Schema({
-  createdBy: String,
-  state: String,
-  lockedAt: Date,
-  lockedBy: String,
-}, { timestamps: true});
+const OutboxSchema = new Schema(
+  { correlationId: String },
+  { timestamps: true },
+);
 
-TaskSchema.index({ state: 1, lockedAt: 1, lockedBy: 1 });
+OutboxSchema.index({ correlationId: 1 });
 
-const TaskModel = model("Task", TaskSchema);
+const OutboxModel = model("Outbox", OutboxSchema);
 
-await TaskModel.createCollection();
-await TaskModel.createIndexes();
+await OutboxModel.createCollection();
+await OutboxModel.createIndexes();
 
-const session = await TaskModel.db.startSession();
+const session = await OutboxModel.db.startSession();
 
 try {
   session.startTransaction();
-  await TaskModel.insertMany(
-    Array.from({ length: 1000 }, () => ({
-      createdBy: uniqueNamesGenerator({
-        dictionaries: [adjectives, colors, names],
-        separator: ' ',
-        style: 'capital',
-      }),
-      state: 'pending',
-      lockedAt: null,
-      lockedBy: null,
-    })),
+
+  await OutboxModel.insertMany(
+    [
+      { correlationId: '8621959b-49fd-4a56-89e1-4eb50189ceef' },
+      { correlationId: 'c39bbee9-47c5-45d4-9021-e151aa37527a' },
+      { correlationId: '73816178-8148-418e-bfa8-4468cc70ddfd' },
+      { correlationId: '94fb7ef5-6fcf-43d8-b586-e93b357f1192' },
+    ],
     { session },
   );
   await session.commitTransaction();
 } catch (error) {
   await session.abortTransaction();
 } finally {
-  session.endSession();
+  await session.endSession();
 }
 
-async function findAllAndUpdate() {
-  const session = await TaskModel.db.startSession();
+(async () => {
+  const session = await OutboxModel.db.startSession();
 
   try {
     session.startTransaction();
-    const result = await TaskModel.updateMany(
-      { state: 'pending', lockedAt: null, lockedBy: null },
-      { $set: { lockedAt: new Date(), lockedBy:  } },
-      { session },
-    ).limit(10);
+    const outboxMessage = await OutboxModel.findOneAndDelete(
+      { correlationId: 'c39bbee9-47c5-45d4-9021-e151aa37527a' },
+      { session}
+    );
+    console.log(`Hostname: (${hostname()}), outbox message: ${JSON.stringify(outboxMessage, null, 2)}`);
     await session.commitTransaction();
   } catch (error) {
     await session.abortTransaction();
-    throw error;
+    console.error(`Error: ${JSON.stringify(error, null, 2)}`);
   } finally {
-    session.endSession();
+    await session.endSession();
   }
-}
+})()

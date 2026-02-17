@@ -1,9 +1,28 @@
 services:
-  app:
+  app1:
     build:
       context: .
       dockerfile: Dockerfile
       target: development
+    restart: no
+    volumes:
+      - ./index.js:/app/index.js
+
+  app2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    restart: no
+    volumes:
+      - ./index.js:/app/index.js
+
+  app3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    restart: no
     volumes:
       - ./index.js:/app/index.js
 
