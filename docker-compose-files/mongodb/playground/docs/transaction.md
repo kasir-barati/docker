@@ -1,5 +1,8 @@
 # Transactions
 
+- MongoDB's transactions default timeout: 60 seconds ([ref](https://www.mongodb.com/docs/manual/reference/method/Session.withTransaction/)):
+  - This means that even if `await session.abortTransaction();` or `await session.endSession();` fails MongoDB will abort the transaction.
+
 ## Collection Creation
 
 To prevent getting the following error message you need to create the collections first (i.e. `await TaskModel.createCollection(); await MetadataModel.createCollection()`):
