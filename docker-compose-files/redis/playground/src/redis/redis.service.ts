@@ -89,10 +89,16 @@ export class RedisService implements OnModuleDestroy {
   }
 
   /**
-   * Delete a key from Redis
+   * @description Delete a key from Redis
+   * @returns `true` if the key was deleted, `false` if the key did not exist
    */
-  async del(key: string): Promise<number> {
-    return this.client.del(key);
+  async del(key: string): Promise<boolean> {
+    const result = await this.client.del(key);
+
+    if (result === 0) {
+      return false;
+    }
+    return true;
   }
 
   /**
