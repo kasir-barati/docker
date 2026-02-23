@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { Redis } from 'ioredis';
+
 import {
   MODULE_OPTIONS_TOKEN,
   type RedisModuleOptions,
@@ -17,19 +18,6 @@ export class RedisService implements OnModuleDestroy {
     this.client = new Redis(this.options.redisUrl, {
       password: this.options.redisPassword,
       lazyConnect: false,
-      retryStrategy: (times: number) => {
-        if (times > 5) {
-          this.logger.error(
-            'Redis connection failed after 5 retries. Exiting application.',
-            {
-              context: RedisService.name,
-            },
-          );
-          return null;
-        }
-        // Retry delay: exponential backoff (1s, 2s, 4s, 8s, 16s)
-        return Math.min(times * 1000, 3000);
-      },
     });
 
     this.client.on('connect', () => {
@@ -39,10 +27,6 @@ export class RedisService implements OnModuleDestroy {
     });
 
     this.client.on('error', (error: Error) => {
-      if (error.message.includes('ECONNREFUSED')) {
-        throw new Error('Could not connect to Redis.');
-      }
-
       this.logger.error(`Redis client error: ${error.message}`, {
         context: RedisService.name,
         error,
@@ -70,22 +54,12 @@ export class RedisService implements OnModuleDestroy {
     return this.client.get(key);
   }
 
-  /**
-   * Set a value in Redis with optional TTL
-   */
   async set(key: string, value: string, ttlSeconds?: number): Promise<void> {
     if (ttlSeconds) {
       await this.client.setex(key, ttlSeconds, value);
-    } else {
-      await this.client.set(key, value);
+      return;
     }
-  }
-
-  /**
-   * Set a value with expiration (alias for set with TTL)
-   */
-  async setex(key: string, ttlSeconds: number, value: string): Promise<void> {
-    await this.client.setex(key, ttlSeconds, value);
+    await this.client.set(key, value);
   }
 
   /**
@@ -99,24 +73,5 @@ export class RedisService implements OnModuleDestroy {
       return false;
     }
     return true;
-  }
-
-  /**
-   * Check if Redis is connected and healthy
-   */
-  async ping(): Promise<boolean> {
-    try {
-      const result = await this.client.ping();
-      return result === 'PONG';
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Get the underlying Redis client for advanced operations
-   */
-  getClient(): Redis {
-    return this.client;
   }
 }
