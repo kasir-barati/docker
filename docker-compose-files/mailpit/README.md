@@ -95,19 +95,20 @@ The app will send an email and exit. You can view the received email in the Mail
 ### Base Stage
 - Node 24.13 Alpine
 - Includes curl
+- Enables pnpm via corepack
 - Sets working directory
 
 ### Build Stage
-- Installs all dependencies
+- Installs all dependencies with pnpm
 - Compiles TypeScript to JavaScript
 
 ### Dev Stage
-- Installs all dependencies
+- Installs all dependencies with pnpm
 - Runs with `start:dev` script (ts-node)
 - Hot reload friendly
 
 ### Prod Stage
-- Production dependencies only
+- Production dependencies only (pnpm)
 - Uses compiled JavaScript from build stage
 - Optimized for size and performance
 
