@@ -14,7 +14,20 @@
     "email-templates",
     "mailpit"
   ],
-  "author": "",
+  "author": "Kasir Barati",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": ">= 10.28.2",
+      "onFail": "error"
+    },
+    "runtime": {
+      "name": "node",
+      "version": ">= 24.13 < 25",
+      "onFail": "error"
+    }
+  },
+  "packageManager": "pnpm@10.28.2",
   "license": "ISC",
   "dependencies": {
     "email-templates": "^12.0.1",
@@ -22,6 +35,7 @@
     "pug": "^3.0.3"
   },
   "devDependencies": {
+    "@types/email-templates": "^10.0.4",
     "@types/node": "^22.10.5",
     "@types/nodemailer": "^6.4.17",
     "ts-node": "^10.9.2",
