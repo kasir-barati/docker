@@ -13,7 +13,6 @@ export class EmailService {
   ) {}
 
   async onInit() {
-    // Create transporter
     this.transporter = nodemailer.createTransport({
       host: this.config.smtpHost,
       port: this.config.smtpPort,
@@ -23,7 +22,6 @@ export class EmailService {
       },
     });
 
-    // Verify connection
     try {
       await this.transporter.verify();
       console.log("✅ SMTP connection verified");
@@ -63,7 +61,6 @@ export class EmailService {
       this.emailTemplateRepository.validateEmailTemplate(emailTemplate, data);
       console.log("✅ Email template validation passed");
       
-      // Render the Pug template manually with the validated data
       const html = pug.render(emailTemplate, data);
 
       console.log("📝 Email template rendered successfully");

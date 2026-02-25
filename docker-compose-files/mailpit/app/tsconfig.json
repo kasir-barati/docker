@@ -12,7 +12,8 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "moduleResolution": "nodenext",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["jest", "node", "jest-extended"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

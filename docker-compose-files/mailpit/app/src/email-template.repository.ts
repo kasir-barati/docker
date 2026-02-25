@@ -12,7 +12,8 @@ export class EmailTemplateRepository {
   /**
    * @description
    * Validates that all placeholders in the email template exist in the provided data object.
-   * **Important**: Only `#{variableName}` syntax is supported for placeholders.
+   * 
+   * ## **Important**: Only `#{variableName}` syntax is supported for placeholders.
    *
    * @throws an error if any required placeholder is missing.
    *
