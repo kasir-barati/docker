@@ -11,7 +11,15 @@ async function bootstrap() {
     const emailService = new EmailService(config, emailTemplateRepository);
 
     await emailService.onInit();
-    await emailService.sendEmail("4d7a0ff2-7aec-48df-8065-b79ff84ea5d3");
+    await emailService.sendEmail({
+      emailTemplateId: "a647a565-a0c5-4cd9-a8ef-a7e4ad625c35",
+      to: "recipient@example.com",
+      subject: "Welcome to Our Platform! 🎉",
+      data: {
+        userName: "John Doe",
+        message: "Thank you for joining our platform!"
+      },
+    });
     emailService.onDestroy();
 
     console.log("🏁 Application completed successfully");

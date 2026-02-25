@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import Email from "email-templates";
+import pug from "pug";
 import { EmailTemplateRepository } from "./email-template.repository";
 import { EmailConfig } from "./get-email-config.util";
 
@@ -36,13 +37,13 @@ export class EmailService {
     this.transporter.close();
   }
 
-  async sendEmail(emailTemplateId: string) {
+  async sendEmail({to, subject, data, emailTemplateId}: EmailData) {
     console.log("🚀 Starting email sending process...");
     console.log(
       `📧 SMTP Host: ${this.config.smtpHost}:${this.config.smtpPort}`,
     );
     console.log(`📤 From: ${this.config.from}`);
-    console.log(`📥 To: ${this.config.to}`);
+    console.log(`📥 To: ${to}`);
 
     // Create email instance with inline template rendering
     const email = new Email({
@@ -59,10 +60,9 @@ export class EmailService {
       const emailTemplate =
         await this.emailTemplateRepository.getEmailTemplate(emailTemplateId);
       // Render the Pug template manually
-      const pug = require("pug");
       const html = pug.render(emailTemplate, {
-        userName: this.config.userName,
-        message: this.config.message,
+        userName: data.userName,
+        message: data.message,
       });
 
       console.log("📝 Email template rendered successfully");
@@ -70,8 +70,8 @@ export class EmailService {
       // Send the email
       const result = await this.transporter.sendMail({
         from: this.config.from,
-        to: this.config.to,
-        subject: "Welcome to Our Platform! 🎉",
+        to: to,
+        subject: subject,
         html: html,
       });
 
@@ -83,4 +83,11 @@ export class EmailService {
       throw error;
     }
   }
+}
+
+interface EmailData {
+  emailTemplateId: string;
+  to: string;
+  subject: string;
+  data: Record<string, string>;
 }

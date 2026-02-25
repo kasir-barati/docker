@@ -27,6 +27,9 @@ importers:
       '@types/nodemailer':
         specifier: ^6.4.17
         version: 6.4.23
+      '@types/pug':
+        specifier: ^2.0.10
+        version: 2.0.10
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.19.11)(typescript@5.9.3)
@@ -278,6 +281,9 @@ packages:
 
   '@types/nodemailer@6.4.23':
     resolution: {integrity: sha512-aFV3/NsYFLSx9mbb5gtirBSXJnAlrusoKNuPbxsASWc7vrKLmIrTQRpdcxNcSFL3VW2A2XpeLEavwb2qMi6nlQ==}
+
+  '@types/pug@2.0.10':
+    resolution: {integrity: sha512-Sk/uYFOBAB7mb74XcpizmH0KOR2Pv3D2Hmrh1Dmy5BmK3MpdSa5kqZcg6EKBdklU0bFXX9gCfzvpnyUehrPIuA==}
 
   '@zone-eu/mailsplit@5.4.8':
     resolution: {integrity: sha512-eEyACj4JZ7sjzRvy26QhLgKEMWwQbsw1+QZnlLX+/gihcNH07lVPOcnwf5U6UAL7gkc//J3jVd76o/WS+taUiA==}
@@ -1146,6 +1152,8 @@ snapshots:
   '@types/nodemailer@6.4.23':
     dependencies:
       '@types/node': 22.19.11
+
+  '@types/pug@2.0.10': {}
 
   '@zone-eu/mailsplit@5.4.8':
     dependencies:
