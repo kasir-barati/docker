@@ -53,11 +53,13 @@ MESSAGE=Welcome to our platform!
 ### 2. Run with Docker Compose
 
 **Production Mode:**
+
 ```bash
 docker compose up --build
 ```
 
 **Development Mode:**
+
 ```bash
 BUILD_TARGET=dev docker compose up --build
 ```
@@ -65,6 +67,7 @@ BUILD_TARGET=dev docker compose up --build
 ### 3. View Emails
 
 Open your browser and navigate to:
+
 ```
 http://localhost:8025
 ```
@@ -93,36 +96,40 @@ The app will send an email and exit. You can view the received email in the Mail
 ## Dockerfile Stages
 
 ### Base Stage
+
 - Node 24.13 Alpine
 - Includes curl
 - Enables pnpm via corepack
 - Sets working directory
 
 ### Build Stage
+
 - Installs all dependencies with pnpm
 - Compiles TypeScript to JavaScript
 
 ### Dev Stage
+
 - Installs all dependencies with pnpm
 - Runs with `start:dev` script (ts-node)
 - Hot reload friendly
 
 ### Prod Stage
+
 - Production dependencies only (pnpm)
 - Uses compiled JavaScript from build stage
 - Optimized for size and performance
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `BUILD_TARGET` | Docker build target (dev/prod) | `prod` |
-| `SMTP_HOST` | SMTP server hostname | `mailpit` |
-| `SMTP_PORT` | SMTP server port | `1025` |
-| `EMAIL_FROM` | Sender email address | `sender@example.com` |
-| `EMAIL_TO` | Recipient email address | `recipient@example.com` |
-| `USER_NAME` | User name for template | `John Doe` |
-| `MESSAGE` | Custom message for template | `Welcome to our platform!` |
+| Variable       | Description                    | Default                    |
+| -------------- | ------------------------------ | -------------------------- |
+| `BUILD_TARGET` | Docker build target (dev/prod) | `prod`                     |
+| `SMTP_HOST`    | SMTP server hostname           | `mailpit`                  |
+| `SMTP_PORT`    | SMTP server port               | `1025`                     |
+| `EMAIL_FROM`   | Sender email address           | `sender@example.com`       |
+| `EMAIL_TO`     | Recipient email address        | `recipient@example.com`    |
+| `USER_NAME`    | User name for template         | `John Doe`                 |
+| `MESSAGE`      | Custom message for template    | `Welcome to our platform!` |
 
 ## Development
 
