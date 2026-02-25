@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - "8025:8025"  # Web UI
+      - "1025:1025"  # SMTP
+    networks:
+      - mailpit-network
+    restart: unless-stopped
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      target: ${BUILD_TARGET:-prod}
+    container_name: email-sender-app
+    environment:
+      - SMTP_HOST=${SMTP_HOST:-mailpit}
+      - SMTP_PORT=${SMTP_PORT:-1025}
+      - EMAIL_FROM=${EMAIL_FROM:-sender@example.com}
+      - EMAIL_TO=${EMAIL_TO:-recipient@example.com}
+      - USER_NAME=${USER_NAME:-John Doe}
+      - MESSAGE=${MESSAGE:-Welcome to our platform!}
+    networks:
+      - mailpit-network
+    depends_on:
+      - mailpit
+
+networks:
+  mailpit-network:
+    driver: bridge
