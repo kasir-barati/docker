@@ -59,11 +59,12 @@ export class EmailService {
     try {
       const emailTemplate =
         await this.emailTemplateRepository.getEmailTemplate(emailTemplateId);
-      // Render the Pug template manually
-      const html = pug.render(emailTemplate, {
-        userName: data.userName,
-        message: data.message,
-      });
+      
+      this.emailTemplateRepository.validateEmailTemplate(emailTemplate, data);
+      console.log("✅ Email template validation passed");
+      
+      // Render the Pug template manually with the validated data
+      const html = pug.render(emailTemplate, data);
 
       console.log("📝 Email template rendered successfully");
 

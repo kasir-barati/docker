@@ -8,6 +8,55 @@ export class EmailTemplateRepository {
 
     return emailTemplate;
   }
+
+  /**
+   * @description
+   * Validates that all placeholders in the email template exist in the provided data object.
+   * **Important**: Only `#{variableName}` syntax is supported for placeholders.
+   *
+   * @throws an error if any required placeholder is missing.
+   *
+   * @example
+   * ```ts
+   * const template = "Hello, #{userName}! Your message: #{message}";
+   * validateEmailTemplate(template, { userName: "John", message: "Welcome" }); // ✅ Valid
+   * validateEmailTemplate(template, { userName: "John" }); // ❌ Throws error: Missing required template variables: message
+   * ```
+   */
+  validateEmailTemplate(
+    template: string,
+    data: Record<string, any>
+  ): void {
+    // Extract all Pug interpolation placeholders using #{variableName} syntax
+    // Regex explanation: #{(\w+)} matches #{userName}, #{message}, etc.
+    const placeholderRegex = /#{(\w+)}/g;
+    const matches = template.matchAll(placeholderRegex);
+    const requiredPlaceholders = new Set<string>();
+    
+    // Collect all unique placeholders
+    for (const match of matches) {
+      const placeholder = match[1];
+      if (placeholder) {
+        requiredPlaceholders.add(placeholder);
+      }
+    }
+    
+    // Check if all required placeholders exist in data
+    const missingPlaceholders: string[] = [];
+    
+    for (const placeholder of requiredPlaceholders) {
+      if (!(placeholder in data)) {
+        missingPlaceholders.push(placeholder);
+      }
+    }
+    
+    if (missingPlaceholders.length > 0) {
+      throw new Error(
+        `Missing required template variables: ${missingPlaceholders.join(", ")}. ` +
+        `Please provide values for these variables in the data object.`
+      );
+    }
+  }
 }
 
 const emailTemplate = `
@@ -83,7 +132,7 @@ html(lang="en")
         h1 Welcome to Our Platform
       .content
         .greeting Hello, #{userName}!
-        .message= message
+        .message #{message}
         p We're excited to have you on board. This is a demonstration of email templating using Pug syntax with inline CSS.
         p
           | This email was generated dynamically with variables passed to the template,
