@@ -43,17 +43,6 @@ export class EmailService {
     console.log(`📤 From: ${this.config.from}`);
     console.log(`📥 To: ${to}`);
 
-    // Create email instance with inline template rendering
-    const email = new Email({
-      message: {
-        from: this.config.from,
-      },
-      transport: this.transporter,
-      // We'll render the template manually since we're using a string template
-      preview: false,
-      send: true,
-    });
-
     try {
       const emailTemplate =
         await this.emailTemplateRepository.getEmailTemplate(emailTemplateId);
