@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import Email from "email-templates";
 import pug from "pug";
 import { EmailTemplateRepository } from "./email-template.repository";
 import { EmailConfig } from "./get-email-config.util";
