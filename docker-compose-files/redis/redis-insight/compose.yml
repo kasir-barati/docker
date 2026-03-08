@@ -2,10 +2,19 @@ services:
   redis:
     image: redis:8.6-alpine3.23
     restart: always
+    # command: >
+    #   sh -c "redis-server
+    #   --maxmemory $${REDIS_MAXMEMORY:-512mb}
+    #   --maxmemory-policy $${REDIS_MAXMEMORY_POLICY:-allkeys-lfu}
+    #   $${REDIS_PASSWORD:+--requirepass $$REDIS_PASSWORD}"
     ports:
       - 7000:${REDIS_PORT_NUMBER}
     env_file:
       - ./.env
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 640M
     healthcheck:
       test: >
         sh -c 'if [ -n "$$REDIS_PASSWORD" ]; then
