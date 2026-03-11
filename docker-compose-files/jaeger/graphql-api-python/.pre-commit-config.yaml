@@ -1,0 +1,36 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.8.4
+    hooks:
+      # Run the linter on commit
+      - id: ruff
+        name: ruff lint
+        args: [--fix]
+        stages: [pre-commit]
+      # Run the formatter on commit
+      - id: ruff-format
+        name: ruff format
+        stages: [pre-commit]
+
+  # Conventional Commits - Ensure commit messages follow the convention
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.6.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
+
+  # Pre-push hook: Run comprehensive checks before pushing
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      # Run linter on all files before push (no auto-fix to catch issues)
+      - id: ruff
+        name: ruff lint (pre-push - all files)
+        args: [--exit-non-zero-on-fix]
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true

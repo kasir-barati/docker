@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: "jager-python-monitor"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Jaeger metrics
+  - job_name: "jaeger"
+    static_configs:
+      - targets: ["jaeger:14269"]
+
+  # Application metrics (if exposed in the future)
+  - job_name: "graphql-api"
+    static_configs:
+      - targets: ["app:8000"]
+    metrics_path: "/metrics"
