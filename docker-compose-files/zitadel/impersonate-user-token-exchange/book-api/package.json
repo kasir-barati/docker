@@ -1,0 +1,25 @@
+{
+  "name": "books-api",
+  "type": "module",
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "onFail": "error",
+      "version": ">=11.6.2"
+    },
+    "runtime": {
+      "name": "node",
+      "onFail": "error",
+      "version": ">=24.13.0"
+    }
+  },
+  "packageManager": "npm@11.6.2",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "jose": "^5.9.6"
+  }
+}

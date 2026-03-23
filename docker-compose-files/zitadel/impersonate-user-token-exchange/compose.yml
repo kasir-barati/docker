@@ -1,0 +1,19 @@
+services:
+  book-api:
+    build:
+      context: ./book-api
+      dockerfile: Dockerfile
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-sf",
+          "-H",
+          "Content-Type: application/json",
+          "http://localhost:3000/healthcheck",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
