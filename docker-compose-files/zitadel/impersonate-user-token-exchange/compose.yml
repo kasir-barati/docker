@@ -17,3 +17,11 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  setup-zitadel:
+    image: node:24.14-bookworm-slim
+    working_dir: /app
+    volumes:
+      - ./setup-zitadel:/app:ro
+    entrypoint: ["npm", "start"]
+

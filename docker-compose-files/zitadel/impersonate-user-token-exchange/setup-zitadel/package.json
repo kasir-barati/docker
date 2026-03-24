@@ -1,0 +1,24 @@
+{
+  "name": "setup-zitadel",
+  "version": "1.0.0",
+  "description": "Replace this with IaC",
+  "author": "Kasir Barati",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js"
+  },
+  "packageManager": "npm@11.6.2",
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "onFail": "error",
+      "version": ">=11.6"
+    },
+    "runtime": {
+      "name": "node",
+      "onFail": "error",
+      "version": ">=24.13"
+    }
+  }
+}
