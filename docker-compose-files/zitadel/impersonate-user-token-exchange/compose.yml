@@ -49,13 +49,14 @@ services:
       PGPORT: 5432
       PGUSER: ${POSTGRES_USER}
       PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${ZITADEL_DATABASE}
     entrypoint:
       - /bin/sh
       - -c
       - |
         psql -h postgres -U $$PGUSER -tc "SELECT 1 FROM pg_roles WHERE rolname='zitadel'" | grep -q 1 \
           || psql -h postgres -U $$PGUSER -c "CREATE ROLE zitadel LOGIN PASSWORD 'zitadel';"
-        psql -h postgres -U $$PGUSER -tc "SELECT 1 FROM pg_database WHERE datname='zitadel'" | grep -q 1 \
-          || psql -h postgres -U $$PGUSER -c "CREATE DATABASE zitadel OWNER zitadel;"
+        psql -h postgres -U $$PGUSER -tc "SELECT 1 FROM pg_database WHERE datname='${ZITADEL_DATABASE}'" | grep -q 1 \
+          || psql -h postgres -U $$PGUSER -c "CREATE DATABASE ${ZITADEL_DATABASE} OWNER zitadel;"
         echo "ZITADEL database ready!"
 
