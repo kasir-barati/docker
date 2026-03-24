@@ -3,6 +3,15 @@ services:
     build:
       context: ./book-api
       dockerfile: Dockerfile
+    depends_on:
+      setup-zitadel:
+        condition: service_completed_successfully
+      traefik:
+        condition: service_healthy
+    networks:
+      - proxy
+    volumes:
+      - zitadel-pat:/zitadel-pat:ro
     healthcheck:
       test:
         [
@@ -17,13 +26,35 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.services.backend.loadbalancer.server.port=3000
+      - traefik.http.routers.backend-web.rule=PathPrefix(`/api`)
+      - traefik.http.routers.backend-web.entrypoints=web
+      - traefik.http.routers.backend-web.service=book-api
+      - traefik.http.routers.backend-web.priority=300
 
   setup-zitadel:
     image: node:24.14-bookworm-slim
     working_dir: /app
+    depends_on:
+      traefik:
+        condition: service_healthy
+      zitadel:
+        condition: service_healthy
+    networks:
+      - proxy
     volumes:
       - ./setup-zitadel:/app:ro
+      - zitadel-pat:/zitadel-pat
     entrypoint: ["npm", "start"]
+
+  init-zitadel-pat-vol:
+    image: busybox:1.37
+    volumes:
+      - zitadel-pat:/zitadel-pat
+    entrypoint: ["sh", "-c", "chmod 1777 /zitadel-pat"]
 
   postgres:
     image: postgres:18.2-bookworm
@@ -32,6 +63,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - 5432:5432
+    networks:
+      - proxy
     healthcheck:
       test: ["CMD-SHELL", "pg_isready --quiet -U ${POSTGRES_USER}"]
       interval: 10s
@@ -60,3 +93,126 @@ services:
           || psql -h postgres -U $$PGUSER -c "CREATE DATABASE ${ZITADEL_DATABASE} OWNER zitadel;"
         echo "ZITADEL database ready!"
 
+  # Traefik reverse proxy — single entry point for all services: frontend, backend, ZITADEL OIDC endpoints, ZITADEL Login UI.
+  traefik:
+    image: traefik:v3.6.8
+    restart: unless-stopped
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=proxy
+      - --entrypoints.web.address=:80
+      - --api.dashboard=false
+      - --api.insecure=false
+      - --ping=true
+      - --log.level=INFO
+      - --accesslog=true
+    ports:
+      - "${TRAEFIK_EXPOSED_PORT}:80"
+    depends_on:
+      zitadel:
+        condition: service_healthy
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  zitadel-init:
+    image: ghcr.io/zitadel/zitadel:v4.12.3
+    command: "init"
+    depends_on:
+      create-zitadel-database:
+        condition: service_completed_successfully
+      init-zitadel-pat-vol:
+        condition: service_completed_successfully
+    networks:
+      - proxy
+    volumes:
+      - zitadel-pat:/zitadel-pat
+    environment:
+      ZITADEL_PORT: 8080
+      ZITADEL_EXTERNALDOMAIN: localhost
+
+      ZITADEL_MASTERKEY: ${ZITADEL_MASTERKEY}
+      ZITADEL_DEFAULTINSTANCE_INSTANCENAME: ZITADEL
+
+      # Database conf
+      ZITADEL_DATABASE_POSTGRES_HOST: postgres
+      ZITADEL_DATABASE_POSTGRES_PORT: 5432
+      ZITADEL_DATABASE_POSTGRES_DATABASE: ${ZITADEL_DATABASE}
+      ZITADEL_DATABASE_POSTGRES_USER_USERNAME: zitadel
+      ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: zitadel
+      ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE: disable
+      ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: ${POSTGRES_USER}
+      ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: ${POSTGRES_PASSWORD}
+      ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: disable
+
+      # Default admin user
+      ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME: ${ZITADEL_ADMIN_USERNAME:-admin}
+      ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD: ${ZITADEL_ADMIN_PASSWORD:-Admin123!}
+      ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED: false
+
+      # Machine user (IAM_OWNER) whose PAT is written to a shared volume so the init-zitadel container can read it.
+      ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME: bot
+      ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME: Bot
+      ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE: "9999-12-31T23:59:59Z"
+      ZITADEL_FIRSTINSTANCE_PATPATH: /zitadel-pat/token
+
+      # Machine user for the login service (PAT written to shared volume)
+      ZITADEL_FIRSTINSTANCE_LOGINCLIENTPATPATH: /zitadel-pat/login-client.pat
+      ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_MACHINE_USERNAME: login-client
+      ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_MACHINE_NAME: Automatically Initialized IAM_LOGIN_CLIENT
+      ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_PAT_EXPIRATIONDATE: "9999-12-31T23:59:59Z"
+
+      # Enable token exchange (RFC 8693) so e2e tests can impersonate human users via the bot's PAT.
+      ZITADEL_DEFAULTINSTANCE_FEATURES_TOKENEXCHANGE_ENABLED: true
+      ZITADEL_DEFAULTINSTANCE_FEATURES_IMPERSONATION_ENABLED: true
+    healthcheck:
+      test: ["CMD", "/app/zitadel", "ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+  zitadel:
+    extends:
+      service: zitadel-init
+    command: "start-from-setup --masterkeyFromEnv --tlsMode disabled"
+    environment:
+      ZITADEL_TLS_ENABLED: false
+      ZITADEL_EXTERNALSECURE: false
+      ZITADEL_EXTERNALPORT: ${TRAEFIK_EXPOSED_PORT}
+    networks:
+      - proxy
+    depends_on:
+      zitadel-init:
+        condition: service_completed_successfully
+      init-zitadel-pat-vol:
+        condition: service_completed_successfully
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.services.zitadel.loadbalancer.server.port=8080
+      - traefik.http.services.zitadel.loadbalancer.server.scheme=h2c
+      # Zitadel API: only matches Zitadel's own endpoints (OIDC, OAuth, management, etc.).
+      # Everything else falls through to the frontend SPA catch-all.
+      - traefik.http.routers.zitadel-web.rule=PathPrefix(`/.well-known`) || PathPrefix(`/oauth`) || PathPrefix(`/oidc`) || PathPrefix(`/saml`) || PathPrefix(`/v2`) || PathPrefix(`/management`) || PathPrefix(`/admin`) || PathPrefix(`/auth/v1`) || PathPrefix(`/assets`) || PathPrefix(`/ui/console`) || PathPrefix(`/debug`)
+      - traefik.http.routers.zitadel-web.entrypoints=web
+      - traefik.http.routers.zitadel-web.service=zitadel
+      - traefik.http.routers.zitadel-web.priority=100
+      - traefik.http.middlewares.zitadel-fwd.headers.customrequestheaders.X-Forwarded-Host=localhost:${TRAEFIK_EXPOSED_PORT}
+      - traefik.http.middlewares.zitadel-fwd.headers.customrequestheaders.X-Forwarded-Proto=http
+      - traefik.http.routers.zitadel-web.middlewares=zitadel-fwd
+
+networks:
+  proxy:
+    name: proxy
+
+volumes:
+  zitadel-pat:
