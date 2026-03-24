@@ -1,6 +1,6 @@
 // @ts-check
 
-import { readFile } from 'fs/promises';
+import { mkdir, readFile, writeFile } from 'fs/promises';
 
 import { Logger } from './logger.util.js';
 import { sleep } from './sleep.util.js';
@@ -39,5 +39,22 @@ export class FileUtil {
 
     Logger.error(`Could not read PAT from ${patFile}`);
     throw new Error(`Failed to read PAT from ${patFile}`);
+  }
+
+  /**
+   * Write content to a file
+   * @param {string} filePath - File path
+   * @param {string} content - Content to write
+   */
+  static async writeFile(filePath, content) {
+    await writeFile(filePath, content, 'utf-8');
+  }
+
+  /**
+   * Create directory recursively
+   * @param {string} dirPath - Directory path
+   */
+  static async ensureDir(dirPath) {
+    await mkdir(dirPath, { recursive: true });
   }
 }

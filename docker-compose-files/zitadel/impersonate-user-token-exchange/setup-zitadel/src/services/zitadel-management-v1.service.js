@@ -1,5 +1,7 @@
 // @ts-check
 
+import { isEmpty, Logger } from "../utils/index.js";
+
 export class ZitadelManagementV1Service {
     /**
      * @param {string} baseUrl - ZITADEL base URL
@@ -49,7 +51,7 @@ export class ZitadelManagementV1Service {
      * Create an OIDC application (public client)
      * @param {string} projectId - Project ID
      * @param {string} appName - Application name
-     * @returns {Promise<string|null>} Client ID or null on failure
+     * @returns {Promise<string>} Client ID
      */
     async createOidcApp(projectId, appName) {
         const response = await fetch(
@@ -87,7 +89,9 @@ export class ZitadelManagementV1Service {
             return await this.#findAppClientId(projectId);
         }
 
-        return null;
+        Logger.error(`Failed to create OIDC app: ${JSON.stringify(data, null, 2)}`);
+
+        throw new Error('OIDC app creation failed!');
     }
 
     /**
@@ -124,7 +128,7 @@ export class ZitadelManagementV1Service {
     /**
      * Find first app client ID in a project
      * @param {string} projectId - Project ID
-     * @returns {Promise<string|null>} Client ID or null if not found
+     * @returns {Promise<string>} Client ID
      */
     async #findAppClientId(projectId) {
         const response = await fetch(
@@ -139,6 +143,13 @@ export class ZitadelManagementV1Service {
         );
 
         const data = await response.json();
-        return data.result?.[0]?.oidcConfig?.clientId || null;
+        const clientId = data.result?.[0]?.oidcConfig?.clientId;
+
+        if (isEmpty(clientId)) {
+            Logger.error(`Failed to find existing OIDC app client ID: ${JSON.stringify(data, null, 2)}`);
+            throw new Error('Failed to find existing OIDC app client ID');
+        }
+
+        return clientId;
     }
 }
