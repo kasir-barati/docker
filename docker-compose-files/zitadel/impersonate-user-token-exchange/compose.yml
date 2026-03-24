@@ -170,7 +170,7 @@ services:
       ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_MACHINE_NAME: Automatically Initialized IAM_LOGIN_CLIENT
       ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_PAT_EXPIRATIONDATE: "9999-12-31T23:59:59Z"
 
-      # Enable token exchange (RFC 8693) so e2e tests can impersonate human users via the bot's PAT.
+      # Enable token exchange (RFC 8693) so integration tests can impersonate human users via the bot's PAT.
       ZITADEL_DEFAULTINSTANCE_FEATURES_TOKENEXCHANGE_ENABLED: true
       ZITADEL_DEFAULTINSTANCE_FEATURES_IMPERSONATION_ENABLED: true
     healthcheck:

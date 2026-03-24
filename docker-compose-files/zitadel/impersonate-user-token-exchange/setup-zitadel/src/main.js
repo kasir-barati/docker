@@ -1,35 +1,70 @@
 // @ts-check
 
-import { ZitadelManagementV1Service } from './services/index.js';
-import { FileUtil, isEmpty, Logger } from './utils/index.js'
+import { ZitadelManagementV1Service } from "./services/index.js";
+import { FileUtil, isEmpty, Logger } from "./utils/index.js";
 
-const zitadelUrl = 'http://traefik:80';
+const zitadelUrl = "http://traefik:80";
 /**
  * @description we are mounting the same volume to the setup-zitadel service and the zitadel-init service (lookup `ZITADEL_FIRSTINSTANCE_PATPATH`).
  */
-const patFilePath = '/zitadel-pat/token';
-const clientDir = '/zitadel-pat/client';
+const patFilePath = "/zitadel-pat/token";
+const clientDir = "/zitadel-pat/client";
+const appName = "book-app";
+const projectName = `${appName}-project`;
+const confidentialAppName = `integration-test-${appName}`;
 const clientIdFile = `${clientDir}/book-app-id`;
+const integrationTestClientIdFile = `${clientDir}/integration-test-book-app-id`;
+const integrationTestClientSecretFile = `${clientDir}/integration-test-book-app-secret`;
 const accessToken = await FileUtil.readPatWithRetries(patFilePath);
-const managementV1Service = new ZitadelManagementV1Service(zitadelUrl, accessToken);
+const managementV1Service = new ZitadelManagementV1Service(
+  zitadelUrl,
+  accessToken,
+);
 
-Logger.section('Setting up Zitadel for Book App');
-Logger.log('Ensuring client directory exists...');
+Logger.section("Setting up Zitadel for Book App");
+Logger.log("Ensuring client directory exists...");
 await FileUtil.ensureDir(clientDir);
 
-Logger.section('Creating OIDC Project & Application');
-Logger.log('Creating project: book-app...');
-const projectId = await managementV1Service.createProject('book-project');
+Logger.section("Creating OIDC Project & Application");
+Logger.log(`Creating project: ${appName}...`);
+const projectId = await managementV1Service.createProject(projectName);
 if (isEmpty(projectId)) {
-    throw new Error('Failed to create project');
+  throw new Error("Failed to create project");
 }
 Logger.ok(`Project created with ID: ${projectId}`);
 
-Logger.log(`Creating OIDC application: book-app...`)
-const clientId = await managementV1Service.createOidcApp(
-    projectId,
-    'book-app',
+Logger.log(`Creating OIDC application: ${appName}...`);
+const { clientId } = await managementV1Service.createOidcApp(
+  projectId,
+  appName,
 );
 Logger.ok(`Application created with client ID: ${clientId}`);
 Logger.ok(`Writing client ID to ${clientIdFile}`);
 await FileUtil.writeFile(clientIdFile, clientId);
+
+Logger.section("Creating Confidential OIDC Application for Integration Tests");
+Logger.log(`Creating confidential OIDC application: ${confidentialAppName}...`);
+const {
+  clientId: integrationTestClientId,
+  clientSecret: integrationTestClientSecret,
+} = await managementV1Service.createOidcApp(
+  projectId,
+  confidentialAppName,
+  "confidential",
+);
+Logger.ok(
+  `Confidential application created with client ID: ${integrationTestClientId}`,
+);
+Logger.ok(
+  `Writing integration test client ID to ${integrationTestClientIdFile}`,
+);
+await FileUtil.writeFile(integrationTestClientIdFile, integrationTestClientId);
+if (isEmpty(integrationTestClientSecret)) {
+  throw new Error(
+    "Failed to get the client secret of the confidential application",
+  );
+}
+await FileUtil.writeFile(
+  integrationTestClientSecretFile,
+  integrationTestClientSecret,
+);

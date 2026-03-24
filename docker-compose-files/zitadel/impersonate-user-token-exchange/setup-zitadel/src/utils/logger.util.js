@@ -41,11 +41,11 @@ export class Logger {
    * @param {string} title - Section title
    */
   static section(title) {
-    console.error('');
-    console.error('================================================');
+    console.error("");
+    console.error("================================================");
     console.error(title);
-    console.error('================================================');
-    console.error('');
+    console.error("================================================");
+    console.error("");
   }
 
   /**
@@ -53,8 +53,8 @@ export class Logger {
    * @param {string} title - Subsection title
    */
   static subsection(title) {
-    console.error('');
+    console.error("");
     console.error(title);
-    console.error('');
+    console.error("");
   }
 }

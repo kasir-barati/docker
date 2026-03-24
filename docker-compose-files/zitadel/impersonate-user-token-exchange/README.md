@@ -86,13 +86,35 @@ Now to write integration tests for our backend I am still running the ZITADEL, t
 >
 > NOTE: On ZITADEL this will fail with: `{"error":"unsupported_grant_type"}`.
 
-So we have an admin user whom can impersonate another user in our e2e setup. ZITADEL allows any application to use [Token Exchange](https://zitadel.com/docs/guides/integrate/token-exchange), however they strongly recommend to only configure **confidential clients** (using either client credentials) with the Token Exchange grant type. This is because there is some trust placed in the application when it comes to defining scope and that it obtained tokens in a legitimate way.
+So we have an admin user whom can impersonate another user in our integration test setup. ZITADEL allows any application to use [Token Exchange](https://zitadel.com/docs/guides/integrate/token-exchange), however they strongly recommend to only configure **confidential clients** (using either client credentials) with the Token Exchange grant type. This is because there is some trust placed in the application when it comes to defining scope and that it obtained tokens in a legitimate way.
 
-For example, if the app possesses a token of an admin user with impersonation permissions it can obtain tokens for any other user in your instance. It is your responsibility to make sure the application can be trusted with this kind of powers. But since this is **only** limited to our e2e tests it should be pretty fine.
+> [!NOTE]
+>
+> This is actually what we also do for our integration tests.
+>
+> <details><summary>But if you'd like to read more about why we are creating a separate confidential app...</summary>
+>
+> 1. Security Principle of Least Privilege & blast-radius control: my normal `book-app` should NOT have the ability to exchange token. **THOUGH** keep in mind that if you enable your QA to test your app you might wanna create a separate app from your production/dev env and grant it token exchange privileges.
+>    > ⚠️ **Critical Safeguards for Token Exchange Feature in Production & QA**:
+>    >
+>    > User impersonation should be **auditable, time-limited, and leave a trail**:
+>    >
+>    > - Every token-exchange action is logged.
+>    > - You can track who exchange their token for what role/user and when.
+>    > - Token exchanges expire after a defined period.
+>    >
+>    > **If you implement QA impersonation, you need similar safeguards!**
+> 2. Token Exchange Requires Client Credentials & since it inherently requires a high degree of trust we can do it in our integration tests ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693.html)).
+> 3. Separation of Concerns.
+> 4. Can evaluate RBAC checks we have in our backend in the integration tests.
+>
+> </details>
+
+For example, if the app possesses a token of an admin user with impersonation permissions it can obtain tokens for any other user in your instance. It is your responsibility to make sure the application can be trusted with this kind of powers. But since this is **only** limited to our integration tests it should be pretty fine.
 
 > [!TIP]
 >
-> We are going to use `VITE_OIDC_SCOPE` in the backend-e2e tests too, so we have the same scope in both environments.
+> We are going to use `VITE_OIDC_SCOPE` in the book-api-integration-tests too, so we have the same scope in both environments.
 
 Here is an example request one might send to ZITADEL:
 

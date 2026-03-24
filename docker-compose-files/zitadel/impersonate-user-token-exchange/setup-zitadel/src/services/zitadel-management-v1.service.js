@@ -3,153 +3,178 @@
 import { isEmpty, Logger } from "../utils/index.js";
 
 export class ZitadelManagementV1Service {
-    /**
-     * @param {string} baseUrl - ZITADEL base URL
-     * @param {string} accessToken - Bearer token for authentication
-     */
-    constructor(baseUrl, accessToken) {
-        this.baseUrl = baseUrl;
-        this.accessToken = accessToken;
+  /**
+   * @param {string} baseUrl - ZITADEL base URL
+   * @param {string} accessToken - Bearer token for authentication
+   */
+  constructor(baseUrl, accessToken) {
+    this.baseUrl = baseUrl;
+    this.accessToken = accessToken;
+  }
+
+  /**
+   * Create a project in ZITADEL
+   * @param {string} projectName - Project name
+   * @returns {Promise<string|null>} Project ID or null on failure
+   */
+  async createProject(projectName) {
+    const response = await fetch(`${this.baseUrl}/management/v1/projects`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: projectName,
+        projectRoleAssertion: true,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.id) return data.id;
+
+    // Check if project already exists
+    if (JSON.stringify(data).toLowerCase().includes("already")) {
+      return await this.#findProjectByName(projectName);
     }
 
-    /**
-     * Create a project in ZITADEL
-     * @param {string} projectName - Project name
-     * @returns {Promise<string|null>} Project ID or null on failure
-     */
-    async createProject(projectName) {
-        const response = await fetch(
-            `${this.baseUrl}/management/v1/projects`,
+    return null;
+  }
+
+  /**
+   * Create an OIDC application.
+   *
+   * If the app already exists, this will return its clientId and `clientSecret: null`.
+   *
+   * @param {string} projectId - Project ID
+   * @param {string} appName - Application name
+   * @param {'public'|'confidential'} [kind='public'] - OIDC app kind
+   * @returns {Promise<{clientId: string, clientSecret: (string|null)}>} public apps do NOT have **client secrets**; for confidential apps the secret is **ONLY** returned on creation.
+   */
+  async createOidcApp(projectId, appName, kind = "public") {
+    /** @type {Record<string, any>} */
+    const payload =
+      kind === "confidential"
+        ? {
+            name: appName,
+            redirectUris: ["http://localhost:8080/dummy/callback"],
+            postLogoutRedirectUris: [],
+            responseTypes: ["OIDC_RESPONSE_TYPE_CODE"],
+            grantTypes: [
+              "OIDC_GRANT_TYPE_REFRESH_TOKEN",
+              "OIDC_GRANT_TYPE_TOKEN_EXCHANGE",
+              "OIDC_GRANT_TYPE_AUTHORIZATION_CODE",
+              "OIDC_GRANT_TYPE_CLIENT_CREDENTIALS",
+            ],
+            appType: "OIDC_APP_TYPE_WEB",
+            authMethodType: "OIDC_AUTH_METHOD_TYPE_BASIC",
+            devMode: true,
+          }
+        : {
+            name: appName,
+            redirectUris: ["http://localhost:8080/auth/callback"],
+            postLogoutRedirectUris: ["http://localhost:8080"],
+            responseTypes: ["OIDC_RESPONSE_TYPE_CODE"],
+            grantTypes: [
+              "OIDC_GRANT_TYPE_AUTHORIZATION_CODE",
+              "OIDC_GRANT_TYPE_TOKEN_EXCHANGE",
+            ],
+            appType: "OIDC_APP_TYPE_NATIVE",
+            authMethodType: "OIDC_AUTH_METHOD_TYPE_NONE",
+            devMode: true,
+          };
+
+    const response = await fetch(
+      `${this.baseUrl}/management/v1/projects/${projectId}/apps/oidc`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+
+    const data = await response.json();
+
+    if (data.clientId) {
+      return {
+        clientId: data.clientId,
+        clientSecret: data.clientSecret ?? null,
+      };
+    }
+
+    if (JSON.stringify(data).toLowerCase().includes("already")) {
+      const clientId = await this.#findAppClientId(projectId);
+      return { clientId, clientSecret: null };
+    }
+
+    Logger.error(
+      `Failed to create ${kind} OIDC app: ${JSON.stringify(data, null, 2)}`,
+    );
+    throw new Error("OIDC app creation failed!");
+  }
+
+  /**
+   * Find a project by name
+   * @param {string} projectName - Project name
+   * @returns {Promise<string|null>} Project ID or null if not found
+   */
+  async #findProjectByName(projectName) {
+    const response = await fetch(
+      `${this.baseUrl}/management/v1/projects/_search`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          queries: [
             {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${this.accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: projectName,
-                    projectRoleAssertion: true,
-                }),
+              nameQuery: {
+                name: projectName,
+                method: "TEXT_QUERY_METHOD_EQUALS",
+              },
             },
-        );
+          ],
+        }),
+      },
+    );
 
-        const data = await response.json();
+    const data = await response.json();
+    return data.result?.[0]?.id || null;
+  }
 
-        if (data.id) {
-            return data.id;
-        }
+  /**
+   * Find first app client ID in a project
+   * @param {string} projectId - Project ID
+   * @returns {Promise<string>} Client ID
+   */
+  async #findAppClientId(projectId) {
+    const response = await fetch(
+      `${this.baseUrl}/management/v1/projects/${projectId}/apps/_search`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
 
-        // Check if project already exists
-        if (JSON.stringify(data).toLowerCase().includes('already')) {
-            return await this.#findProjectByName(projectName);
-        }
+    const data = await response.json();
+    const clientId = data.result?.[0]?.oidcConfig?.clientId;
 
-        return null;
+    if (isEmpty(clientId)) {
+      Logger.error(
+        `Failed to find existing OIDC app client ID: ${JSON.stringify(data, null, 2)}`,
+      );
+      throw new Error("Failed to find existing OIDC app client ID");
     }
 
-    /**
-     * Create an OIDC application (public client)
-     * @param {string} projectId - Project ID
-     * @param {string} appName - Application name
-     * @returns {Promise<string>} Client ID
-     */
-    async createOidcApp(projectId, appName) {
-        const response = await fetch(
-            `${this.baseUrl}/management/v1/projects/${projectId}/apps/oidc`,
-            {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${this.accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: appName,
-                    redirectUris: ['http://localhost:8080/auth/callback'],
-                    postLogoutRedirectUris: ['http://localhost:8080'],
-                    responseTypes: ['OIDC_RESPONSE_TYPE_CODE'],
-                    grantTypes: [
-                        'OIDC_GRANT_TYPE_AUTHORIZATION_CODE',
-                        'OIDC_GRANT_TYPE_TOKEN_EXCHANGE',
-                    ],
-                    appType: 'OIDC_APP_TYPE_NATIVE',
-                    authMethodType: 'OIDC_AUTH_METHOD_TYPE_NONE',
-                    devMode: true,
-                }),
-            },
-        );
-
-        const data = await response.json();
-
-        if (data.clientId) {
-            return data.clientId;
-        }
-
-        // Check if app already exists
-        if (JSON.stringify(data).toLowerCase().includes('already')) {
-            return await this.#findAppClientId(projectId);
-        }
-
-        Logger.error(`Failed to create OIDC app: ${JSON.stringify(data, null, 2)}`);
-
-        throw new Error('OIDC app creation failed!');
-    }
-
-    /**
-     * Find a project by name
-     * @param {string} projectName - Project name
-     * @returns {Promise<string|null>} Project ID or null if not found
-     */
-    async #findProjectByName(projectName) {
-        const response = await fetch(
-            `${this.baseUrl}/management/v1/projects/_search`,
-            {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${this.accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    queries: [
-                        {
-                            nameQuery: {
-                                name: projectName,
-                                method: 'TEXT_QUERY_METHOD_EQUALS',
-                            },
-                        },
-                    ],
-                }),
-            },
-        );
-
-        const data = await response.json();
-        return data.result?.[0]?.id || null;
-    }
-
-    /**
-     * Find first app client ID in a project
-     * @param {string} projectId - Project ID
-     * @returns {Promise<string>} Client ID
-     */
-    async #findAppClientId(projectId) {
-        const response = await fetch(
-            `${this.baseUrl}/management/v1/projects/${projectId}/apps/_search`,
-            {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${this.accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-            },
-        );
-
-        const data = await response.json();
-        const clientId = data.result?.[0]?.oidcConfig?.clientId;
-
-        if (isEmpty(clientId)) {
-            Logger.error(`Failed to find existing OIDC app client ID: ${JSON.stringify(data, null, 2)}`);
-            throw new Error('Failed to find existing OIDC app client ID');
-        }
-
-        return clientId;
-    }
+    return clientId;
+  }
 }

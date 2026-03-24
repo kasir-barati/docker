@@ -1,9 +1,9 @@
 // @ts-check
 
-import { mkdir, readFile, writeFile } from 'fs/promises';
+import { mkdir, readFile, writeFile } from "fs/promises";
 
-import { Logger } from './logger.util.js';
-import { sleep } from './sleep.util.js';
+import { Logger } from "./logger.util.js";
+import { sleep } from "./sleep.util.js";
 
 /**
  * Utility for file operations
@@ -20,7 +20,7 @@ export class FileUtil {
 
     for (let retries = 0; retries < maxRetries; retries++) {
       try {
-        const content = await readFile(patFile, 'utf-8');
+        const content = await readFile(patFile, "utf-8");
         const pat = content.trim();
 
         if (pat.length > 0) {
@@ -47,7 +47,7 @@ export class FileUtil {
    * @param {string} content - Content to write
    */
   static async writeFile(filePath, content) {
-    await writeFile(filePath, content, 'utf-8');
+    await writeFile(filePath, content, "utf-8");
   }
 
   /**
