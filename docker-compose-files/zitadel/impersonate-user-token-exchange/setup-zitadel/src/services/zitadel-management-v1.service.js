@@ -150,6 +150,35 @@ export class ZitadelManagementV1Service {
   }
 
   /**
+   * Assign a role to a user
+   * @param {string} userId - User ID
+   * @param {string} projectId - Project ID
+   * @param {'admin'|'guest'} roleKey - Role key to assign
+   * @returns {Promise<boolean>} Success status
+   */
+  async assignRoleToUser(userId, projectId, roleKey) {
+    const response = await fetch(
+      `${this.baseUrl}/management/v1/users/${userId}/grants`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          projectId,
+          roleKeys: [roleKey],
+        }),
+      },
+    );
+
+    const data = await response.json();
+    const responseText = JSON.stringify(data).toLowerCase();
+
+    return responseText.includes("already") || responseText.includes("grantid");
+  }
+
+  /**
    * Find a project by name
    * @param {string} projectName - Project name
    * @returns {Promise<string|null>} Project ID or null if not found

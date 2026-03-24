@@ -1,7 +1,10 @@
 // @ts-check
 
-import { ZitadelManagementV1Service } from "./services/index.js";
-import { FileUtil, isEmpty, Logger, sleep } from "./utils/index.js";
+import {
+  ZitadelManagementV1Service,
+  ZitadelUsersV2Service,
+} from "./services/index.js";
+import { FileUtil, isEmpty, isNotEmpty, Logger, sleep } from "./utils/index.js";
 
 const zitadelUrl = "http://traefik:80";
 /**
@@ -9,6 +12,8 @@ const zitadelUrl = "http://traefik:80";
  */
 const patFilePath = "/zitadel-pat/token";
 const clientDir = "/zitadel-pat/client";
+const guestUserIdFile = "/zitadel-pat/guest-user-id";
+const adminUserIdFile = "/zitadel-pat/admin-user-id";
 const appName = "book-app";
 const projectName = `${appName}-project`;
 const confidentialAppName = `integration-test-${appName}`;
@@ -20,6 +25,7 @@ const managementV1Service = new ZitadelManagementV1Service(
   zitadelUrl,
   accessToken,
 );
+const usersV2Service = new ZitadelUsersV2Service(zitadelUrl, accessToken);
 
 Logger.section("Setting up Zitadel for Book App");
 Logger.log("Ensuring client directory exists...");
@@ -85,3 +91,31 @@ await managementV1Service.createProjectRole(projectId, {
 Logger.ok(`Role 'guest' created`);
 Logger.log("Small delay for eventual consistency...");
 await sleep(2000);
+
+Logger.section("Creating Human Users & Assigning Roles");
+Logger.log("Creating user: some-admin@test.com ...");
+const adminUserId = await usersV2Service.createHumanUser({
+  email: "some-admin@test.com",
+  firstName: "Admin",
+  lastName: "User",
+  password: "Admin123!",
+});
+if (isNotEmpty(adminUserId)) {
+  Logger.log("Assigning role 'admin' to user " + adminUserId + "...");
+  await managementV1Service.assignRoleToUser(adminUserId, projectId, "admin");
+  Logger.ok(`Writing admin user ID to ${adminUserIdFile}`);
+  await FileUtil.writeFile(adminUserIdFile, adminUserId);
+}
+Logger.log("Creating user: some-guest@test.com ...");
+const guestUserId = await usersV2Service.createHumanUser({
+  email: "some-guest@test.com",
+  firstName: "Guest",
+  lastName: "User",
+  password: "Guest123!",
+});
+if (isNotEmpty(guestUserId)) {
+  Logger.log("Assigning role 'guest' to user " + guestUserId + "...");
+  await managementV1Service.assignRoleToUser(guestUserId, projectId, "guest");
+  Logger.ok(`Writing guest user ID to ${guestUserIdFile}`);
+  await FileUtil.writeFile(guestUserIdFile, guestUserId);
+}
