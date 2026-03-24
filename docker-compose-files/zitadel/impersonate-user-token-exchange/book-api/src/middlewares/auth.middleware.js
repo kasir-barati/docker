@@ -11,7 +11,9 @@ const { jwksUri, issuer } = await fetch(oidcConfiguration)
     return response.json();
   })
   .then((data) => {
-    const typedData = /** @type {{ jwks_uri: string, issuer: string }} */ (data);
+    const typedData = /** @type {{ jwks_uri: string, issuer: string }} */ (
+      data
+    );
     return { jwksUri: typedData.jwks_uri, issuer: typedData.issuer };
   });
 const JWKS = createRemoteJWKSet(new URL(jwksUri));

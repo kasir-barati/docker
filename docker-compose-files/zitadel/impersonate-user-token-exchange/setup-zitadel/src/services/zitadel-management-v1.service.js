@@ -43,6 +43,38 @@ export class ZitadelManagementV1Service {
   }
 
   /**
+   * Create a role in a project
+   * @param {string} projectId - Project ID
+   * @param {Object} role - Role configuration
+   * @param {string} role.group - Role group
+   * @param {string} role.roleKey - Role key (e.g., 'admin', 'writer', 'user')
+   * @param {string} role.displayName - Role display name
+   * @returns {Promise<boolean>} Success status
+   */
+  async createProjectRole(projectId, { roleKey, displayName, group }) {
+    const response = await fetch(
+      `${this.baseUrl}/management/v1/projects/${projectId}/roles`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          group,
+          roleKey,
+          displayName,
+        }),
+      },
+    );
+
+    const data = await response.json();
+    const responseText = JSON.stringify(data).toLowerCase();
+
+    return responseText.includes("already") || responseText.includes("details");
+  }
+
+  /**
    * Create an OIDC application.
    *
    * If the app already exists, this will return its clientId and `clientSecret: null`.

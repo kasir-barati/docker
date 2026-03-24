@@ -1,7 +1,7 @@
 // @ts-check
 
 import { ZitadelManagementV1Service } from "./services/index.js";
-import { FileUtil, isEmpty, Logger } from "./utils/index.js";
+import { FileUtil, isEmpty, Logger, sleep } from "./utils/index.js";
 
 const zitadelUrl = "http://traefik:80";
 /**
@@ -68,3 +68,20 @@ await FileUtil.writeFile(
   integrationTestClientSecretFile,
   integrationTestClientSecret,
 );
+
+Logger.section("Creating Project Roles");
+Logger.log("Creating project roles...");
+await managementV1Service.createProjectRole(projectId, {
+  group: appName,
+  roleKey: "admin",
+  displayName: "Admin",
+});
+Logger.ok(`Role 'admin' created`);
+await managementV1Service.createProjectRole(projectId, {
+  group: appName,
+  roleKey: "guest",
+  displayName: "Guest",
+});
+Logger.ok(`Role 'guest' created`);
+Logger.log("Small delay for eventual consistency...");
+await sleep(2000);
