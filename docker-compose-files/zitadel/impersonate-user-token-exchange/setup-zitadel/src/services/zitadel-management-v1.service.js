@@ -179,6 +179,42 @@ export class ZitadelManagementV1Service {
   }
 
   /**
+   * Grant a user access to a project with specific roles (needed for token exchange)
+   * @param {string} userId - User ID to grant access to
+   * @param {string} projectId - Project ID
+   * @param {string[]} roleKeys - Array of role keys to grant
+   */
+  async grantUserProjectAccess(userId, projectId, roleKeys) {
+    const response = await fetch(
+      `${this.baseUrl}/management/v1/users/${userId}/grants`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          projectId,
+          roleKeys,
+        }),
+      },
+    );
+    const data = await response.json();
+    const responseText = JSON.stringify(data).toLowerCase();
+    const success =
+      responseText.includes("already") ||
+      responseText.includes("grantid") ||
+      responseText.includes("details");
+
+    if (!success) {
+      Logger.error(
+        `Failed to grant user ${userId} access to project ${JSON.stringify(data, null, 2)}`,
+      );
+      throw new Error("Granting user project access failed!");
+    }
+  }
+
+  /**
    * Find a project by name
    * @param {string} projectName - Project name
    * @returns {Promise<string|null>} Project ID or null if not found

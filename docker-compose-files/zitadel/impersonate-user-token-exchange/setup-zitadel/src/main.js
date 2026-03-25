@@ -150,22 +150,15 @@ Logger.log(
 );
 await adminV1Service.assignImpersonatorRole(integrationTestBotUserId);
 Logger.ok("Impersonation role assigned to Integration Test bot");
-
-//   // Grant Integration Test bot access to project (this will work because it's in the same org)
-//   Logger.log(
-//     `Granting E2E bot ${e2eBotUserId} access to project ${projectId}...`,
-//   );
-//   const e2eBotGrantSuccess =
-//     await managementV1Service.grantUserProjectAccess(
-//       e2eBotUserId,
-//       projectId,
-//       ['admin', 'writer', 'user'],
-//     );
-//   if (e2eBotGrantSuccess) {
-//     Logger.ok('E2E bot granted project access');
-//   } else {
-//     Logger.warn('E2E bot project grant may have failed');
-//   }
+Logger.log(
+  `Granting Integration Test bot ${integrationTestBotUserId} access to project ${projectId}...`,
+);
+await managementV1Service.grantUserProjectAccess(
+  integrationTestBotUserId,
+  projectId,
+  ["admin", "writer", "user"],
+);
+Logger.ok("Integration Test bot got project access");
 
 //   // Generate PAT for E2E bot
 //   Logger.log('Generating PAT for E2E machine user...');
