@@ -1,5 +1,10 @@
 .ONESHELL:
-.PHONY: start stop test clean format help
+.PHONY: init start stop test clean format help
+
+init:
+	cp .env.example .env
+	cd book-api && npm ci
+	cd book-api-integration-tests && npm ci
 
 start:
 	docker compose up --build -d
@@ -32,4 +37,5 @@ help:
 	@echo "  clean:   Remove logs"
 	@echo "  format:  Format the code using Prettier"
 	@echo "  test:    Run integration tests"
+	@echo "  init:    Initialize the project"
 	@echo "  help:    Show this help message"
