@@ -1,6 +1,8 @@
 // @ts-check
 
 import {
+  ZitadelAdminV1Service,
+  ZitadelAuthV1Service,
   ZitadelManagementV1Service,
   ZitadelUsersV2Service,
 } from "./services/index.js";
@@ -26,6 +28,8 @@ const managementV1Service = new ZitadelManagementV1Service(
   accessToken,
 );
 const usersV2Service = new ZitadelUsersV2Service(zitadelUrl, accessToken);
+const adminV1Service = new ZitadelAdminV1Service(zitadelUrl, accessToken);
+const authV1Service = new ZitadelAuthV1Service(zitadelUrl, accessToken);
 
 Logger.section("Setting up Zitadel for Book App");
 Logger.log("Ensuring client directory exists...");
@@ -119,3 +123,90 @@ if (isNotEmpty(guestUserId)) {
   Logger.ok(`Writing guest user ID to ${guestUserIdFile}`);
   await FileUtil.writeFile(guestUserIdFile, guestUserId);
 }
+
+Logger.section("Enabling Impersonation");
+Logger.log("Enable impersonation in the security policy...");
+await adminV1Service.enableImpersonationInSecurityPolicy();
+Logger.section("Granting bot user impersonation permission...");
+const { userId: botUserId, organizationId } =
+  await authV1Service.getCurrentUser();
+Logger.log(
+  `Assigning impersonation role to bot user ${botUserId} (org: ${organizationId})...`,
+);
+await adminV1Service.assignImpersonatorRole(botUserId);
+Logger.ok("Impersonation role assigned to bot user");
+Logger.log("Creating machine user: integration-test-impersonation-bot...");
+const integrationTestBotUserId = await usersV2Service.createMachineUser({
+  organizationId,
+  username: "integration-test-impersonation-bot",
+  name: "Integration Test Impersonation Bot",
+  description: "Machine user for integration test token exchange",
+});
+Logger.ok(
+  `Integration Test machine user created with ID: ${integrationTestBotUserId}`,
+);
+Logger.log(
+  "Assigning IAM_END_USER_IMPERSONATOR role to Integration Test bot...",
+);
+await adminV1Service.assignImpersonatorRole(integrationTestBotUserId);
+Logger.ok("Impersonation role assigned to Integration Test bot");
+
+//   // Grant Integration Test bot access to project (this will work because it's in the same org)
+//   Logger.log(
+//     `Granting E2E bot ${e2eBotUserId} access to project ${projectId}...`,
+//   );
+//   const e2eBotGrantSuccess =
+//     await managementV1Service.grantUserProjectAccess(
+//       e2eBotUserId,
+//       projectId,
+//       ['admin', 'writer', 'user'],
+//     );
+//   if (e2eBotGrantSuccess) {
+//     Logger.ok('E2E bot granted project access');
+//   } else {
+//     Logger.warn('E2E bot project grant may have failed');
+//   }
+
+//   // Generate PAT for E2E bot
+//   Logger.log('Generating PAT for E2E machine user...');
+//   const e2eBotPat =
+//     await managementV1Service.createUserPat(e2eBotUserId);
+//   if (isNotEmpty(e2eBotPat)) {
+//     Logger.ok(
+//       `PAT generated for E2E bot (${e2eBotPat.length} chars)`,
+//     );
+//     Logger.ok(
+//       `Writing E2E bot PAT to ${configService.e2eBotPatFile}`,
+//     );
+//     await FileUtil.writeFile(
+//       configService.e2eBotPatFile,
+//       e2eBotPat,
+//     );
+//   } else {
+//     Logger.warn(
+//       'Could not generate PAT for E2E bot - token exchange will not work!',
+//     );
+//   }
+
+//   // Wait and verify the grant
+//   Logger.log('Waiting 3 seconds for project grant to propagate...');
+//   await sleep(3000);
+
+//   Logger.log('Verifying E2E bot project grant...');
+//   const grants =
+//     await managementV1Service.listUserGrants(e2eBotUserId);
+//   Logger.log(`E2E bot has ${grants.length} project grant(s)`);
+//   const projectGrant = grants.find(
+//     /** @param {{projectId: string, roleKeys: string[]}} g */
+//     (g) => g.projectId === projectId,
+//   );
+//   if (projectGrant) {
+//     Logger.ok(
+//       `✓ Confirmed: E2E bot has grant for project ${projectId} with roles: ${projectGrant.roleKeys?.join(', ') || 'none'}`,
+//     );
+//   } else {
+//     Logger.warn(
+//       `⚠ Warning: Could not verify E2E bot grant for project ${projectId}`,
+//     );
+//   }
+// }

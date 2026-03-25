@@ -63,6 +63,85 @@ export class ZitadelUsersV2Service {
   }
 
   /**
+   * Create a machine user (service account) in ZITADEL
+   * @see https://zitadel.com/docs/reference/api/user/zitadel.user.v2.UserService.CreateUser
+   * @param {MachineUserParams} params - Machine user creation parameters
+   * @returns {Promise<string>} User ID
+   */
+  async createMachineUser({
+    organizationId,
+    username,
+    name,
+    description = "Machine user for token exchange",
+    accessTokenType = "ACCESS_TOKEN_TYPE_JWT",
+  }) {
+    const response = await fetch(`${this.baseUrl}/v2/users/new`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        organizationId,
+        username,
+        machine: {
+          name,
+          description,
+          accessTokenType,
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.id) {
+      return data.id;
+    }
+
+    if (JSON.stringify(data).toLowerCase().includes("already")) {
+      return await this.#findUserByUsername(username);
+    }
+
+    throw new Error(
+      `Failed to create machine user: ${JSON.stringify(data, null, 2)}`,
+    );
+  }
+
+  /**
+   * Find a user by username
+   * @param {string} username - Username
+   * @returns {Promise<string>} User ID
+   */
+  async #findUserByUsername(username) {
+    const response = await fetch(`${this.baseUrl}/v2/users`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        queries: [
+          {
+            userNameQuery: {
+              userName: username,
+              method: "TEXT_QUERY_METHOD_EQUALS",
+            },
+          },
+        ],
+      }),
+    });
+
+    const data = await response.json();
+    const userId = data.result?.[0]?.userId;
+
+    if (!userId) {
+      throw new Error(`User not found: ${username}`);
+    }
+
+    return userId;
+  }
+
+  /**
    * Find a user by email address
    * @param {string} email - User email
    * @returns {Promise<string|null>} User ID or null if not found
@@ -90,3 +169,14 @@ export class ZitadelUsersV2Service {
     return data.result?.[0]?.userId || null;
   }
 }
+
+/**
+ * @typedef {'ACCESS_TOKEN_TYPE_BEARER' | 'ACCESS_TOKEN_TYPE_JWT'} AccessTokenType
+ *
+ * @typedef {Object} MachineUserParams
+ * @property {string} organizationId - Organization ID the machine user belongs to
+ * @property {string} username - Machine user username
+ * @property {string} name - Display name for the machine user
+ * @property {string} [description] - Description of the machine user
+ * @property {AccessTokenType} [accessTokenType] - Access token type
+ */
