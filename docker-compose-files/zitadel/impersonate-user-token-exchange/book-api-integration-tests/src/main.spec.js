@@ -68,6 +68,9 @@ async function getActorAccessToken() {
 
   body.set("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
   body.set("assertion", assertion);
+  // Add client credentials for JWT Profile grant
+  body.set("client_id", clientId);
+  body.set("client_secret", clientSecret);
   // Ask for audiences + roles to ease later introspection, though not strictly needed for actor
   body.set("scope", scopes);
 
@@ -99,6 +102,7 @@ async function impersonate(actorToken, userId) {
   body.set("client_id", clientId);
   body.set("client_secret", clientSecret);
   body.set("actor_token", actorToken);
+  body.set("actor_token_type", "urn:ietf:params:oauth:token-type:access_token");
   body.set("subject_token_type", "urn:zitadel:params:oauth:token-type:user_id");
   body.set("subject_token", userId);
   body.set("requested_token_type", "urn:ietf:params:oauth:token-type:jwt"); // ask for JWT AT
