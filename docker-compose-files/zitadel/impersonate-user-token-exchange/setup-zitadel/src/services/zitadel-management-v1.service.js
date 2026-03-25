@@ -201,17 +201,15 @@ export class ZitadelManagementV1Service {
     );
     const data = await response.json();
     const responseText = JSON.stringify(data).toLowerCase();
-    const success =
-      responseText.includes("already") ||
-      responseText.includes("grantid") ||
-      responseText.includes("details");
 
-    if (!success) {
-      Logger.error(
-        `Failed to grant user ${userId} access to project ${JSON.stringify(data, null, 2)}`,
-      );
-      throw new Error("Granting user project access failed!");
+    if (responseText.includes("grantid") || responseText.includes("already")) {
+      return;
     }
+
+    Logger.error(
+      `Failed to grant user ${userId} access to project: ${JSON.stringify(data, null, 2)}`,
+    );
+    throw new Error("Granting user project access failed!");
   }
 
   /**
@@ -243,6 +241,43 @@ export class ZitadelManagementV1Service {
     }
 
     return data.token;
+  }
+
+  /**
+   * List all grants for a specific user
+   * @param {string} userId - User ID
+   * @returns {Promise<Array<{projectId: string, roleKeys: string[]}>>} Array of grants
+   */
+  async listUserGrants(userId) {
+    const response = await fetch(
+      `${this.baseUrl}/management/v1/users/grants/_search`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          queries: [
+            {
+              userIdQuery: {
+                userId,
+              },
+            },
+          ],
+        }),
+      },
+    );
+    const data = await response.json();
+
+    if (!response.ok) {
+      Logger.error(
+        `Failed to list grants for user ${userId}: ${JSON.stringify(data, null, 2)}`,
+      );
+      throw new Error("Listing user grants failed!");
+    }
+
+    return data.result || [];
   }
 
   /**

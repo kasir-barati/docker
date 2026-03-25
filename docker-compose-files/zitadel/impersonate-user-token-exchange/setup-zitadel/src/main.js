@@ -157,35 +157,30 @@ Logger.log(
 await managementV1Service.grantUserProjectAccess(
   integrationTestBotUserId,
   projectId,
-  ["admin", "writer", "user"],
+  ["admin", "guest"],
 );
 Logger.ok("Integration Test bot got project access");
-Logger.log("Generating PAT for E2E machine user...");
+Logger.log("Generating PAT for integration test machine user...");
 const e2eBotPat = await managementV1Service.createUserPat(
   integrationTestBotUserId,
 );
-Logger.ok(`PAT generated for E2E bot (${e2eBotPat.length} chars)`);
-Logger.ok(`Writing E2E bot PAT to ${integrationTestBotPatFile}`);
+Logger.ok(`PAT generated for integration test bot (${e2eBotPat.length} chars)`);
+Logger.ok(`Writing integration test bot PAT to ${integrationTestBotPatFile}`);
 await FileUtil.writeFile(integrationTestBotPatFile, e2eBotPat);
-
-//   Logger.log('Waiting 3 seconds for project grant to propagate...');
-//   await sleep(3000);
-
-//   Logger.log('Verifying E2E bot project grant...');
-//   const grants =
-//     await managementV1Service.listUserGrants(e2eBotUserId);
-//   Logger.log(`E2E bot has ${grants.length} project grant(s)`);
-//   const projectGrant = grants.find(
-//     /** @param {{projectId: string, roleKeys: string[]}} g */
-//     (g) => g.projectId === projectId,
-//   );
-//   if (projectGrant) {
-//     Logger.ok(
-//       `✓ Confirmed: E2E bot has grant for project ${projectId} with roles: ${projectGrant.roleKeys?.join(', ') || 'none'}`,
-//     );
-//   } else {
-//     Logger.warn(
-//       `⚠ Warning: Could not verify E2E bot grant for project ${projectId}`,
-//     );
-//   }
-// }
+Logger.log("Waiting 3 seconds for project grant to propagate...");
+await sleep(3000);
+Logger.log("Verifying integration test bot project grant...");
+const grants = await managementV1Service.listUserGrants(
+  integrationTestBotUserId,
+);
+Logger.log(`integration test bot has ${grants.length} project grant(s)`);
+const projectGrant = grants.find((grant) => grant.projectId === projectId);
+if (isEmpty(projectGrant)) {
+  Logger.error(
+    `Integration test bot does NOT have a grant for project ${projectId}. Grants found: ${JSON.stringify(grants, null, 2)}`,
+  );
+  throw new Error("Integration test bot project grant verification failed!");
+}
+Logger.ok(
+  `✓ Confirmed: integration test bot has grant for project ${projectId} with roles: ${projectGrant.roleKeys?.join(", ") || "none"}`,
+);
