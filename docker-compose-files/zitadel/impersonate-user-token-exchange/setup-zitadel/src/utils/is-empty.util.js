@@ -3,7 +3,7 @@
 /**
  *
  * @param {any} value
- * @returns {value is null | undefined | '' | [] | {}}
+ * @returns {value is null | undefined | '' | never[] | Record<string, never>}
  */
 export function isEmpty(value) {
   if (value === null || value === undefined) {
