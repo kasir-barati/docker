@@ -4,7 +4,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 
 import { getProjectId } from "../utils/index.js";
 
-const ISSUER = "http://localhost:8080";
+const ISSUER = "http://traefik:80";
 const oidcConfiguration = `${ISSUER}/.well-known/openid-configuration`;
 const { jwksUri, issuer } = await fetch(oidcConfiguration)
   .then((response) => {
