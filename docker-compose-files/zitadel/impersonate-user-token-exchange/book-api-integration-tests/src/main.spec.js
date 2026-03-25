@@ -1,5 +1,4 @@
 // @ts-check
-// Obtain ACTOR token via JWT Profile (service account) → token exchange to impersonate admin/guest → call API
 
 import { SignJWT, importPKCS8 } from "jose";
 import { readFile } from "node:fs/promises";
