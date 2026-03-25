@@ -13,6 +13,7 @@ const zitadelUrl = "http://traefik:80";
  * @description we are mounting the same volume to the setup-zitadel service and the zitadel-init service (lookup `ZITADEL_FIRSTINSTANCE_PATPATH`).
  */
 const patFilePath = "/zitadel-pat/token";
+const projectIdFile = "/zitadel-pat/project-id";
 const clientDir = "/zitadel-pat/client";
 const guestUserIdFile = "/zitadel-pat/guest-user-id";
 const adminUserIdFile = "/zitadel-pat/admin-user-id";
@@ -42,8 +43,8 @@ const projectId = await managementV1Service.createProject(projectName);
 if (isEmpty(projectId)) {
   throw new Error("Failed to create project");
 }
-Logger.ok(`Project created with ID: ${projectId}`);
-
+Logger.log(`Writing project ID to ${projectIdFile}...`);
+await FileUtil.writeFile(projectIdFile, projectId);
 Logger.log(`Creating OIDC application: ${appName}...`);
 const { clientId } = await managementV1Service.createOidcApp(
   projectId,
@@ -105,12 +106,10 @@ const adminUserId = await usersV2Service.createHumanUser({
   lastName: "User",
   password: "Admin123!",
 });
-if (isNotEmpty(adminUserId)) {
-  Logger.log("Assigning role 'admin' to user " + adminUserId + "...");
-  await managementV1Service.assignRoleToUser(adminUserId, projectId, "admin");
-  Logger.ok(`Writing admin user ID to ${adminUserIdFile}`);
-  await FileUtil.writeFile(adminUserIdFile, adminUserId);
-}
+Logger.log("Assigning role 'admin' to user " + adminUserId + "...");
+await managementV1Service.assignRoleToUser(adminUserId, projectId, "admin");
+Logger.ok(`Writing admin user ID to ${adminUserIdFile}`);
+await FileUtil.writeFile(adminUserIdFile, adminUserId);
 Logger.log("Creating user: some-guest@test.com ...");
 const guestUserId = await usersV2Service.createHumanUser({
   email: "some-guest@test.com",
@@ -118,12 +117,10 @@ const guestUserId = await usersV2Service.createHumanUser({
   lastName: "User",
   password: "Guest123!",
 });
-if (isNotEmpty(guestUserId)) {
-  Logger.log("Assigning role 'guest' to user " + guestUserId + "...");
-  await managementV1Service.assignRoleToUser(guestUserId, projectId, "guest");
-  Logger.ok(`Writing guest user ID to ${guestUserIdFile}`);
-  await FileUtil.writeFile(guestUserIdFile, guestUserId);
-}
+Logger.log("Assigning role 'guest' to user " + guestUserId + "...");
+await managementV1Service.assignRoleToUser(guestUserId, projectId, "guest");
+Logger.ok(`Writing guest user ID to ${guestUserIdFile}`);
+await FileUtil.writeFile(guestUserIdFile, guestUserId);
 
 Logger.section("Enabling Impersonation");
 Logger.log("Enable impersonation in the security policy...");

@@ -1,5 +1,7 @@
 // @ts-check
 
+import { isEmpty, Logger } from "../utils/index.js";
+
 /**
  * Service for interacting with `/v2/users` endpoints of ZITADEL API.
  */
@@ -20,7 +22,7 @@ export class ZitadelUsersV2Service {
    * @param {string} params.firstName - User first name
    * @param {string} params.lastName - User last name
    * @param {string} params.password - User password
-   * @returns {Promise<string|null>} User ID or null on failure
+   * @returns {Promise<string>} User ID or null on failure
    */
   async createHumanUser({ email, firstName, lastName, password }) {
     const username = email.split("@")[0];
@@ -59,7 +61,10 @@ export class ZitadelUsersV2Service {
       return await this.#findUserByEmail(email);
     }
 
-    return null;
+    Logger.error(
+      `Failed to create a human user: ${JSON.stringify(data, null, 2)}`,
+    );
+    throw new Error(`Failed to create human user`);
   }
 
   /**
@@ -144,7 +149,7 @@ export class ZitadelUsersV2Service {
   /**
    * Find a user by email address
    * @param {string} email - User email
-   * @returns {Promise<string|null>} User ID or null if not found
+   * @returns {Promise<string>} User ID
    */
   async #findUserByEmail(email) {
     const response = await fetch(`${this.baseUrl}/v2/users`, {
@@ -166,7 +171,13 @@ export class ZitadelUsersV2Service {
     });
 
     const data = await response.json();
-    return data.result?.[0]?.userId || null;
+    const userId = data.result?.[0]?.userId;
+
+    if (isEmpty(userId)) {
+      throw new Error(`User not found: ${email}`);
+    }
+
+    return userId;
   }
 }
 
