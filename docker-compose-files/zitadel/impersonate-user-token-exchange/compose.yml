@@ -18,9 +18,7 @@ services:
           "CMD",
           "curl",
           "-sf",
-          "-H",
-          "Content-Type: application/json",
-          "http://localhost:3000/healthcheck",
+          "http://localhost:3000/api/healthcheck",
         ]
       interval: 30s
       timeout: 10s
