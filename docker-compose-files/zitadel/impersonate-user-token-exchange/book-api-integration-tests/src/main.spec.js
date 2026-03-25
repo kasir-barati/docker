@@ -31,7 +31,7 @@ const adminUserId = await readFile(join(SHARED_DIR, "admin-user-id"), "utf-8");
 const integrationTestBotKey = JSON.parse(
   await readFile(join(SHARED_DIR, "integration-test-bot.key.json"), "utf-8"),
 );
-const scopes = `openid profile email urn:zitadel:iam:org:project:id:${projectId}:aud urn:zitadel:iam:org:projects:roles urn:zitadel:iam:user:metadata`;
+const scopes = `openid profile email urn:zitadel:iam:org:project:id:${projectId}:aud urn:zitadel:iam:org:project:id:${projectId}:roles urn:zitadel:iam:user:metadata`;
 
 /**
  * @description JWT Profile: sign a client assertion with the machine JSON key

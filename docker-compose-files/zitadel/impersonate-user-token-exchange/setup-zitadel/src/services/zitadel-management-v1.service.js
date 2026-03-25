@@ -102,6 +102,8 @@ export class ZitadelManagementV1Service {
             appType: "OIDC_APP_TYPE_WEB",
             authMethodType: "OIDC_AUTH_METHOD_TYPE_BASIC",
             devMode: true,
+            accessTokenRoleAssertion: true,
+            idTokenRoleAssertion: true,
           }
         : {
             name: appName,
@@ -115,6 +117,8 @@ export class ZitadelManagementV1Service {
             appType: "OIDC_APP_TYPE_NATIVE",
             authMethodType: "OIDC_AUTH_METHOD_TYPE_NONE",
             devMode: true,
+            accessTokenRoleAssertion: true,
+            idTokenRoleAssertion: true,
           };
 
     const response = await fetch(

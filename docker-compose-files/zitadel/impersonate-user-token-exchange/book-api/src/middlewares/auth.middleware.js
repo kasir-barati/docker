@@ -14,7 +14,9 @@ const { jwksUri, issuer } = await fetch(oidcConfiguration)
     const typedData = /** @type {{ jwks_uri: string, issuer: string }} */ (
       data
     );
-    return { jwksUri: typedData.jwks_uri, issuer: typedData.issuer };
+    // Replace the external URL with the internal Docker network URL for JWKS
+    const internalJwksUri = typedData.jwks_uri.replace('http://localhost:8080', ISSUER);
+    return { jwksUri: internalJwksUri, issuer: typedData.issuer };
   });
 const JWKS = createRemoteJWKSet(new URL(jwksUri));
 
@@ -41,6 +43,6 @@ export async function authMiddleware(req, res, next) {
     req.user = payload;
     next();
   } catch (e) {
-    return res.status(401).json({ error: "unauthorized", detail: String(e) });
+    return res.status(401).json({ error: "unauthorized" });
   }
 }
