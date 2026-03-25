@@ -16,6 +16,7 @@ const patFilePath = "/zitadel-pat/token";
 const clientDir = "/zitadel-pat/client";
 const guestUserIdFile = "/zitadel-pat/guest-user-id";
 const adminUserIdFile = "/zitadel-pat/admin-user-id";
+const integrationTestBotPatFile = "/zitadel-pat/e2e-bot-token";
 const appName = "book-app";
 const projectName = `${appName}-project`;
 const confidentialAppName = `integration-test-${appName}`;
@@ -159,29 +160,14 @@ await managementV1Service.grantUserProjectAccess(
   ["admin", "writer", "user"],
 );
 Logger.ok("Integration Test bot got project access");
+Logger.log("Generating PAT for E2E machine user...");
+const e2eBotPat = await managementV1Service.createUserPat(
+  integrationTestBotUserId,
+);
+Logger.ok(`PAT generated for E2E bot (${e2eBotPat.length} chars)`);
+Logger.ok(`Writing E2E bot PAT to ${integrationTestBotPatFile}`);
+await FileUtil.writeFile(integrationTestBotPatFile, e2eBotPat);
 
-//   // Generate PAT for E2E bot
-//   Logger.log('Generating PAT for E2E machine user...');
-//   const e2eBotPat =
-//     await managementV1Service.createUserPat(e2eBotUserId);
-//   if (isNotEmpty(e2eBotPat)) {
-//     Logger.ok(
-//       `PAT generated for E2E bot (${e2eBotPat.length} chars)`,
-//     );
-//     Logger.ok(
-//       `Writing E2E bot PAT to ${configService.e2eBotPatFile}`,
-//     );
-//     await FileUtil.writeFile(
-//       configService.e2eBotPatFile,
-//       e2eBotPat,
-//     );
-//   } else {
-//     Logger.warn(
-//       'Could not generate PAT for E2E bot - token exchange will not work!',
-//     );
-//   }
-
-//   // Wait and verify the grant
 //   Logger.log('Waiting 3 seconds for project grant to propagate...');
 //   await sleep(3000);
 

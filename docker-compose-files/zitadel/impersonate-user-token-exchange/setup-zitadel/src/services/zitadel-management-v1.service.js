@@ -215,6 +215,37 @@ export class ZitadelManagementV1Service {
   }
 
   /**
+   * Create a Personal Access Token for a user
+   * @param {string} userId - User ID
+   * @returns {Promise<string>} PAT token
+   */
+  async createUserPat(userId) {
+    const response = await fetch(
+      `${this.baseUrl}/management/v1/users/${userId}/pats`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          expirationDate: "9999-12-31T23:59:59Z",
+        }),
+      },
+    );
+    const data = await response.json();
+
+    if (!data.token) {
+      Logger.error(
+        `Failed to create PAT for user ${userId}: ${JSON.stringify(data, null, 2)}`,
+      );
+      throw new Error("Creating user PAT failed!");
+    }
+
+    return data.token;
+  }
+
+  /**
    * Find a project by name
    * @param {string} projectName - Project name
    * @returns {Promise<string|null>} Project ID or null if not found
