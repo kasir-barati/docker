@@ -8,6 +8,7 @@ stop:
 	docker compose down -v
 
 test:
+	clear
 	docker compose --profile integration-tests down -v
 	docker compose --profile integration-tests up --build -d
 	docker compose wait book-api-integration-tests
