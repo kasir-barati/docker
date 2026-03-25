@@ -33,6 +33,22 @@ services:
       - traefik.http.routers.backend-web.service=book-api
       - traefik.http.routers.backend-web.priority=300
 
+  book-api-integration-tests:
+    build:
+      context: ./book-api-integration-tests
+      dockerfile: Dockerfile
+    profiles:
+      - integration-tests
+    depends_on:
+      book-api:
+        condition: service_healthy
+      setup-zitadel:
+        condition: service_completed_successfully
+    networks:
+      - proxy
+    volumes:
+      - zitadel-pat:/zitadel-pat:ro
+
   setup-zitadel:
     image: node:24.14-bookworm-slim
     working_dir: /app

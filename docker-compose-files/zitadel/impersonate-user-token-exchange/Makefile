@@ -8,9 +8,13 @@ stop:
 	docker compose down -v
 
 test:
-	make stop
-	make start
-	node book-api-integration-tests/src/main.spec.js
+	docker compose --profile integration-tests down -v
+	docker compose --profile integration-tests up --build -d
+	docker compose wait book-api-integration-tests
+	mkdir -p logs
+	docker compose logs book-api-integration-tests > logs/book-api-integration-tests.log 2>&1
+	docker compose logs setup-zitadel > logs/setup-zitadel.log 2>&1
+	docker compose logs zitadel > logs/zitadel.log 2>&1
 
 logs:
 	docker compose logs setup-zitadel
