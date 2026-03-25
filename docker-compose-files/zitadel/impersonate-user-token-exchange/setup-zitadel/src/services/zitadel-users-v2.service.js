@@ -96,7 +96,6 @@ export class ZitadelUsersV2Service {
         },
       }),
     });
-
     const data = await response.json();
 
     if (data.id) {
@@ -110,6 +109,32 @@ export class ZitadelUsersV2Service {
     throw new Error(
       `Failed to create machine user: ${JSON.stringify(data, null, 2)}`,
     );
+  }
+
+  /**
+   * Create a JSON key for a machine user (service user).
+   * @param {string} userId
+   * @param {string} [expirationDate] https://www.rfc-editor.org/rfc/rfc3339.html
+   * @returns {Promise<{type:string,keyId:string,key?:string,userId:string}>}
+   */
+  async addKey(userId, expirationDate) {
+    const response = await fetch(`${this.baseUrl}/v2/users/${userId}/keys`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(expirationDate ? { expirationDate } : {}),
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        `AddKey failed for user ${userId}: ${response.status} ${JSON.stringify(data)}`,
+      );
+    }
+
+    return data;
   }
 
   /**

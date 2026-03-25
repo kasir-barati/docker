@@ -18,6 +18,7 @@ const clientDir = "/zitadel-pat/client";
 const guestUserIdFile = "/zitadel-pat/guest-user-id";
 const adminUserIdFile = "/zitadel-pat/admin-user-id";
 const integrationTestBotPatFile = "/zitadel-pat/integration-test-bot-token";
+const integrationTestBotKeyPath = "/zitadel-pat/integration-test-bot.key.json";
 const appName = "book-app";
 const projectName = `${appName}-project`;
 const confidentialAppName = `integration-test-${appName}`;
@@ -140,8 +141,14 @@ const integrationTestBotUserId = await usersV2Service.createMachineUser({
   name: "Integration Test Impersonation Bot",
   description: "Machine user for integration test token exchange",
 });
-Logger.ok(
-  `Integration Test machine user created with ID: ${integrationTestBotUserId}`,
+Logger.log("Creating JSON key for the integration-test bot...");
+const botKey = await usersV2Service.addKey(
+  integrationTestBotUserId,
+  "9999-12-31T23:59:59Z",
+);
+await FileUtil.writeFile(
+  integrationTestBotKeyPath,
+  JSON.stringify(botKey, null, 2),
 );
 Logger.log(
   "Assigning IAM_END_USER_IMPERSONATOR role to Integration Test bot...",
