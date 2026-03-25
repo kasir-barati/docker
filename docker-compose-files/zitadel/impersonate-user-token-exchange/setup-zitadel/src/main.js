@@ -6,7 +6,7 @@ import {
   ZitadelManagementV1Service,
   ZitadelUsersV2Service,
 } from "./services/index.js";
-import { FileUtil, isEmpty, isNotEmpty, Logger, sleep } from "./utils/index.js";
+import { FileUtil, isEmpty, Logger, sleep } from "./utils/index.js";
 
 const zitadelUrl = "http://traefik:80";
 /**

@@ -1,7 +1,5 @@
 // @ts-check
 
-import { isEmpty, isNotEmpty } from "../utils/index.js";
-
 /**
  * Service for interacting with ZITADEL Admin V1 API endpoints
  */
