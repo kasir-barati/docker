@@ -1,5 +1,9 @@
 # User Impersonation
 
+> [!NOTE]
+>
+> You can learn more about the `compose.yml` file [here](./COMPOSE.md).
+
 Here we:
 
 - Run ZITADEL locally.
