@@ -158,12 +158,14 @@ await managementV1Service.grantUserProjectAccess(
 );
 Logger.ok("Integration Test bot got project access");
 Logger.log("Generating PAT for integration test machine user...");
-const e2eBotPat = await managementV1Service.createUserPat(
+const integrationTestBotPat = await managementV1Service.createUserPat(
   integrationTestBotUserId,
 );
-Logger.ok(`PAT generated for integration test bot (${e2eBotPat.length} chars)`);
+Logger.ok(
+  `PAT generated for integration test bot (${integrationTestBotPat.length} chars)`,
+);
 Logger.ok(`Writing integration test bot PAT to ${integrationTestBotPatFile}`);
-await FileUtil.writeFile(integrationTestBotPatFile, e2eBotPat);
+await FileUtil.writeFile(integrationTestBotPatFile, integrationTestBotPat);
 Logger.log("Waiting 3 seconds for project grant to propagate...");
 await sleep(3000);
 Logger.log("Verifying integration test bot project grant...");
