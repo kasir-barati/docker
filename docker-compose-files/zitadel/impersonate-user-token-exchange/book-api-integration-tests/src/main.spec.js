@@ -5,9 +5,15 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createPrivateKey } from "node:crypto";
 
-const ISSUER = "http://traefik:80";
+// Zitadel's issuer URL (for JWT audience) must match ZITADEL_EXTERNALDOMAIN:TRAEFIK_EXPOSED_PORT
+const ZITADEL_ISSUER = "http://localhost:8080";
+// Internal URLs for making actual HTTP requests from within Docker network
+const TOKEN_ENDPOINT = "http://traefik:80/oauth/v2/token";
 const API_URL = "http://traefik:80/api";
 const SHARED_DIR = "/zitadel-pat";
+const CLIENT_DIR = `${SHARED_DIR}/client`;
+const clientId = await readFile(join(CLIENT_DIR, "integration-test-book-app-id"), "utf-8");
+const clientSecret = await readFile(join(CLIENT_DIR, "integration-test-book-app-secret"), "utf-8");
 const projectId = await readFile(join(SHARED_DIR, "project-id"), "utf-8");
 const guestUserId = await readFile(join(SHARED_DIR, "guest-user-id"), "utf-8");
 const adminUserId = await readFile(join(SHARED_DIR, "admin-user-id"), "utf-8");
@@ -48,14 +54,14 @@ async function getActorAccessToken() {
   
   const now = Math.floor(Date.now() / 1000);
 
-  // aud must be the issuer base URL
+  // aud must be the issuer base URL (Zitadel's external URL)
   const assertion = await new SignJWT({})
     .setProtectedHeader({ alg: "RS256", kid: keyId })
     .setIssuedAt(now)
     .setExpirationTime(now + 60)
     .setIssuer(userId)
     .setSubject(userId)
-    .setAudience(ISSUER)
+    .setAudience(ZITADEL_ISSUER)
     .sign(pk);
 
   const body = new URLSearchParams();
@@ -65,7 +71,7 @@ async function getActorAccessToken() {
   // Ask for audiences + roles to ease later introspection, though not strictly needed for actor
   body.set("scope", scopes);
 
-  const response = await fetch(`${ISSUER}/oauth/v2/token`, {
+  const response = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body,
@@ -90,13 +96,15 @@ async function getActorAccessToken() {
 async function impersonate(actorToken, userId) {
   const body = new URLSearchParams();
   body.set("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange");
+  body.set("client_id", clientId);
+  body.set("client_secret", clientSecret);
   body.set("actor_token", actorToken);
   body.set("subject_token_type", "urn:zitadel:params:oauth:token-type:user_id");
   body.set("subject_token", userId);
   body.set("requested_token_type", "urn:ietf:params:oauth:token-type:jwt"); // ask for JWT AT
   body.set("scope", scopes);
 
-  const res = await fetch(`${ISSUER}/oauth/v2/token`, {
+  const res = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body,
