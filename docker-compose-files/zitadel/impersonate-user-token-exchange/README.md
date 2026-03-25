@@ -36,21 +36,27 @@ Notes, with references
 
 ```
 ├─ compose.yml
-├─ .env               # minimal runtime env (see below)
-├─ local-setup/
-│  └─ init-zitadel/
-│     ├─ package.json
-│     └─ index.mjs    # calls ZITADEL REST APIs via fetch
-├─ apps/
-│  └─ api/
-│     ├─ Dockerfile
-│     ├─ package.json
-│     └─ server.mjs   # Express API + JWT verification via ZITADEL JWKS
-└─ tests/
-   └─ e2e/
-      ├─ Dockerfile
-      ├─ package.json
-      └─ run.mjs      # obtain actor token (JWT Profile) → token-exchange → call API
+├─ .env               # minimal runtime env
+├─ .env.example
+├─ Makefile
+├─ setup-zitadel/
+│  ├─ package.json
+│  └─ src/
+│     ├─ main.js      # calls ZITADEL REST APIs via fetch
+│     ├─ services/    # ZITADEL API service wrappers (v1 & v2)
+│     └─ utils/       # helper utilities (logger, file operations, etc.)
+├─ book-api/
+│  ├─ Dockerfile
+│  ├─ package.json
+│  └─ src/
+│     ├─ main.js      # Express API + JWT verification via ZITADEL JWKS
+│     ├─ middlewares/ # auth middleware
+│     └─ utils/       # role checking utilities
+└─ book-api-integration-tests/
+   ├─ Dockerfile
+   ├─ package.json
+   └─ src/
+      └─ main.spec.js # obtain actor token (JWT Profile) → token-exchange → call API
 ```
 
 ## How to Start
