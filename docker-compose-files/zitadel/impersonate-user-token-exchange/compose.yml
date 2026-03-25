@@ -12,13 +12,15 @@ services:
       - proxy
     volumes:
       - zitadel-pat:/zitadel-pat:ro
+    environment:
+      PORT: ${BOOK_API_PORT}
     healthcheck:
       test:
         [
           "CMD",
           "curl",
           "-sf",
-          "http://localhost:3000/api/healthcheck",
+          "http://localhost:${BOOK_API_PORT}/api/healthcheck",
         ]
       interval: 30s
       timeout: 10s
@@ -27,7 +29,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - traefik.http.services.book-api.loadbalancer.server.port=3000
+      - traefik.http.services.book-api.loadbalancer.server.port=${BOOK_API_PORT}
       - traefik.http.routers.backend-web.rule=PathPrefix(`/api`)
       - traefik.http.routers.backend-web.entrypoints=web
       - traefik.http.routers.backend-web.service=book-api

@@ -9,7 +9,11 @@ const app = express();
 
 app.use(express.json());
 
-const PORT = 3000;
+const PORT = process.env.PORT;
+
+if (!PORT) {
+  throw new Error("PORT environment variable is required");
+}
 
 app
   .get("/api/healthcheck", (_, res) => res.json({ ok: true }))
@@ -22,5 +26,5 @@ app
     res.json({ id: req.params.id, title: "Dummy Book", readBy: req.user.sub });
   })
   .listen(PORT, () => {
-    console.log("Books API running on :3000");
+    console.log(`Books API running on :${PORT}`);
   });

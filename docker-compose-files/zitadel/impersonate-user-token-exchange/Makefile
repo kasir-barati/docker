@@ -1,5 +1,5 @@
 .ONESHELL:
-.PHONY: start stop test logs format help
+.PHONY: start stop test clean format help
 
 start:
 	docker compose up --build -d
@@ -17,8 +17,10 @@ test:
 	docker compose logs setup-zitadel > logs/setup-zitadel.log 2>&1
 	docker compose logs zitadel > logs/zitadel.log 2>&1
 
-logs:
-	docker compose logs setup-zitadel
+clean:
+	rm -rf logs
+	find . -type d -name node_modules -prune -print -exec rm -rf '{}' +
+
 
 format:
 	pnpx prettier . -w -u
@@ -27,7 +29,7 @@ help:
 	@echo "Available commands:"
 	@echo "  start:   Start the application using Docker Compose"
 	@echo "  stop:    Stop the application and remove volumes"
-	@echo "  logs:    Show logs for the setup-zitadel service"
+	@echo "  clean:   Remove logs"
 	@echo "  format:  Format the code using Prettier"
 	@echo "  test:    Run integration tests"
 	@echo "  help:    Show this help message"
