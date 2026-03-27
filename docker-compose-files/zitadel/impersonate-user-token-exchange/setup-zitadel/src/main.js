@@ -161,7 +161,7 @@ Logger.log(
 await managementV1Service.grantUserProjectAccess(
   integrationTestBotUserId,
   projectId,
-  ["admin", "guest"],
+  [],
 );
 Logger.ok("Integration Test bot got project access");
 Logger.log("Generating PAT for integration test machine user...");
