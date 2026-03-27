@@ -122,20 +122,14 @@ So we have an admin user whom can impersonate another user in our integration te
 
 For example, if the app possesses a token of an admin user with impersonation permissions it can obtain tokens for any other user in your instance. It is your responsibility to make sure the application can be trusted with this kind of powers. But since this is **only** limited to our integration tests it should be pretty fine.
 
-> [!TIP]
->
-> We are going to use `VITE_OIDC_SCOPE` in the book-api-integration-tests too, so we have the same scope in both environments.
+## Shared Volume
 
-Here is an example request one might send to ZITADEL:
-
-```bash
-curl -L -X POST 'http://localhost:9000/oauth/v2/token' \
-     -H 'Content-Type: application/x-www-form-urlencoded' \
-     -H 'Accept: application/json' \
-     -u '259254409320529922@portal:eNdXJzB5RK5CXSpa4HqEfbdDqlM7drpskEHq1RBYMby0tM1MaCidyWsWlp5mglbN' \
-     -d 'grant_type=urn:ietf:params:oauth:grant-type:token-exchange' \
-     -d 'subject_token=NaUAPHy5mLFQlwUCeUGYeDyhcQYuNhzTiYgwMor9BxP_bfMy2iDdLxJ87nntUc85vNyeHOY' \
-     -d 'subject_token_type=urn:ietf:params:oauth:token-type:access_token' \
-     -d 'scope=openid' \
-     -d 'audience=259254020357488642' | jq
-```
+| File                                                   | Consumer          | Purpose                   |
+| ------------------------------------------------------ | ----------------- | ------------------------- |
+| `/zitadel-pat/token`                                   | `setup-zitadel`   | Bootstrap auth            |
+| `/zitadel-pat/project-id`                              | `book-api`        | JWT audience verification |
+| `/zitadel-pat/client/integration-test-book-app-id`     | Integration tests | OAuth client ID           |
+| `/zitadel-pat/client/integration-test-book-app-secret` | Integration tests | OAuth client secret       |
+| `/zitadel-pat/guest-user-id`                           | Integration tests | Impersonation target      |
+| `/zitadel-pat/admin-user-id`                           | Integration tests | Impersonation target      |
+| `/zitadel-pat/integration-test-bot.key.json`           | Integration tests | JWT auth for machine user |
