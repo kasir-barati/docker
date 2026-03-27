@@ -15,7 +15,10 @@ const { jwksUri, issuer } = await fetch(oidcConfiguration)
       data
     );
     // Replace the external URL with the internal Docker network URL for JWKS
-    const internalJwksUri = typedData.jwks_uri.replace('http://localhost:8080', ISSUER);
+    const internalJwksUri = typedData.jwks_uri.replace(
+      "http://localhost:8080",
+      ISSUER,
+    );
     return { jwksUri: internalJwksUri, issuer: typedData.issuer };
   });
 const JWKS = createRemoteJWKSet(new URL(jwksUri));

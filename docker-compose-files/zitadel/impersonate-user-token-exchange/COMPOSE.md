@@ -30,10 +30,12 @@ CREATE ROLE zitadel LOGIN PASSWORD 'zitadel';
 ```
 
 This creates the PostgreSQL role (user) with:
+
 - Username: `zitadel`
 - Password: `zitadel`
 
 Then the database is created with this user as the owner:
+
 ```sql
 CREATE DATABASE ${ZITADEL_DATABASE} OWNER zitadel;
 ```

@@ -5,7 +5,14 @@ import { createPrivateKey } from "node:crypto";
 
 import { getConfig } from "./get-config.util.js";
 
-const { integrationTestBotKey, clientId, clientSecret, scopes, zitadelIssuer, tokenEndpoint } = await getConfig();
+const {
+  integrationTestBotKey,
+  clientId,
+  clientSecret,
+  scopes,
+  zitadelIssuer,
+  tokenEndpoint,
+} = await getConfig();
 
 /**
  * @description JWT Profile: sign a client assertion with the machine JSON key
@@ -20,12 +27,14 @@ export async function getActorAccessToken() {
     Buffer.from(integrationTestBotKey.keyContent, "base64").toString("utf-8"),
   );
   const { keyId, key, userId } = decodedKey;
-  
+
   // Convert RSA private key to PKCS8 format that jose can use
   const privateKey = createPrivateKey({ key, format: "pem" });
-  const pkcs8Key = privateKey.export({ type: "pkcs8", format: "pem" }).toString();
+  const pkcs8Key = privateKey
+    .export({ type: "pkcs8", format: "pem" })
+    .toString();
   const pk = await importPKCS8(pkcs8Key, "RS256");
-  
+
   const now = Math.floor(Date.now() / 1000);
 
   // aud must be the issuer base URL (Zitadel's external URL)

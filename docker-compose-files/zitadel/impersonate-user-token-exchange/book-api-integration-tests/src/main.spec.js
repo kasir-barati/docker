@@ -1,13 +1,20 @@
 // @ts-check
 
-import { getConfig, getActorAccessToken, callApi, impersonate } from './utils/index.js'
+import {
+  getConfig,
+  getActorAccessToken,
+  callApi,
+  impersonate,
+} from "./utils/index.js";
 
 const { adminUserId, guestUserId } = await getConfig();
 const actorToken = await getActorAccessToken();
 
 // Impersonate admin → create book
 const adminToken = await impersonate(actorToken, adminUserId);
-let response = await callApi(adminToken, "POST", "/books", { title: "My Book" });
+let response = await callApi(adminToken, "POST", "/books", {
+  title: "My Book",
+});
 console.log("admin create book:", response.status, response.text);
 
 // Impersonate guest → read book
