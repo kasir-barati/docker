@@ -1,5 +1,7 @@
 // @ts-check
 
+import { Logger } from "../utils/index.js";
+
 /**
  * Service for interacting with ZITADEL Auth V1 API endpoints
  */
@@ -28,9 +30,8 @@ export class ZitadelAuthV1Service {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to get current user: ${JSON.stringify(data, null, 2)}`,
-      );
+      Logger.error(`Error fetching current user: ${JSON.stringify(data, null, 2)}`);
+      throw new Error(`Failed to get current user`);
     }
 
     return {

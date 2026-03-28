@@ -1,5 +1,7 @@
 // @ts-check
 
+import { Logger } from "../utils/index.js";
+
 /**
  * Service for interacting with ZITADEL Admin V1 API endpoints
  */
@@ -31,8 +33,9 @@ export class ZitadelAdminV1Service {
     const responseBody = await response.json();
 
     if (!response.ok) {
+      Logger.error(`Failed to enable impersonation in security policy: ${JSON.stringify(responseBody, null, 2)}`);
       throw new Error(
-        `Failed to enable impersonation in security policy: ${JSON.stringify(responseBody, null, 2)}`,
+        `Failed to enable impersonation in security policy`,
       );
     }
   }

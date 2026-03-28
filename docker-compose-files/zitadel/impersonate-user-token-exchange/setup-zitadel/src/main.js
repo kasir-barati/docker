@@ -6,6 +6,7 @@ import {
   ZitadelManagementV1Service,
   ZitadelUsersV2Service,
 } from "./services/index.js";
+import { users } from "./data/index.js";
 import { FileUtil, isEmpty, Logger, sleep } from "./utils/index.js";
 
 const zitadelUrl = "http://traefik:80";
@@ -15,8 +16,6 @@ const zitadelUrl = "http://traefik:80";
 const patFilePath = "/zitadel-pat/token";
 const projectIdFile = "/zitadel-pat/project-id";
 const clientDir = "/zitadel-pat/client";
-const guestUserIdFile = "/zitadel-pat/guest-user-id";
-const adminUserIdFile = "/zitadel-pat/admin-user-id";
 const integrationTestBotPatFile = "/zitadel-pat/integration-test-bot-token";
 const integrationTestBotKeyPath = "/zitadel-pat/integration-test-bot.key.json";
 const appName = "book-app";
@@ -25,6 +24,7 @@ const confidentialAppName = `integration-test-${appName}`;
 const clientIdFile = `${clientDir}/book-app-id`;
 const integrationTestClientIdFile = `${clientDir}/integration-test-book-app-id`;
 const integrationTestClientSecretFile = `${clientDir}/integration-test-book-app-secret`;
+
 const accessToken = await FileUtil.readPatWithRetries(patFilePath);
 const managementV1Service = new ZitadelManagementV1Service(
   zitadelUrl,
@@ -65,10 +65,7 @@ const {
   confidentialAppName,
   "confidential",
 );
-Logger.ok(
-  `Confidential application created with client ID: ${integrationTestClientId}`,
-);
-Logger.ok(
+Logger.log(
   `Writing integration test client ID to ${integrationTestClientIdFile}`,
 );
 await FileUtil.writeFile(integrationTestClientIdFile, integrationTestClientId);
@@ -100,33 +97,19 @@ Logger.log("Small delay for eventual consistency...");
 await sleep(2000);
 
 Logger.section("Creating Human Users & Assigning Roles");
-Logger.log("Creating user: some-admin@test.com ...");
-const adminUserId = await usersV2Service.createHumanUser({
-  email: "some-admin@test.com",
-  firstName: "Admin",
-  lastName: "User",
-  password: "Admin123!",
-});
-Logger.log("Assigning role 'admin' to user " + adminUserId + "...");
-await managementV1Service.assignRoleToUser(adminUserId, projectId, "admin");
-Logger.ok(`Writing admin user ID to ${adminUserIdFile}`);
-await FileUtil.writeFile(adminUserIdFile, adminUserId);
-Logger.log("Creating user: some-guest@test.com ...");
-const guestUserId = await usersV2Service.createHumanUser({
-  email: "some-guest@test.com",
-  firstName: "Guest",
-  lastName: "User",
-  password: "Guest123!",
-});
-Logger.log("Assigning role 'guest' to user " + guestUserId + "...");
-await managementV1Service.assignRoleToUser(guestUserId, projectId, "guest");
-Logger.ok(`Writing guest user ID to ${guestUserIdFile}`);
-await FileUtil.writeFile(guestUserIdFile, guestUserId);
+for (const { userInfo, role, userIdFile } of users) {
+  Logger.log(`Creating ${userInfo.email} user...`);
+  const userId = await usersV2Service.createHumanUser(userInfo);
+  Logger.log(`Assigning role '${role}' to user ${userId}...`);
+  await managementV1Service.assignRoleToUser(userId, projectId, role);
+  Logger.ok(`Writing user ID to ${userIdFile}`);
+  await FileUtil.writeFile(userIdFile, userId);
+}
 
 Logger.section("Enabling Impersonation");
 Logger.log("Enable impersonation in the security policy...");
 await adminV1Service.enableImpersonationInSecurityPolicy();
-Logger.section("Granting bot user impersonation permission...");
+Logger.log("Granting bot user impersonation permission...");
 const { userId: botUserId, organizationId } =
   await authV1Service.getCurrentUser();
 Logger.log(
@@ -134,10 +117,10 @@ Logger.log(
 );
 await adminV1Service.assignImpersonatorRole(botUserId);
 Logger.ok("Impersonation role assigned to bot user");
-Logger.log("Creating machine user: integration-test-impersonation-bot...");
+Logger.log("Creating machine user: integration-test-impersonator-bot...");
 const integrationTestBotUserId = await usersV2Service.createMachineUser({
   organizationId,
-  username: "integration-test-impersonation-bot",
+  username: "integration-test-impersonator-bot",
   name: "Integration Test Impersonation Bot",
   description: "Machine user for integration test token exchange",
 });
@@ -161,7 +144,7 @@ Logger.log(
 await managementV1Service.grantUserProjectAccess(
   integrationTestBotUserId,
   projectId,
-  [],
+  [], // 👈 IMPORTANT: do NOT assign any role to the impersonator!
 );
 Logger.ok("Integration Test bot got project access");
 Logger.log("Generating PAT for integration test machine user...");

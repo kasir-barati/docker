@@ -15,31 +15,37 @@ export class ZitadelManagementV1Service {
   /**
    * Create a project in ZITADEL
    * @param {string} projectName - Project name
-   * @returns {Promise<string|null>} Project ID or null on failure
+   * @returns {Promise<string>} Project ID
    */
   async createProject(projectName) {
-    const response = await fetch(`${this.baseUrl}/management/v1/projects`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`,
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${this.baseUrl}/management/v1/projects`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: projectName,
+          projectRoleAssertion: true,
+        }),
       },
-      body: JSON.stringify({
-        name: projectName,
-        projectRoleAssertion: true,
-      }),
-    });
+    );
 
     const data = await response.json();
 
-    if (data.id) return data.id;
+    if (data.id) {
+      return data.id;
+    }
 
     // Check if project already exists
-    if (JSON.stringify(data).toLowerCase().includes("already")) {
+    if (JSON.stringify(data).toLowerCase().includes('already')) {
       return await this.#findProjectByName(projectName);
     }
 
-    return null;
+    Logger.error(`Failed to create project: ${JSON.stringify(data, null, 2)}`);
+    throw new Error(`Failed to create project`);
   }
 
   /**
@@ -49,7 +55,7 @@ export class ZitadelManagementV1Service {
    * @param {string} role.group - Role group
    * @param {string} role.roleKey - Role key (e.g., 'admin', 'writer', 'user')
    * @param {string} role.displayName - Role display name
-   * @returns {Promise<boolean>} Success status
+   * @returns {Promise<void>}
    */
   async createProjectRole(projectId, { roleKey, displayName, group }) {
     const response = await fetch(
@@ -70,8 +76,14 @@ export class ZitadelManagementV1Service {
 
     const data = await response.json();
     const responseText = JSON.stringify(data).toLowerCase();
+    const success = responseText.includes("already") || responseText.includes("details");
 
-    return responseText.includes("already") || responseText.includes("details");
+    if (!success) {
+      Logger.error(
+        `Failed to create role '${roleKey}' in project '${projectId}': ${JSON.stringify(data, null, 2)}`,
+      );
+      throw new Error("Failed to create role");
+    }
   }
 
   /**
@@ -157,8 +169,8 @@ export class ZitadelManagementV1Service {
    * Assign a role to a user
    * @param {string} userId - User ID
    * @param {string} projectId - Project ID
-   * @param {'admin'|'guest'} roleKey - Role key to assign
-   * @returns {Promise<boolean>} Success status
+   * @param {string} roleKey - Role key to assign
+   * @returns {Promise<void>}
    */
   async assignRoleToUser(userId, projectId, roleKey) {
     const response = await fetch(
@@ -178,8 +190,14 @@ export class ZitadelManagementV1Service {
 
     const data = await response.json();
     const responseText = JSON.stringify(data).toLowerCase();
+    const success = responseText.includes("already") || responseText.includes("grantid");
 
-    return responseText.includes("already") || responseText.includes("grantid");
+    if (!success) {
+      Logger.error(
+        `Failed to assign role '${roleKey}' to user '${userId}' for project '${projectId}': ${JSON.stringify(data, null, 2)}`,
+      );
+      throw new Error("Failed to assign role to user");
+    }
   }
 
   /**
@@ -287,23 +305,23 @@ export class ZitadelManagementV1Service {
   /**
    * Find a project by name
    * @param {string} projectName - Project name
-   * @returns {Promise<string|null>} Project ID or null if not found
+   * @returns {Promise<string>} Project ID
    */
   async #findProjectByName(projectName) {
     const response = await fetch(
       `${this.baseUrl}/management/v1/projects/_search`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${this.accessToken}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           queries: [
             {
               nameQuery: {
                 name: projectName,
-                method: "TEXT_QUERY_METHOD_EQUALS",
+                method: 'TEXT_QUERY_METHOD_EQUALS',
               },
             },
           ],
@@ -312,7 +330,13 @@ export class ZitadelManagementV1Service {
     );
 
     const data = await response.json();
-    return data.result?.[0]?.id || null;
+
+    if (data.result?.[0]?.id) {
+      return data.result[0].id;
+    }
+
+    Logger.error(`Failed to find project: ${JSON.stringify(data, null, 2)}`);
+    throw new Error(`Failed to find project`);
   }
 
   /**

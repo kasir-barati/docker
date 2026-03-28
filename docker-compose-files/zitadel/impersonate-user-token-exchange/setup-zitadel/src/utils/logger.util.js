@@ -47,14 +47,4 @@ export class Logger {
     console.error("================================================");
     console.error("");
   }
-
-  /**
-   * Log a subsection
-   * @param {string} title - Subsection title
-   */
-  static subsection(title) {
-    console.error("");
-    console.error(title);
-    console.error("");
-  }
 }
