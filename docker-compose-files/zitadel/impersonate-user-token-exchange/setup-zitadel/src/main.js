@@ -6,7 +6,7 @@ import {
   ZitadelManagementV1Service,
   ZitadelUsersV2Service,
 } from "./services/index.js";
-import { users } from "./data/index.js";
+import { roles, users } from "./data/index.js";
 import { FileUtil, isEmpty, Logger, sleep } from "./utils/index.js";
 
 const zitadelUrl = "http://traefik:80";
@@ -81,18 +81,14 @@ await FileUtil.writeFile(
 
 Logger.section("Creating Project Roles");
 Logger.log("Creating project roles...");
-await managementV1Service.createProjectRole(projectId, {
-  group: appName,
-  roleKey: "admin",
-  displayName: "Admin",
-});
-Logger.ok(`Role 'admin' created`);
-await managementV1Service.createProjectRole(projectId, {
-  group: appName,
-  roleKey: "guest",
-  displayName: "Guest",
-});
-Logger.ok(`Role 'guest' created`);
+for (const role of roles) {
+  await managementV1Service.createProjectRole(projectId, {
+    group: appName,
+    roleKey: role.roleKey,
+    displayName: role.displayName,
+  });
+  Logger.ok(`Role '${role.roleKey}' created`);
+}
 Logger.log("Small delay for eventual consistency...");
 await sleep(2000);
 
