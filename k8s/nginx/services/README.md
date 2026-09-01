@@ -14,6 +14,10 @@ minikube service list
 minikube service exposed-nginx --url
 ```
 
+> [!TIP]
+>
+> You can drop the `NodePort`, then Kubernetes will assign one automatically for you.
+
 > [!IMPORTANT]
 >
 > `NodePort` on Minikube exposes the port on the Minikube node, not on your laptop's `localhost`. That's different from a real multi-node cluster, where `NodePort` would be open on every node's actual host IP.
