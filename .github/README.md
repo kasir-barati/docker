@@ -4,7 +4,7 @@
 
 # docker
 
-My tested `Dockerfile`s &amp; docker compose files which I use them and try to keep them up to date. Consider giving this repo a star if it was helpful to you so it can reaches more devs such as yourself.
+My tested `Dockerfile`s, docker compose files, and Kubernetes setup are all in this repo. I try to keep them up to date. Consider giving this repo a star if it was helpful to you so it can reaches more devs such as yourself.
 
 ## [Docs](../docs/README.md)
 

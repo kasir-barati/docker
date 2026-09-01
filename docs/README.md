@@ -11,3 +11,7 @@
 - [Merging docker compose files](./merging-compose-files/README.md).
 - [Send python sub processes' logs to `stdout`/`stderr` in Docker](./python-multiprocessing-logs/README.md).
 - [Generate thumbnail in NodeJS when the video file in in S3/Minio](./gen-thumbnail-in-nodejs-and-minio/README.md).
+
+## [Kubernetes](../k8s/README.md)
+
+There you can see how I use Kubernetes.
