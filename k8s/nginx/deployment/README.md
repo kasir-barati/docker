@@ -6,6 +6,10 @@ In Kubernetes you have a deployment, that deployment creates a replicaset for yo
 kubectl create -f deployment.yaml
 ```
 
+> [!TIP]
+>
+> If you wanted to record the cause of a rollout you must add a `--record` flag to the `kubectl create -f deployment.yaml` command. Then moving onward it records the command which created a new revision.
+
 If you made a change in the deployment config file you can apply them:
 
 ```shell
