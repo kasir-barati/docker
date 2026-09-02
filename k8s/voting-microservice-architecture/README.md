@@ -1,6 +1,11 @@
 # Microservice Architecture
 
+## Single Instance
+
+To start I'd like to spare you all the details about deployments and replica sets. Thus we're gonna use pods and configure them
+
 ```shell
+$ cd single-instance
 $ kubectl apply -f .
 pod/db created
 service/db created
