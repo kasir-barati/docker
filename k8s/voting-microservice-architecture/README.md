@@ -66,3 +66,21 @@ pod "worker" deleted from default namespace
 - Your vote/result/worker pod can't reach service redis/postgres, then the single most useful command for it would be: `kubectl get endpoints <service-name>` or `kubectl get endpointslice`. If the endpoint list is empty, the Service's selector doesn't match any pod's labels. You can see this by messing with the selectors of one of the `*service.yaml`.
 
   Compare `spec.selector` on the Service against `metadata.labels` on the target Pod. E.g. you would be doing something like: `kubectl get pod db --show-labels` vs `kubectl get svc db -o yaml`.
+
+  The logs for this issue might look like this:
+
+  ```shell
+  $ kubectl logs worker-deployment-6589c8f67b-2cfkx
+  System.AggregateException: One or more errors occurred. (No such device or address) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: No such device or address
+     at System.Net.Dns.HostResolutionEndHelper(IAsyncResult asyncResult)
+     at System.Net.Dns.EndGetHostAddresses(IAsyncResult asyncResult)
+     at System.Net.Dns.<>c.<GetHostAddressesAsync>b__14_1(IAsyncResult asyncResult)
+     at System.Threading.Tasks.TaskFactory1.FromAsyncCoreLogic(IAsyncResult iar, Func2 endFunction, Action1 endAction, Task1 promise, Boolean requiresSynchronization)
+     --- End of inner exception stack trace ---
+     at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+     at System.Threading.Tasks.Task1.GetResultCore(Boolean waitCompletionNotification)    at Npgsql.NpgsqlConnector.Connect(NpgsqlTimeout timeout)    at Npgsql.NpgsqlConnector.RawOpen(NpgsqlTimeout timeout)    at Npgsql.NpgsqlConnector.Open(NpgsqlTimeout timeout)    at Npgsql.ConnectorPool.Allocate(NpgsqlConnection conn, NpgsqlTimeout timeout)    at Npgsql.NpgsqlConnection.OpenInternal()    at Worker.Program.OpenDbConnection(String connectionString) in /code/src/Worker/Program.cs:line 50    at Worker.Program.Main(String[] args) in /code/src/Worker/Program.cs:line 19 ---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: No such device or address    at System.Net.Dns.HostResolutionEndHelper(IAsyncResult asyncResult)    at System.Net.Dns.EndGetHostAddresses(IAsyncResult asyncResult)    at System.Net.Dns.<>c.<GetHostAddressesAsync>b__14_1(IAsyncResult asyncResult)    at System.Threading.Tasks.TaskFactory1.FromAsyncCoreLogic(IAsyncResult iar, Func2 endFunction, Action1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+  ```
+
+  `Npgsql.NpgsqlConnector.Connect` → `System.Net.Dns.GetHostAddressesAsync` failing with `ExtendedSocketException: No such device or address`. That's the classic signature of a DNS resolution failure inside a .NET container, not a firewall/timeout/auth issue.
+
+  Since it fails at hostname resolution, **before ever reaching Postgres**, the fix has to be on the "what hostname does the app ask for" side.
