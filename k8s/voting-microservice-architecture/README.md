@@ -1,5 +1,10 @@
 # Microservice Architecture
 
+Note: voting, result, and worker apps are all hardcoded and look for a connection string like this:
+
+- `redis://redis:6379`.
+- `postgres://db:5432`.
+
 ## Single Instance
 
 To start I'd like to spare you all the details about deployments and replica sets. Thus we're gonna use pods and configure them
