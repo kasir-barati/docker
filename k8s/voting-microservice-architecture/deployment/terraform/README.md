@@ -194,7 +194,7 @@ If any Kubernetes `Service` was ever `type: LoadBalancer` (or you deployed an In
 >
 > I kinda expect this to happen since when I also wanted to remove a IAM user I had to disable their access keys first and then AWS Console allowed me to delete the user. Not sure if this was a feature in their AWS Console app or will this be the same even if we call their APIs directly.
 >
-> So **take what I did here, Claude Code did it but I accepted it 😅, with a grain of salt**. I will ask this in Stackoverflow in hope of getting a clear answer.
+> So **take what I did here, Claude Code did it but I accepted it 😅, with a grain of salt**. I asked [this in Stackoverflow](https://stackoverflow.com/q/80000975/8784518) in hope of getting a clear answer.
 
 `cleanup.tf` handles this automatically: a destroy-time hook runs `kubectl delete -f ../voting-service.yaml -f ../result-service.yaml` at the correct point in the destroy order, before the cluster/VPC teardown begins, so a plain `terraform destroy` is enough in the normal case. If `kubectl`/`aws` aren't available on the machine running `destroy`, or the delete fails for any other reason, the hook fails open and destroy proceeds anyway.
 
