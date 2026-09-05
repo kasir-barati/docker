@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: voting-service
   annotations:
-    description: 'Exposes the voting service to the outside world'
+    description: "Exposes the voting service to the outside world. Run `minikube service list` locally to see the URL of each service. On EKS the AWS cloud-provider controller provisions a real Network Load Balancer."
 spec:
-  type: NodePort
+  type: LoadBalancer # initially it was NodePort but then to prevent having to do extra work for AWS I decided to switch to LoadBalancer
   selector:
     app: voting
   ports:

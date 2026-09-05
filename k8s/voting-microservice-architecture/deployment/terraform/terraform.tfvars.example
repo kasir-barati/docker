@@ -1,0 +1,12 @@
+# Copy this file to terraform.tfvars and adjust as needed. terraform.tfvars is gitignored -- it's the file where you're most likely to put values you don't want committed (though nothing here is secret; your actual AWS credentials never go in this file, see README.md).
+
+aws_region   = "eu-central-1"
+environment  = "prod"
+cluster_name = "voting-app-cluster"
+
+azs = ["eu-central-1a", "eu-central-1b"]
+
+node_min_size       = 1
+node_max_size       = 3
+node_desired_size   = 2
+node_instance_types = ["t3.medium"]
