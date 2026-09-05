@@ -1,0 +1,10 @@
+{
+  "name": "service-account-token-demo",
+  "version": "1.0.0",
+  "description": "Reads its pod's bound service account token and lists pods via the Kubernetes API",
+  "type": "module",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  }
+}

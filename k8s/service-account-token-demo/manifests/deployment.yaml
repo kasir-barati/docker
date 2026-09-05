@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sa-token-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sa-token-demo
+  template:
+    metadata:
+      labels:
+        app: sa-token-demo
+    spec:
+      serviceAccountName: pod-lister
+      containers:
+        - name: app
+          image: sa-token-demo:1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000 # hardcoded here and in the index.mjs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sa-token-demo
+spec:
+  kind: ClusterIP
+  selector:
+    app: sa-token-demo
+  ports:
+    - port: 3000
+      targetPort: 3000
